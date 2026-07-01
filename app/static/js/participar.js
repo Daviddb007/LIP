@@ -148,26 +148,45 @@ async function loadProblemas() {
     container.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-muted">Cargando problemas...</p></div>';
 
     try {
-        const primerSector = sectoresSeleccionados[0];
-        const response = await fetch(`${apiUrls.problemas}${primerSector}`);
-        const problemas = await response.json();
+        let html = '';
 
-        let html = '<div class="problemas-grid">';
-        problemas.forEach(p => {
-            const safeName = escapeHtml(p.nombre);
+        for (const sectorId of sectoresSeleccionados) {
+            const card = document.querySelector(`[data-id="${sectorId}"]`);
+            const sectorNombre = card ? card.querySelector('label span').textContent : `Sector ${sectorId}`;
+
+            const response = await fetch(`${apiUrls.problemas}${sectorId}`);
+            const problemas = await response.json();
+
             html += `
-                <div class="problema-card" data-nombre="${safeName}" onclick="selectProblema(this)">
-                    <div class="problema-icon"><i class="bi bi-exclamation-triangle"></i></div>
-                    <div class="problema-name">${safeName}</div>
+                <div class="mb-4">
+                    <h6 class="fw-bold text-muted mb-3">
+                        <i class="bi bi-folder-fill me-2"></i>${escapeHtml(sectorNombre)}
+                    </h6>
+                    <div class="problemas-grid">
+            `;
+
+            problemas.forEach(p => {
+                const safeName = escapeHtml(p.nombre);
+                html += `
+                    <div class="problema-card" data-nombre="${safeName}" data-sector-id="${sectorId}" onclick="selectProblema(this)">
+                        <div class="problema-icon"><i class="bi bi-exclamation-triangle"></i></div>
+                        <div class="problema-name">${safeName}</div>
+                    </div>
+                `;
+            });
+
+            html += `
+                    </div>
                 </div>
             `;
-        });
+        }
+
         html += `
             <div class="problema-card problema-custom" onclick="selectProblemaCustom(this)">
                 <div class="problema-icon"><i class="bi bi-pencil-square"></i></div>
                 <div class="problema-name">Otro (especificar)</div>
             </div>
-        </div>`;
+        `;
 
         html += `
             <div id="customProblemaGroup" class="mt-3" style="display: none;">
@@ -192,6 +211,7 @@ function selectProblema(element) {
     document.getElementById('customProblemaGroup').style.display = 'none';
     document.getElementById('problemaCustom').value = '';
     problemasSeleccionados['principal'] = element.dataset.nombre;
+    problemasSeleccionados['principal_sector_id'] = parseInt(element.dataset.sectorId) || null;
 }
 
 function selectProblemaCustom(element) {
