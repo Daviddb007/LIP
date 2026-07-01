@@ -1,0 +1,129 @@
+{% extends "base.html" %}
+
+{% block title %}La Iniciativa - Construyamos Colombia{% endblock %}
+
+{% block content %}
+<section class="page-header bg-primary text-white">
+    <div class="container">
+        <h1 class="display-5 fw-bold">La Iniciativa</h1>
+        <p class="lead">Construyamos juntos el futuro de Colombia</p>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm mb-5">
+                    <div class="card-body p-5">
+                        <h2 class="fw-bold text-center mb-4">
+                            <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+                            El problema que resolvemos
+                        </h2>
+                        <p class="lead text-center">
+                            Actualmente millones de ciudadanos tienen ideas y necesidades, pero pocas veces
+                            estas quedan organizadas y convertidas en información útil para construir
+                            políticas públicas.
+                        </p>
+                        <div class="row g-4 mt-4">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-x-circle-fill text-danger me-3 fs-4"></i>
+                                    <div>
+                                        <h5>Baja participación efectiva</h5>
+                                        <p class="text-muted mb-0">Los ciudadanos no tienen canales claros para hacer llegar sus propuestas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-x-circle-fill text-danger me-3 fs-4"></i>
+                                    <div>
+                                        <h5>Información dispersa</h5>
+                                        <p class="text-muted mb-0">Las ideas se pierden en múltiples plataformas sin consolidar.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-x-circle-fill text-danger me-3 fs-4"></i>
+                                    <div>
+                                        <h5>Escasa sistematización</h5>
+                                        <p class="text-muted mb-0">No hay mecanismos para organizar y analizar la información recibida.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-x-circle-fill text-danger me-3 fs-4"></i>
+                                    <div>
+                                        <h5>Dificultad para priorizar</h5>
+                                        <p class="text-muted mb-0">Es complejo identificar qué temas son más relevantes para los ciudadanos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card border-0 shadow-sm mb-5">
+                    <div class="card-body p-5">
+                        <h2 class="fw-bold text-center mb-4">
+                            <i class="bi bi-check-circle-fill text-success me-2"></i>
+                            La solución que brindamos
+                        </h2>
+                        <p class="lead text-center">
+                            Construyamos Colombia permite transformar la participación ciudadana en evidencia
+                            concreta para la toma de decisiones.
+                        </p>
+                        <div class="row g-4 mt-4">
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-check-circle-fill text-success me-3 fs-4"></i>
+                                    <div>
+                                        <h5>Recoger propuestas ciudadanas</h5>
+                                        <p class="text-muted mb-0">Un formulario simple y ágil que toma menos de 5 minutos.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-check-circle-fill text-success me-3 fs-4"></i>
+                                    <div>
+                                        <h5>Identificar prioridades territoriales</h5>
+                                        <p class="text-muted mb-0">Saber qué necesidades son más urgentes en cada región.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-check-circle-fill text-success me-3 fs-4"></i>
+                                    <div>
+                                        <h5>Detectar tendencias</h5>
+                                        <p class="text-muted mb-0">Identificar patrones y temas recurrentes en las propuestas.</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-check-circle-fill text-success me-3 fs-4"></i>
+                                    <div>
+                                        <h5>Generar evidencia basada en participación</h5>
+                                        <p class="text-muted mb-0">Datos reales para fundamentar decisiones de política pública.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <a href="{{ url_for('participar.participar') }}" class="btn btn-primary btn-lg px-5 py-3">
+                        <i class="bi bi-arrow-right-circle me-2"></i>Comenzar participación
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

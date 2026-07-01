@@ -1,0 +1,392 @@
+{% extends "base.html" %}
+
+{% block title %}Consulta Ciudadana PND 2027-2030 | Gobierno de Colombia{% endblock %}
+
+{% block content %}
+<!-- Hero Section Premium -->
+<section class="hero-section">
+    <!-- Floating Particles -->
+    <div class="particle" style="width: 300px; height: 300px; background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%); top: 10%; left: 5%; animation-delay: 0s;"></div>
+    <div class="particle" style="width: 200px; height: 200px; background: radial-gradient(circle, rgba(241, 196, 15, 0.15) 0%, transparent 70%); bottom: 20%; right: 10%; animation-delay: 5s;"></div>
+    <div class="particle" style="width: 150px; height: 150px; background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%); top: 40%; right: 30%; animation-delay: 10s;"></div>
+    
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <div class="hero-badge">
+                    <i class="bi bi-shield-check"></i>
+                    Participación ciudadana segura y anónima
+                </div>
+                
+                <h1 class="hero-title">
+                    Construyamos<br>
+                    <span class="highlight">Colombia</span>
+                </h1>
+                
+                <p class="hero-subtitle">
+                    Construyamos juntos las prioridades ciudadanas para el país que queremos. 
+                    Tu participación ayuda a convertir las ideas de los colombianos en evidencia 
+                    para la toma de decisiones.
+                </p>
+                
+                <div class="hero-cta-group">
+                    <a href="{{ url_for('participar.participar') }}" class="btn btn-hero-primary">
+                        <i class="bi bi-arrow-right-circle"></i>
+                        Participar ahora
+                    </a>
+                    <a href="{{ url_for('iniciativa.iniciativa') }}" class="btn btn-hero-secondary">
+                        <i class="bi bi-play-circle"></i>
+                        Conoce la iniciativa
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-6 hero-illustration d-none d-lg-block">
+                <svg class="hero-visual" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Colombia Map Stylized -->
+                    <circle cx="250" cy="250" r="200" fill="url(#heroGrad1)" opacity="0.1"/>
+                    <circle cx="250" cy="250" r="150" fill="url(#heroGrad2)" opacity="0.15"/>
+                    <circle cx="250" cy="250" r="100" fill="url(#heroGrad3)" opacity="0.2"/>
+                    
+                    <!-- Connection Lines -->
+                    <path d="M150 200 Q250 150 350 200" stroke="rgba(241,196,15,0.4)" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                    <path d="M150 300 Q250 350 350 300" stroke="rgba(37,99,235,0.4)" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                    <path d="M200 150 Q250 250 200 350" stroke="rgba(255,255,255,0.2)" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
+                    
+                    <!-- People Nodes -->
+                    <circle cx="150" cy="200" r="25" fill="#2563eb" opacity="0.9"/>
+                    <circle cx="150" cy="200" r="15" fill="white"/>
+                    <text x="150" y="205" text-anchor="middle" fill="#2563eb" font-size="14" font-weight="bold">B</text>
+                    
+                    <circle cx="250" cy="150" r="30" fill="#f1c40f" opacity="0.9"/>
+                    <circle cx="250" cy="150" r="18" fill="white"/>
+                    <text x="250" y="155" text-anchor="middle" fill="#f1c40f" font-size="14" font-weight="bold">M</text>
+                    
+                    <circle cx="350" cy="200" r="25" fill="#10b981" opacity="0.9"/>
+                    <circle cx="350" cy="200" r="15" fill="white"/>
+                    <text x="350" y="205" text-anchor="middle" fill="#10b981" font-size="14" font-weight="bold">V</text>
+                    
+                    <circle cx="200" cy="300" r="22" fill="#8b5cf6" opacity="0.9"/>
+                    <circle cx="200" cy="300" r="13" fill="white"/>
+                    <text x="200" y="305" text-anchor="middle" fill="#8b5cf6" font-size="12" font-weight="bold">C</text>
+                    
+                    <circle cx="300" cy="350" r="28" fill="#ef4444" opacity="0.9"/>
+                    <circle cx="300" cy="350" r="17" fill="white"/>
+                    <text x="300" y="355" text-anchor="middle" fill="#ef4444" font-size="14" font-weight="bold">A</text>
+                    
+                    <circle cx="350" cy="280" r="20" fill="#06b6d4" opacity="0.9"/>
+                    <circle cx="350" cy="280" r="12" fill="white"/>
+                    <text x="350" y="285" text-anchor="middle" fill="#06b6d4" font-size="11" font-weight="bold">S</text>
+                    
+                    <!-- Center Hub -->
+                    <circle cx="250" cy="250" r="40" fill="url(#heroGrad4)"/>
+                    <circle cx="250" cy="250" r="30" fill="white"/>
+                    <text x="250" y="255" text-anchor="middle" fill="#071a40" font-size="20" font-weight="bold">CC</text>
+                    
+                    <!-- Connection Lines to Center -->
+                    <line x1="150" y1="200" x2="250" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                    <line x1="250" y1="150" x2="250" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                    <line x1="350" y1="200" x2="250" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                    <line x1="200" y1="300" x2="250" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                    <line x1="300" y1="350" x2="250" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                    <line x1="350" y1="280" x2="250" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
+                    
+                    <defs>
+                        <radialGradient id="heroGrad1" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#2563eb"/>
+                            <stop offset="100%" stop-color="transparent"/>
+                        </radialGradient>
+                        <radialGradient id="heroGrad2" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#f1c40f"/>
+                            <stop offset="100%" stop-color="transparent"/>
+                        </radialGradient>
+                        <radialGradient id="heroGrad3" cx="50%" cy="50%" r="50%">
+                            <stop offset="0%" stop-color="#ffffff"/>
+                            <stop offset="100%" stop-color="transparent"/>
+                        </radialGradient>
+                        <linearGradient id="heroGrad4" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#071a40"/>
+                            <stop offset="100%" stop-color="#2563eb"/>
+                        </linearGradient>
+                    </defs>
+                </svg>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="stats-section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper primary">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="stat-value counter" data-target="{{ total_participaciones }}">0</div>
+                    <div class="stat-label">Participaciones</div>
+                    <span class="stat-trend up"><i class="bi bi-arrow-up"></i> Activo</span>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper success">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <div class="stat-value counter" data-target="{{ total_departamentos }}">0</div>
+                    <div class="stat-label">Departamentos</div>
+                    <span class="stat-trend neutral"><i class="bi bi-check-circle"></i> Cobertura</span>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper warning">
+                        <i class="bi bi-tags-fill"></i>
+                    </div>
+                    <div class="stat-value counter" data-target="{{ total_sectores }}">0</div>
+                    <div class="stat-label">Sectores</div>
+                    <span class="stat-trend neutral"><i class="bi bi-check-circle"></i> Priorizados</span>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card">
+                    <div class="stat-icon-wrapper info">
+                        <i class="bi bi-lightbulb-fill"></i>
+                    </div>
+                    <div class="stat-value counter" data-target="{{ total_sectores }}">0</div>
+                    <div class="stat-label">Sectores activos</div>
+                    <span class="stat-trend neutral"><i class="bi bi-check-circle"></i> Disponibles</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Mission & Vision Section -->
+<section class="py-5 mt-5">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="mission-card">
+                    <h3><i class="bi bi-bullseye"></i> Nuestra misión</h3>
+                    <p>
+                        Crear un canal de participación simple, accesible y basado en datos que permita 
+                        convertir las ideas de los ciudadanos en información útil para la toma de 
+                        decisiones públicas.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="mission-card" style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);">
+                    <h3><i class="bi bi-eye-fill"></i> Nuestra visión</h3>
+                    <p>
+                        Democratizar la participación ciudadana mediante tecnología, analítica y evidencia, 
+                        construyendo un puente directo entre los ciudadanos y las políticas públicas.
+                    </p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="mt-5">
+            <h4 class="text-center fw-bold mb-4">Nuestros principios</h4>
+            <div class="principles-grid">
+                <div class="principle-item">
+                    <div class="principle-icon"><i class="bi bi-people-fill"></i></div>
+                    <span>Participación</span>
+                </div>
+                <div class="principle-item">
+                    <div class="principle-icon"><i class="bi bi-eye-fill"></i></div>
+                    <span>Transparencia</span>
+                </div>
+                <div class="principle-item">
+                    <div class="principle-icon"><i class="bi bi-database-fill"></i></div>
+                    <span>Datos abiertos</span>
+                </div>
+                <div class="principle-item">
+                    <div class="principle-icon"><i class="bi bi-hands-fill"></i></div>
+                    <span>Construcción colectiva</span>
+                </div>
+                <div class="principle-item">
+                    <div class="principle-icon"><i class="bi bi-graph-up-arrow"></i></div>
+                    <span>Evidencia para la acción</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Timeline Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge"><i class="bi bi-diagram-3"></i> Nuestro proceso</span>
+            <h2 class="section-title">¿Qué hacemos?</h2>
+            <p class="section-subtitle">Un proceso claro y transparente para transformar tu voz en evidencia</p>
+        </div>
+        
+        <div class="timeline">
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span class="timeline-step">Paso 01</span>
+                    <h4 class="timeline-title">Escuchamos</h4>
+                    <p class="timeline-desc">Recibimos las ideas, necesidades y propuestas de los ciudadanos de todo el país.</p>
+                </div>
+                <div class="timeline-dot"><i class="bi bi-megaphone-fill"></i></div>
+                <div class="timeline-content" style="visibility: hidden;"></div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content" style="visibility: hidden;"></div>
+                <div class="timeline-dot"><i class="bi bi-folder-fill"></i></div>
+                <div class="timeline-content">
+                    <span class="timeline-step">Paso 02</span>
+                    <h4 class="timeline-title">Organizamos</h4>
+                    <p class="timeline-desc">Clasificamos y estructuramos la información por sectores y territorios.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span class="timeline-step">Paso 03</span>
+                    <h4 class="timeline-title">Analizamos</h4>
+                    <p class="timeline-desc">Aplicamos analítica avanzada para identificar tendencias y patrones relevantes.</p>
+                </div>
+                <div class="timeline-dot"><i class="bi bi-graph-up"></i></div>
+                <div class="timeline-content" style="visibility: hidden;"></div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content" style="visibility: hidden;"></div>
+                <div class="timeline-dot"><i class="bi bi-lightbulb-fill"></i></div>
+                <div class="timeline-content">
+                    <span class="timeline-step">Paso 04</span>
+                    <h4 class="timeline-title">Generamos evidencia</h4>
+                    <p class="timeline-desc">Convertimos los datos en información útil para la toma de decisiones.</p>
+                </div>
+            </div>
+            
+            <div class="timeline-item">
+                <div class="timeline-content">
+                    <span class="timeline-step">Paso 05</span>
+                    <h4 class="timeline-title">Construimos país</h4>
+                    <p class="timeline-desc">Las propuestas ciudadanas alimentan las políticas públicas del Plan Nacional.</p>
+                </div>
+                <div class="timeline-dot"><i class="bi bi-flag-fill"></i></div>
+                <div class="timeline-content" style="visibility: hidden;"></div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge"><i class="bi bi-question-circle"></i> Dudas frecuentes</span>
+            <h2 class="section-title">Preguntas Frecuentes</h2>
+        </div>
+        
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="accordion" id="faqAccordion">
+                    <div class="accordion-item border-0 mb-3 shadow-sm rounded-4 overflow-hidden">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq1">
+                                ¿Qué es Construyamos Colombia?
+                            </button>
+                        </h2>
+                        <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">
+                                Es una iniciativa ciudadana que busca recoger las ideas y propuestas de los colombianos para construir insumos reales para el Plan Nacional de Desarrollo 2027-2030.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0 mb-3 shadow-sm rounded-4 overflow-hidden">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq2">
+                                ¿Necesito crear una cuenta para participar?
+                            </button>
+                        </h2>
+                        <div id="faq2" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">
+                                No. La participación es completamente anónima y no requiere registro ni credenciales. Solo toma entre 3 y 5 minutos.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0 mb-3 shadow-sm rounded-4 overflow-hidden">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
+                                ¿Cómo se utilizan mis datos?
+                            </button>
+                        </h2>
+                        <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">
+                                Tus respuestas se utilizan de forma agregada para generar estadísticas e informes que alimentarán las políticas públicas. Nunca se comparte información individual.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0 mb-3 shadow-sm rounded-4 overflow-hidden">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq4">
+                                ¿Quién lidera esta iniciativa?
+                            </button>
+                        </h2>
+                        <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">
+                                Esta iniciativa es liderada por Stonelytics, una empresa comprometida con la construcción de evidencia para la toma de decisiones basada en datos.
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item border-0 shadow-sm rounded-4 overflow-hidden">
+                        <h2 class="accordion-header">
+                            <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq5">
+                                ¿Puedo participar desde cualquier lugar de Colombia?
+                            </button>
+                        </h2>
+                        <div id="faq5" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
+                            <div class="accordion-body text-secondary">
+                                Sí. La plataforma está disponible para todos los colombianos, tanto en Colombia como en el exterior. Solo necesitas acceso a internet.
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5" style="background: linear-gradient(135deg, #071a40 0%, #0f2f75 100%);">
+    <div class="container text-center">
+        <h2 class="fw-bold text-white mb-3" style="font-size: 2.5rem;">¿Listo para participar?</h2>
+        <p class="text-white-50 mb-4" style="font-size: 1.15rem; max-width: 600px; margin: 0 auto;">
+            Tu opinión importa. Toma solo 3-5 minutos y ayúdanos a construir un mejor país.
+        </p>
+        <a href="{{ url_for('participar.participar') }}" class="btn btn-hero-primary">
+            <i class="bi bi-arrow-right-circle"></i>
+            Quiero participar
+        </a>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Animate counters
+        const counters = document.querySelectorAll('.counter');
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const target = parseInt(entry.target.dataset.target);
+                    animateCounter(entry.target, target);
+                    observer.unobserve(entry.target);
+                }
+            });
+        }, { threshold: 0.5 });
+
+        counters.forEach(counter => observer.observe(counter));
+    });
+</script>
+{% endblock %}

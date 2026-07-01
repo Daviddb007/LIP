@@ -1,0 +1,172 @@
+{% extends "base.html" %}
+
+{% block title %}Resultados Públicos | Construyamos Colombia{% endblock %}
+
+{% block content %}
+<input type="hidden" id="apiEstadisticasUrl" value="{{ url_for('resultados.api_estadisticas') }}">
+<!-- Header Premium -->
+<section class="hero-section" style="min-height: 40vh; padding: 120px 0 60px;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <span class="hero-badge mb-3">
+                    <i class="bi bi-graph-up"></i>
+                    Panel de estadísticas
+                </span>
+                <h1 class="hero-title" style="font-size: 3rem;">Resultados Públicos</h1>
+                <p class="hero-subtitle" style="max-width: 600px;">
+                    Consulta en tiempo real las estadísticas de participación ciudadana. 
+                    Los datos se actualizan automáticamente con cada nueva participación.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Cards -->
+<section class="py-5" style="margin-top: -60px;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card" style="border-left: 4px solid var(--colombian-blue);">
+                    <div class="stat-icon-wrapper primary">
+                        <i class="bi bi-people-fill"></i>
+                    </div>
+                    <div class="stat-value" id="totalParticipaciones">-</div>
+                    <div class="stat-label">Participaciones</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card" style="border-left: 4px solid var(--success-color);">
+                    <div class="stat-icon-wrapper success">
+                        <i class="bi bi-chat-dots-fill"></i>
+                    </div>
+                    <div class="stat-value" id="totalPropuestas">-</div>
+                    <div class="stat-label">Propuestas</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card" style="border-left: 4px solid var(--colombian-gold);">
+                    <div class="stat-icon-wrapper warning">
+                        <i class="bi bi-geo-alt-fill"></i>
+                    </div>
+                    <div class="stat-value" id="totalDepartamentos">-</div>
+                    <div class="stat-label">Departamentos</div>
+                </div>
+            </div>
+            <div class="col-md-6 col-lg-3">
+                <div class="stat-card" style="border-left: 4px solid var(--colombian-red);">
+                    <div class="stat-icon-wrapper danger">
+                        <i class="bi bi-tags-fill"></i>
+                    </div>
+                    <div class="stat-value" id="totalSectores">-</div>
+                    <div class="stat-label">Sectores</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Charts Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="section-header mb-5">
+            <span class="section-badge"><i class="bi bi-bar-chart"></i> Análisis</span>
+            <h2 class="section-title">Visualización de datos</h2>
+            <p class="section-subtitle">Explora las tendencias y patrones de participación ciudadana</p>
+        </div>
+
+        <div class="row g-4">
+            <div class="col-lg-8">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-graph-up me-2 text-primary"></i>Sectores priorizados
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartSectores" height="300"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-geo-alt me-2 text-warning"></i>Por departamento
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="listaDepartamentos" style="max-height: 320px; overflow-y: auto;">
+                            <p class="text-muted text-center py-4">
+                                <span class="spinner-border spinner-border-sm me-2"></span>Cargando...
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-exclamation-triangle me-2 text-danger"></i>Problemas más mencionados
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartProblemas" height="280"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card border-0 shadow-sm h-100">
+                    <div class="card-header bg-white border-0 py-3">
+                        <h5 class="mb-0 fw-bold">
+                            <i class="bi bi-clock-history me-2 text-info"></i>Tendencia de participación
+                        </h5>
+                    </div>
+                    <div class="card-body">
+                        <canvas id="chartTendencia" height="280"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Propuestas Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="section-header mb-5">
+            <span class="section-badge"><i class="bi bi-chat-quote"></i> Voces ciudadanas</span>
+            <h2 class="section-title">Propuestas recientes</h2>
+            <p class="section-subtitle">Las últimas participaciones de ciudadanos de todo el país</p>
+        </div>
+
+        <div class="card border-0 shadow-sm">
+            <div class="card-body p-4">
+                <div id="listaPropuestas">
+                    <p class="text-muted text-center py-4">
+                        <span class="spinner-border spinner-border-sm me-2"></span>Cargando propuestas...
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- CTA -->
+        <div class="text-center mt-5">
+            <p class="text-muted mb-3">¿Ya participaste? Comparte con otros colombianos.</p>
+            <a href="{{ url_for('participar.participar') }}" class="btn btn-hero-primary">
+                <i class="bi bi-arrow-right-circle me-2"></i>Participar ahora
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="{{ url_for('static', filename='js/resultados.js') }}"></script>
+{% endblock %}

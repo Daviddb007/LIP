@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Construyamos Colombia</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
+    <style>
+        body { background-color: #f8f9fa; }
+        .login-container { max-width: 400px; margin-top: 100px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="login-container mx-auto">
+            <div class="card shadow">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="bi bi-lock-fill display-4 text-primary"></i>
+                        <h3 class="fw-bold mt-3">Panel Administrativo</h3>
+                        <p class="text-muted">Construyamos Colombia</p>
+                    </div>
+
+                    {% if error %}
+                    <div class="alert alert-danger" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>{{ error }}
+                    </div>
+                    {% endif %}
+
+                    <form method="POST" novalidate>
+                        {{ form.hidden_tag() }}
+                        <div class="mb-3">
+                            <label class="form-label">Usuario</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-person"></i></span>
+                                {{ form.username(class="form-control", autofocus=true, placeholder="Ingresa tu usuario") }}
+                            </div>
+                            {% if form.username.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.username.errors %}{{ error }}{% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="bi bi-key"></i></span>
+                                {{ form.password(class="form-control", placeholder="Ingresa tu contraseña") }}
+                            </div>
+                            {% if form.password.errors %}
+                            <div class="text-danger small mt-1">
+                                {% for error in form.password.errors %}{{ error }}{% endfor %}
+                            </div>
+                            {% endif %}
+                        </div>
+                        {{ form.submit(class="btn btn-primary w-100") }}
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
