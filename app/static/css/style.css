@@ -88,6 +88,24 @@ body {
     color: var(--colombian-navy);
 }
 
+/* ========== PAGE HEADER ========== */
+.page-header {
+    padding: 60px 0 40px;
+    position: relative;
+}
+
+.page-header h1 {
+    font-size: 2.5rem;
+    font-weight: 800;
+    letter-spacing: -1px;
+}
+
+.page-header p {
+    font-size: 1.1rem;
+    opacity: 0.9;
+    max-width: 600px;
+}
+
 /* ========== HERO SECTION ========== */
 .hero-section {
     background: linear-gradient(135deg, #071a40 0%, #0f2f75 40%, #1e40af 70%, #2563eb 100%);
@@ -317,6 +335,11 @@ body {
 .stat-icon-wrapper.info {
     background: linear-gradient(135deg, #e0e7ff 0%, #c7d2fe 100%);
     color: #4f46e5;
+}
+
+.stat-icon-wrapper.danger {
+    background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+    color: var(--danger-color);
 }
 
 .stat-value {
