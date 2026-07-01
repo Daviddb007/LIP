@@ -3,7 +3,7 @@
 {% block title %}Participar - Construyamos Colombia{% endblock %}
 
 {% block content %}
-<input type="hidden" id="apiProblemasUrl" value="{{ url_for('participar.api_problemas', sector_id=0) }}">
+<input type="hidden" id="apiProblemasUrl" value="/api/problemas/">
 <input type="hidden" id="apiEnviarUrl" value="{{ url_for('participar.api_enviar') }}">
 <input type="hidden" id="apiConfirmacionUrl" value="{{ url_for('participar.confirmacion') }}">
 <div class="flag-accent"></div>

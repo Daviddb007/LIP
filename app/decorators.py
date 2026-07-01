@@ -24,12 +24,13 @@ def login_required(f: Callable[..., Any]) -> Callable[..., Any]:
 def get_client_ip() -> str:
     """Extract the real client IP with spoofing protection.
 
-    Only trusts X-Forwarded-For when behind a known proxy.
-    Falls back to remote_addr which is harder to spoof.
+    Trusts X-Forwarded-For only when behind a known proxy (nginx).
+    The first IP in the chain is the original client.
     """
-    if request.remote_addr:
-        return request.remote_addr
-    return 'unknown'
+    forwarded_for = request.headers.get('X-Forwarded-For')
+    if forwarded_for:
+        return forwarded_for.split(',')[0].strip()
+    return request.remote_addr or 'unknown'
 
 
 def hash_ip(ip_address: str) -> str:

@@ -3,6 +3,12 @@ let sectorPrioritarioId = null;
 let problemasSeleccionados = {};
 let apiUrls = {};
 
+function escapeHtml(str) {
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     apiUrls = {
         problemas: document.getElementById('apiProblemasUrl')?.value || '/api/problemas/',
@@ -108,14 +114,17 @@ function nextStep(step) {
     }
 
     if (step === 3) {
+        if (!problemasSeleccionados['principal']) {
+            showToast('Selecciona un problema', 'Campo requerido', 'error');
+            return;
+        }
         loadPrioridadConProblemas();
     }
 
     if (step === 4) {
-        const problema = document.querySelector('input[name="problema"]:checked');
-        const problemaCustom = document.getElementById('problemaCustom')?.value;
-        if (!problema && !problemaCustom) {
-            showToast('Selecciona o escribe un problema', 'Campo requerido', 'error');
+        const sectorRadio = document.querySelector('input[name="sectorPrioridad"]:checked');
+        if (!sectorRadio) {
+            showToast('Selecciona el sector prioritario', 'Campo requerido', 'error');
             return;
         }
     }
@@ -145,10 +154,11 @@ async function loadProblemas() {
 
         let html = '<div class="problemas-grid">';
         problemas.forEach(p => {
+            const safeName = escapeHtml(p.nombre);
             html += `
-                <div class="problema-card" onclick="selectProblema(this, '${p.nombre}')">
+                <div class="problema-card" data-nombre="${safeName}" onclick="selectProblema(this)">
                     <div class="problema-icon"><i class="bi bi-exclamation-triangle"></i></div>
-                    <div class="problema-name">${p.nombre}</div>
+                    <div class="problema-name">${safeName}</div>
                 </div>
             `;
         });
@@ -176,12 +186,12 @@ async function loadProblemas() {
     }
 }
 
-function selectProblema(element, nombre) {
+function selectProblema(element) {
     document.querySelectorAll('.problema-card').forEach(card => card.classList.remove('selected'));
     element.classList.add('selected');
     document.getElementById('customProblemaGroup').style.display = 'none';
     document.getElementById('problemaCustom').value = '';
-    problemasSeleccionados['principal'] = nombre;
+    problemasSeleccionados['principal'] = element.dataset.nombre;
 }
 
 function selectProblemaCustom(element) {
@@ -207,25 +217,27 @@ async function loadPrioridadConProblemas() {
             const response = await fetch(`${apiUrls.problemas}${sectorId}`);
             const problemas = await response.json();
             
+            const isExpanded = sectoresSeleccionados.indexOf(sectorId) === 0;
             html += `
-                <div class="sector-prioridad-section mb-4">
-                    <div class="sector-prioridad-header" onclick="toggleSectorProblemas(${sectorId})">
+                <div class="sector-prioridad-section mb-4 ${isExpanded ? 'expanded' : ''}" data-sector-id="${sectorId}">
+                    <div class="sector-prioridad-header" onclick="toggleSectorProblemas(this)">
                         <div class="d-flex align-items-center">
                             <input class="form-check-input me-3" type="radio" name="sectorPrioridad" 
-                                   value="${sectorId}" id="prioridad${sectorId}" ${sectorId === sectoresSeleccionados[0] ? 'checked' : ''}>
-                            <h6 class="mb-0 fw-bold">${sectorNombre}</h6>
+                                   value="${sectorId}" id="prioridad${sectorId}" ${isExpanded ? 'checked' : ''}>
+                            <h6 class="mb-0 fw-bold">${escapeHtml(sectorNombre)}</h6>
                         </div>
                         <i class="bi bi-chevron-down toggle-icon"></i>
                     </div>
-                    <div class="sector-prioridad-body" id="sectorProblemas${sectorId}">
+                    <div class="sector-prioridad-body" id="sectorProblemas${sectorId}" style="display: ${isExpanded ? 'block' : 'none'};">
                         <div class="problemas-prioridad-grid">
             `;
             
             problemas.forEach(p => {
+                const safeName = escapeHtml(p.nombre);
                 html += `
-                    <div class="problema-prioridad-card" onclick="selectProblemaPrioridad(this, ${sectorId}, '${p.nombre}')">
+                    <div class="problema-prioridad-card" data-nombre="${safeName}" onclick="selectProblemaPrioridad(this, ${sectorId})">
                         <i class="bi bi-check-circle-fill text-success d-none check-icon"></i>
-                        <span>${p.nombre}</span>
+                        <span>${safeName}</span>
                     </div>
                 `;
             });
@@ -254,62 +266,47 @@ async function loadPrioridadConProblemas() {
         `;
 
         container.innerHTML = html;
-        
-        // Set first sector as expanded
-        if (sectoresSeleccionados.length > 0) {
-            toggleSectorProblemas(sectoresSeleccionados[0]);
-        }
 
     } catch (error) {
         container.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>Error al cargar opciones.</div>';
     }
 }
 
-function toggleSectorProblemas(sectorId) {
-    // Toggle the body
-    const body = document.getElementById(`sectorProblemas${sectorId}`);
-    const allBodies = document.querySelectorAll('.sector-prioridad-body');
-    const allHeaders = document.querySelectorAll('.sector-prioridad-header');
-    
-    allBodies.forEach(b => {
-        if (b.id !== `sectorProblemas${sectorId}`) {
-            b.style.display = 'none';
-            b.closest('.sector-prioridad-section').classList.remove('expanded');
+function toggleSectorProblemas(header) {
+    const section = header.closest('.sector-prioridad-section');
+    const body = section.querySelector('.sector-prioridad-body');
+    const isExpanded = section.classList.contains('expanded');
+
+    // Collapse all other sections
+    document.querySelectorAll('.sector-prioridad-section').forEach(s => {
+        if (s !== section) {
+            s.classList.remove('expanded');
+            s.querySelector('.sector-prioridad-body').style.display = 'none';
         }
     });
-    
-    allHeaders.forEach(h => {
-        if (h.onclick?.toString().indexOf(sectorId) === -1) {
-            h.closest('.sector-prioridad-section').classList.remove('expanded');
-        }
-    });
-    
-    if (body.style.display === 'none' || !body.style.display) {
-        body.style.display = 'block';
-        body.closest('.sector-prioridad-section').classList.add('expanded');
-    } else {
+
+    if (isExpanded) {
+        section.classList.remove('expanded');
         body.style.display = 'none';
-        body.closest('.sector-prioridad-section').classList.remove('expanded');
+    } else {
+        section.classList.add('expanded');
+        body.style.display = 'block';
     }
 }
 
-function selectProblemaPrioridad(element, sectorId, problemaNombre) {
-    // Deselect all problems in this sector
+function selectProblemaPrioridad(element, sectorId) {
     const body = document.getElementById(`sectorProblemas${sectorId}`);
     body.querySelectorAll('.problema-prioridad-card').forEach(card => {
         card.classList.remove('selected');
         card.querySelector('.check-icon')?.classList.add('d-none');
     });
     
-    // Select this one
     element.classList.add('selected');
     element.querySelector('.check-icon')?.classList.remove('d-none');
     
-    // Hide custom input
     document.getElementById(`customPrioridad${sectorId}`).style.display = 'none';
     
-    // Store selection
-    problemasSeleccionados[sectorId] = problemaNombre;
+    problemasSeleccionados[sectorId] = element.dataset.nombre;
 }
 
 function toggleCustomPrioridad(sectorId) {
