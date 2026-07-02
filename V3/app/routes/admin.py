@@ -69,7 +69,8 @@ def dashboard():
     municipios = db.session.query(db.func.count(db.distinct(Participacion.municipio))).scalar() or 0
     pilares_cubiertos = db.session.query(db.func.count(db.distinct(ClasificacionSRIE.pilar_id))).scalar() or 0
     total_pilares = Pilar.query.filter_by(activo=True).count()
-    avg_conf = db.session.query(db.func.round(db.func.avg(ClasificacionSRIE.confianza) * 100, 1)).scalar() or 0
+    raw_avg = db.session.query(db.func.avg(ClasificacionSRIE.confianza)).scalar() or 0
+    avg_conf = round(float(raw_avg) * 100, 1)
 
     stats = {
         "total": total,
