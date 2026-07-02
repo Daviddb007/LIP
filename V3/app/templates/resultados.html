@@ -145,13 +145,18 @@
     animateCount(document.getElementById('statProblemas'), stats.problemas);
 
     var colors = ['#3B82F6','#10B981','#8B5CF6','#F59E0B','#EF4444','#06B6D4','#EC4899','#14B8A6'];
-    var API = '/v3/api';
+    var API = '/api';
 
     fetch(API + '/estadisticas').then(function(r){ return r.json(); }).then(function(data) {
         if (data.departamentos && data.departamentos.length) {
             var mapData = {};
             data.departamentos.forEach(function(d) { mapData[d.nombre] = d.total; });
             window.__mapData = mapData;
+
+            // Initialize map after data is set
+            var mapScript = document.createElement('script');
+            mapScript.src = '{{ url_for("static", filename="js/map.js") }}';
+            document.body.appendChild(mapScript);
             new Chart(document.getElementById('chartDepartamentos'), {
                 type: 'bar',
                 data: {
@@ -236,5 +241,4 @@
     });
 })();
 </script>
-<script src="{{ url_for('static', filename='js/map.js') }}"></script>
 {% endblock %}
