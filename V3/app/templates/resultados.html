@@ -132,8 +132,10 @@
     // Colors
     var colors = ['#3B82F6','#10B981','#8B5CF6','#F59E0B','#EF4444','#06B6D4','#EC4899','#14B8A6'];
 
+    var API = '/v3/api';
+
     // Fetch data
-    fetch('/api/estadisticas').then(function(r){ return r.json(); }).then(function(data) {
+    fetch(API + '/estadisticas').then(function(r){ return r.json(); }).then(function(data) {
         // Map data
         if (data.departamentos && data.departamentos.length) {
             var mapData = {};
@@ -184,7 +186,7 @@
     });
 
     // Participaciones
-    fetch('/api/participaciones').then(function(r){ return r.json(); }).then(function(data) {
+    fetch(API + '/participaciones').then(function(r){ return r.json(); }).then(function(data) {
         var tbody = document.getElementById('tablaParticipaciones');
         if (!data.participaciones || !data.participaciones.length) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted-2 py-4">Sin participaciones aún</td></tr>';

@@ -36,6 +36,7 @@ def create_app(config_name: str = "default") -> Flask:
     app.config.from_object(config[config_name])
 
     _configure_logging(app)
+    _register_url_prefix(app)
     _init_extensions(app)
     _register_blueprints(app)
     _register_error_handlers(app)
@@ -147,3 +148,37 @@ def _register_request_hooks(app: Flask) -> None:
                     response.vary = "Accept-Encoding"
 
         return response
+
+
+def _register_url_prefix(app: Flask) -> None:
+    """Override url_for to prepend /v3/ prefix for reverse proxy routing.
+
+    Patches both the Jinja2 template global and the Python-level
+    flask.url_for so redirects and internal calls also get the prefix.
+    """
+    import flask
+
+    _original_url_for = flask.url_for
+
+    def _prefixed_url_for(endpoint: str, **values: object) -> str:
+        url = _original_url_for(endpoint, **values)
+        prefix = "/v3"
+        if url.startswith("http://") or url.startswith("https://"):
+            # External URL — insert prefix after the host
+            from urllib.parse import urlparse, urlunparse
+            parsed = urlparse(url)
+            new_path = prefix + parsed.path
+            url = urlunparse(parsed._replace(path=new_path))
+        elif not url.startswith(prefix) and url.startswith("/"):
+            url = prefix + url
+        return url
+
+    # Patch the module-level function used in Python code
+    flask.url_for = _prefixed_url_for
+
+    # Patch the Jinja2 global used in templates
+    app.jinja_env.globals["url_for"] = _prefixed_url_for
+
+    @app.context_processor
+    def _url_for_context():
+        return dict(url_for=_prefixed_url_for)

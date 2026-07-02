@@ -17,12 +17,15 @@
     --blue:          #2F5FA8;
     --blue-light:    #E6F1FB;
     --blue-dark:     #1E4A7A;
+    --color-2:       #2F5FA8;
+    --color-3:       #D4A843;
 
     /* Superficies */
     --surface:       #FFFFFF;
     --surface-2:     #F4F6F8;
     --surface-3:     #E5EBF1;
     --surface-4:     #D5DDE6;
+    --bg-1:          #F4F6F8;
 
     /* Texto */
     --text-1:        #0C1B33;

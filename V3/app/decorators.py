@@ -10,7 +10,7 @@ import hashlib
 import hmac
 from functools import wraps
 
-from flask import Request, session, redirect, url_for, request
+from flask import Request, session, redirect, request
 
 
 def login_required(f):
@@ -26,7 +26,8 @@ def login_required(f):
                 from app.errors import UnauthorizedError
 
                 raise UnauthorizedError()
-            return redirect(url_for("admin.login"))
+            from flask import url_for as _url_for
+            return redirect(_url_for("admin.login"))
         return f(*args, **kwargs)
 
     return decorated_function
