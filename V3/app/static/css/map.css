@@ -12,7 +12,7 @@
 }
 
 .dept-path {
-    fill: var(--bg-surface-2);
+    fill: var(--surface-2);
     stroke: #fff;
     stroke-width: 0.8;
     cursor: pointer;
