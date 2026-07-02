@@ -29,18 +29,6 @@ cache = Cache()
 csrf = CSRFProtect()
 
 
-class ScriptNameMiddleware:
-    """WSGI middleware that sets SCRIPT_NAME from Flask config for reverse proxy."""
-
-    def __init__(self, app, script_name):
-        self.app = app
-        self.script_name = script_name
-
-    def __call__(self, environ, start_response):
-        environ["SCRIPT_NAME"] = self.script_name
-        return self.app(environ, start_response)
-
-
 def create_app(config_name: str = "default") -> Flask:
     """Factory principal. Crea, configura y retorna la app Flask."""
 
@@ -52,11 +40,6 @@ def create_app(config_name: str = "default") -> Flask:
     _register_blueprints(app)
     _register_error_handlers(app)
     _register_request_hooks(app)
-
-    # Apply SCRIPT_NAME for reverse proxy (e.g. /v3)
-    script_name = app.config.get("SCRIPT_NAME", "")
-    if script_name:
-        app.wsgi_app = ScriptNameMiddleware(app.wsgi_app, script_name)
 
     return app
 
