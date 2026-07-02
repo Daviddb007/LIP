@@ -25,24 +25,24 @@ PLAN_NOMBRE = "El Milagro de los 'Nunca' — Primeros Pilares para Reconstruir l
 # 2. Pilares
 # ---------------------------------------------------------------------
 PILARES: list[dict] = [
-    {"orden": 0, "tipo": "fundacional", "nombre": "Movimiento Popular"},
-    {"orden": 1, "tipo": "fundacional", "nombre": "Pilar Democrático: los Defensores de la Patria"},
-    {"orden": 2, "tipo": "tematico", "nombre": "El Milagro de Iluminar la Patria"},
-    {"orden": 3, "tipo": "tematico", "nombre": "El Milagro de Defender la Patria para Salvarla"},
-    {"orden": 4, "tipo": "tematico", "nombre": "El Milagro de la Extrema Coherencia"},
-    {"orden": 5, "tipo": "tematico", "nombre": "El Milagro de la Seguridad"},
-    {"orden": 6, "tipo": "tematico", "nombre": "El Milagro de Erradicar la Corrupción"},
-    {"orden": 7, "tipo": "tematico", "nombre": "El Milagro de Recuperar la Salud"},
-    {"orden": 8, "tipo": "tematico", "nombre": "El Milagro del Campo y el Agro"},
-    {"orden": 9, "tipo": "tematico", "nombre": "El Milagro de una Patria para las Mujeres"},
-    {"orden": 10, "tipo": "tematico", "nombre": "El Milagro Minero-Energético"},
-    {"orden": 11, "tipo": "tematico", "nombre": "El Milagro de la Educación"},
-    {"orden": 12, "tipo": "tematico", "nombre": "El Milagro de la Cultura"},
-    {"orden": 13, "tipo": "tematico", "nombre": "El Milagro de Proteger el Medioambiente"},
-    {"orden": 14, "tipo": "tematico", "nombre": "El Milagro del Bienestar Animal Integral"},
-    {"orden": 15, "tipo": "tematico", "nombre": "El Milagro de las Megacárceles y los Megacentros"},
-    {"orden": 16, "tipo": "tematico", "nombre": "El Milagro de Defender la Constitución de 1991"},
-    {"orden": 17, "tipo": "tematico", "nombre": "El Milagro de los Jóvenes"},
+    {"orden": 0, "tipo": "fundacional", "nombre": "Movimiento Popular", "slug": "movimiento-popular"},
+    {"orden": 1, "tipo": "fundacional", "nombre": "Pilar Democrático: los Defensores de la Patria", "slug": "pilar-democratico"},
+    {"orden": 2, "tipo": "tematico", "nombre": "El Milagro de Iluminar la Patria", "slug": "iluminar-la-patria"},
+    {"orden": 3, "tipo": "tematico", "nombre": "El Milagro de Defender la Patria para Salvarla", "slug": "defender-la-patria"},
+    {"orden": 4, "tipo": "tematico", "nombre": "El Milagro de la Extrema Coherencia", "slug": "extrema-coherencia"},
+    {"orden": 5, "tipo": "tematico", "nombre": "El Milagro de la Seguridad", "slug": "seguridad"},
+    {"orden": 6, "tipo": "tematico", "nombre": "El Milagro de Erradicar la Corrupción", "slug": "erradicar-la-corrupcion"},
+    {"orden": 7, "tipo": "tematico", "nombre": "El Milagro de Recuperar la Salud", "slug": "recuperar-la-salud"},
+    {"orden": 8, "tipo": "tematico", "nombre": "El Milagro del Campo y el Agro", "slug": "campo-y-el-agro"},
+    {"orden": 9, "tipo": "tematico", "nombre": "El Milagro de una Patria para las Mujeres", "slug": "patria-para-las-mujeres"},
+    {"orden": 10, "tipo": "tematico", "nombre": "El Milagro Minero-Energético", "slug": "minero-energetico"},
+    {"orden": 11, "tipo": "tematico", "nombre": "El Milagro de la Educación", "slug": "educacion"},
+    {"orden": 12, "tipo": "tematico", "nombre": "El Milagro de la Cultura", "slug": "cultura"},
+    {"orden": 13, "tipo": "tematico", "nombre": "El Milagro de Proteger el Medioambiente", "slug": "proteger-el-medioambiente"},
+    {"orden": 14, "tipo": "tematico", "nombre": "El Milagro del Bienestar Animal Integral", "slug": "bienestar-animal-integral"},
+    {"orden": 15, "tipo": "tematico", "nombre": "El Milagro de las Megacárceles y los Megacentros", "slug": "megacarceles-y-megacentros"},
+    {"orden": 16, "tipo": "tematico", "nombre": "El Milagro de Defender la Constitución de 1991", "slug": "defender-la-constitucion-de-1991"},
+    {"orden": 17, "tipo": "tematico", "nombre": "El Milagro de los Jóvenes", "slug": "los-jovenes"},
 ]
 
 LINEAS_PILAR_DEMOCRATICO: list[str] = [
@@ -291,7 +291,8 @@ def seed_plan() -> None:
     pilar_democratico = None
     for p in PILARES:
         pilar = Pilar(
-            plan_id=plan.id, nombre=p["nombre"], slug=_slugify(p["nombre"]),
+            plan_id=plan.id, nombre=p["nombre"],
+            slug=p.get("slug") or _slugify(p["nombre"]),
             tipo=p["tipo"], orden=p["orden"],
         )
         db.session.add(pilar)
