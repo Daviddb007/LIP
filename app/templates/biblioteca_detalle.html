@@ -1,0 +1,257 @@
+{% extends "base.html" %}
+
+{% block title %}{{ politica.titulo }} - Biblioteca Inteligente{% endblock %}
+
+{% block content %}
+<section class="page-header bg-primary text-white" style="background: linear-gradient(135deg, var(--colombian-navy) 0%, #0f172a 100%);">
+    <div class="container">
+        <a href="{{ url_for('biblioteca.lista') }}" class="btn btn-sm btn-outline-light mb-3" style="border-radius: 50px;">
+            <i class="bi bi-arrow-left me-1"></i> Volver a la biblioteca
+        </a>
+        <h1 class="display-5 fw-bold mb-2">{{ politica.titulo }}</h1>
+        <div class="d-flex flex-wrap gap-2 align-items-center">
+            {% if politica.sector %}
+            <span class="badge bg-light text-dark px-3 py-2">{{ politica.sector.nombre }}</span>
+            {% endif %}
+            <span class="badge status-{{ politica.estado|lower|replace(' ', '-') }} px-3 py-2">{{ politica.estado }}</span>
+            {% if politica.alcance %}
+            <span class="badge bg-info text-dark px-3 py-2"><i class="bi bi-geo-alt me-1"></i>{{ politica.alcance }}</span>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="py-5">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="policy-detail-card">
+                    <div class="policy-detail-section">
+                        <h3><i class="bi bi-file-text text-primary me-2"></i>Resumen ejecutivo</h3>
+                        <p class="lead">{{ politica.resumen_ejecutivo }}</p>
+                    </div>
+
+                    {% if politica.problema %}
+                    <div class="policy-detail-section">
+                        <h3><i class="bi bi-exclamation-triangle text-danger me-2"></i>Problema que resuelve</h3>
+                        <p>{{ politica.problema }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if politica.objetivos %}
+                    <div class="policy-detail-section">
+                        <h3><i class="bi bi-bullseye text-success me-2"></i>Objetivos</h3>
+                        <div class="objetivos-list">
+                            {% for obj in politica.objetivos.split(';') %}
+                            <div class="objetivo-item">
+                                <i class="bi bi-check-circle-fill text-success"></i>
+                                <span>{{ obj.strip() }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="row g-4">
+                        {% if politica.poblacion_objetivo %}
+                        <div class="col-md-6">
+                            <div class="policy-info-card">
+                                <i class="bi bi-people-fill text-primary"></i>
+                                <h6>Población objetivo</h6>
+                                <p>{{ politica.poblacion_objetivo }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if politica.presupuesto %}
+                        <div class="col-md-6">
+                            <div class="policy-info-card">
+                                <i class="bi bi-cash-stack text-success"></i>
+                                <h6>Presupuesto</h6>
+                                <p>{{ politica.presupuesto }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if politica.entidades_responsables %}
+                        <div class="col-md-6">
+                            <div class="policy-info-card">
+                                <i class="bi bi-building text-warning"></i>
+                                <h6>Entidades responsables</h6>
+                                <p>{{ politica.entidades_responsables }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if politica.indicadores %}
+                        <div class="col-md-6">
+                            <div class="policy-info-card">
+                                <i class="bi bi-bar-chart text-info"></i>
+                                <h6>Indicadores</h6>
+                                <p>{{ politica.indicadores }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if politica.cronologia %}
+                    <div class="policy-detail-section">
+                        <h3><i class="bi bi-clock-history text-primary me-2"></i>Cronología</h3>
+                        <div class="cronologia-timeline">
+                            {% for evento in politica.cronologia.split(';') %}
+                            <div class="cronologia-item">
+                                <div class="cronologia-dot"></div>
+                                <span>{{ evento.strip() }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if politica.normatividad %}
+                    <div class="policy-detail-section">
+                        <h3><i class="bi bi-bookmark-check text-primary me-2"></i>Normatividad</h3>
+                        <div class="normatividad-list">
+                            {% for norma in politica.normatividad.split(';') %}
+                            <div class="norma-item">
+                                <i class="bi bi-file-earmark-text"></i>
+                                <span>{{ norma.strip() }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if politica.ods_relacionados %}
+                    <div class="policy-detail-section">
+                        <h3><i class="bi bi-globe2 text-primary me-2"></i>ODS relacionados</h3>
+                        <div class="ods-badges">
+                            {% set ods_map = {
+                                '1': {'color': '#e5243b', 'nombre': 'Fin de la pobreza'},
+                                '2': {'color': '#dda63a', 'nombre': 'Hambre cero'},
+                                '3': {'color': '#4c9f38', 'nombre': 'Salud y bienestar'},
+                                '4': {'color': '#c5192d', 'nombre': 'Educación de calidad'},
+                                '5': {'color': '#ff3a21', 'nombre': 'Igualdad de género'},
+                                '6': {'color': '#26bde2', 'nombre': 'Agua limpia y saneamiento'},
+                                '7': {'color': '#fcc30b', 'nombre': 'Energía asequible'},
+                                '8': {'color': '#a21942', 'nombre': 'Trabajo decente'},
+                                '9': {'color': '#fd6925', 'nombre': 'Industria e innovación'},
+                                '10': {'color': '#dd1367', 'nombre': 'Reducción de desigualdades'},
+                                '11': {'color': '#fd9d24', 'nombre': 'Ciudades sostenibles'},
+                                '12': {'color': '#bf8b2e', 'nombre': 'Producción responsables'},
+                                '13': {'color': '#3f7e44', 'nombre': 'Acción por el clima'},
+                                '14': {'color': '#0a97d9', 'nombre': 'Vida submarina'},
+                                '15': {'color': '#56c02b', 'nombre': 'Vida de ecosistemas'},
+                                '16': {'color': '#00689d', 'nombre': 'Paz y justicia'},
+                                '17': {'color': '#19486a', 'nombre': 'Alianzas para lograr objetivos'},
+                            } %}
+                            {% for ods_id in politica.ods_relacionados.split(',') %}
+                            {% set ods_id = ods_id|trim %}
+                            {% if ods_id in ods_map %}
+                            <div class="ods-badge" style="background: {{ ods_map[ods_id]['color'] }};">
+                                <i class="bi bi-{{ ['circle', 'heart', 'tree', 'book', 'people', 'water', 'sun', 'graph-up', 'gear', 'arrow-down-circle', 'house-door', 'recycle', 'cloud-sun', 'droplet', 'flower1', 'shield-check', 'globe2'][ods_id|int - 1] }}"></i>
+                                <span>ODS {{ ods_id }}</span>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="policy-sidebar sticky-top" style="top: 100px;">
+                    <div class="policy-sidebar-card">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-question-circle me-2"></i>Haz una pregunta</h6>
+                        <p class="small text-muted mb-3">Consulta sobre esta política usando el motor de inteligencia SRIE.</p>
+                        <div class="input-group mb-2">
+                            <textarea class="form-control" id="srieQuestion" rows="2" placeholder="Ej: ¿A quién beneficia esta política?" style="border-radius: 12px;"></textarea>
+                        </div>
+                        <button class="btn btn-primary w-100" onclick="preguntarSRIE({{ politica.id }})" style="border-radius: 12px;">
+                            <i class="bi bi-cpu me-2"></i>Preguntar a SRIE
+                        </button>
+                        <div id="srieAnswer" class="mt-3" style="display: none;">
+                            <div class="srie-answer-content p-3" style="background: #f8fafc; border-radius: 12px; border: 1px solid var(--border);">
+                                <small class="fw-bold text-primary"><i class="bi bi-cpu-fill me-1"></i>Respuesta SRIE</small>
+                                <p class="small mt-2 mb-0" id="srieAnswerText"></p>
+                            </div>
+                        </div>
+                        <div id="srieLoading" class="text-center py-3" style="display: none;">
+                            <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                            <small class="text-muted">Analizando con SRIE...</small>
+                        </div>
+                    </div>
+
+                    <div class="policy-sidebar-card">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-info-circle me-2"></i>Información</h6>
+                        <div class="sidebar-meta-item">
+                            <span class="meta-label">Estado</span>
+                            <span class="meta-value status-{{ politica.estado|lower|replace(' ', '-') }}">{{ politica.estado }}</span>
+                        </div>
+                        {% if politica.alcance %}
+                        <div class="sidebar-meta-item">
+                            <span class="meta-label">Alcance</span>
+                            <span class="meta-value">{{ politica.alcance }}</span>
+                        </div>
+                        {% endif %}
+                        {% if politica.sector %}
+                        <div class="sidebar-meta-item">
+                            <span class="meta-label">Sector</span>
+                            <span class="meta-value">{{ politica.sector.nombre }}</span>
+                        </div>
+                        {% endif %}
+                        {% if politica.presupuesto %}
+                        <div class="sidebar-meta-item">
+                            <span class="meta-label">Presupuesto</span>
+                            <span class="meta-value">{{ politica.presupuesto }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if politica.documentos %}
+                    <div class="policy-sidebar-card">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-paperclip me-2"></i>Documentos</h6>
+                        {% for doc in politica.documentos.split(';') %}
+                        <div class="doc-item">
+                            <i class="bi bi-file-earmark-text"></i>
+                            <span>{{ doc.strip() }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function preguntarSRIE(politicaId) {
+        const question = document.getElementById('srieQuestion').value.trim();
+        if (!question) {
+            showToast('Escribe una pregunta', 'Campo requerido', 'error');
+            return;
+        }
+
+        document.getElementById('srieLoading').style.display = 'block';
+        document.getElementById('srieAnswer').style.display = 'none';
+
+        try {
+            const response = await fetch(`/api/politicas/${politicaId}/preguntar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pregunta: question })
+            });
+
+            const result = await response.json();
+
+            document.getElementById('srieLoading').style.display = 'none';
+            document.getElementById('srieAnswer').style.display = 'block';
+            document.getElementById('srieAnswerText').innerHTML = result.respuesta.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        } catch (e) {
+            document.getElementById('srieLoading').style.display = 'none';
+            showToast('Error al conectar con SRIE', 'Error', 'error');
+        }
+    }
+</script>
+{% endblock %}

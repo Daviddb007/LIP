@@ -1,3 +1,5 @@
 from app import db
 
-__all__ = ['Sector', 'Problema', 'Participacion', 'participacion_sectores']
+from app.models.politica import Politica
+
+__all__ = ['Sector', 'Problema', 'Participacion', 'participacion_sectores', 'Politica']
