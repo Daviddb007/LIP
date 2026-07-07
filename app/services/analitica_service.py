@@ -126,16 +126,27 @@ def _generar_clusters() -> list[dict]:
 
 
 def _tendencia_mensual() -> list[dict]:
-    rows = (
-        db.session.query(
-            func.strftime('%Y-%m', Participacion.created_at),
-            func.count(Participacion.id),
+    try:
+        rows = (
+            db.session.query(
+                func.to_char(Participacion.created_at, 'YYYY-MM'),
+                func.count(Participacion.id),
+            )
+            .group_by(func.to_char(Participacion.created_at, 'YYYY-MM'))
+            .order_by(func.to_char(Participacion.created_at, 'YYYY-MM'))
+            .all()
         )
-        .group_by(func.strftime('%Y-%m', Participacion.created_at))
-        .order_by(func.strftime('%Y-%m', Participacion.created_at))
-        .all()
-    )
-    return [{'mes': mes, 'participaciones': total} for mes, total in rows]
+    except Exception:
+        rows = (
+            db.session.query(
+                func.date_trunc('month', Participacion.created_at),
+                func.count(Participacion.id),
+            )
+            .group_by(func.date_trunc('month', Participacion.created_at))
+            .order_by(func.date_trunc('month', Participacion.created_at))
+            .all()
+        )
+    return [{'mes': str(mes)[:7], 'participaciones': total} for mes, total in rows]
 
 
 DEPARTAMENTOS_COL: list[str] = [
