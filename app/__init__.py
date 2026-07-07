@@ -83,6 +83,7 @@ def _register_blueprints(app: Flask) -> None:
     from app.routes.asistente import asistente_bp
     from app.routes.armonizacion import armonizacion_bp
     from app.routes.laboratorio import laboratorio_bp
+    from app.routes.analitica import analitica_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(iniciativa_bp)
@@ -94,6 +95,7 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(asistente_bp)
     app.register_blueprint(armonizacion_bp)
     app.register_blueprint(laboratorio_bp)
+    app.register_blueprint(analitica_bp)
 
 
 def _register_error_handlers(app: Flask) -> None:
