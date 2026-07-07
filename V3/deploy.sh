@@ -36,8 +36,8 @@ docker compose exec app flask seed
 echo ""
 echo "=== Deploy complete ==="
 echo ""
-echo "App: https://l-inteligenciapublica.stonelytics.tech"
-echo "Admin: https://l-inteligenciapublica.stonelytics.tech/admin/login"
+echo "App: https://inteligenciapublica.stonelytics.tech"
+echo "Admin: https://inteligenciapublica.stonelytics.tech/admin/login"
 echo ""
 echo "Containers:"
 docker compose ps

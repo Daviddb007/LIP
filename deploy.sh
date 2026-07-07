@@ -92,7 +92,7 @@ fi
 
 # Step 10: Configure systemd service
 echo -e "\n${YELLOW}[10/10] Configuring systemd service...${NC}"
-cat > /etc/systemd/system/l-inteligenciapublica.service << EOF
+cat > /etc/systemd/system/inteligenciapublica.service << EOF
 [Unit]
 Description=Laboratorio de Inteligencia Pública Flask App
 After=network.target postgresql.service redis.service
@@ -110,14 +110,14 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable l-inteligenciapublica
-systemctl start l-inteligenciapublica
+systemctl enable inteligenciapublica
+systemctl start inteligenciapublica
 
 # Configure Nginx
 echo -e "\n${YELLOW}Configuring Nginx...${NC}"
-read -p "Enter domain name (e.g., l-inteligenciapublica.stonelytics.tech): " DOMAIN
+read -p "Enter domain name (e.g., inteligenciapublica.stonelytics.tech): " DOMAIN
 
-cat > /etc/nginx/sites-available/l-inteligenciapublica << EOF
+cat > /etc/nginx/sites-available/inteligenciapublica << EOF
 server {
     listen 80;
     server_name $DOMAIN;
@@ -138,7 +138,7 @@ server {
 }
 EOF
 
-ln -sf /etc/nginx/sites-available/l-inteligenciapublica /etc/nginx/sites-enabled/
+ln -sf /etc/nginx/sites-available/inteligenciapublica /etc/nginx/sites-enabled/
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx

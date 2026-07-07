@@ -38,11 +38,11 @@ echo -e "${GREEN}Docker Compose version: $(docker-compose --version)${NC}"
 echo -e "\n${YELLOW}[2/7] Setting up application...${NC}"
 cd /var/www
 
-if [ ! -d "l-inteligenciapublica" ]; then
-    git clone https://github.com/Daviddb007/Construyamos_Colombia.git l-inteligenciapublica
+if [ ! -d "inteligenciapublica" ]; then
+    git clone https://github.com/Daviddb007/Construyamos_Colombia.git inteligenciapublica
 fi
 
-cd l-inteligenciapublica
+cd inteligenciapublica
 
 # Step 3: Create .env file
 echo -e "\n${YELLOW}[3/7] Creating environment file...${NC}"
@@ -97,7 +97,7 @@ if [ ! -f nginx/ssl/cert.pem ]; then
     openssl req -x509 -nodes -days 365 -newkey rsa:2048 \
         -keyout nginx/ssl/key.pem \
         -out nginx/ssl/cert.pem \
-        -subj "/C=CO/ST=Bogota/L=Bogota/O=InteligenciaPublica/CN=l-inteligenciapublica.stonelytics.tech"
+        -subj "/C=CO/ST=Bogota/L=Bogota/O=InteligenciaPublica/CN=inteligenciapublica.stonelytics.tech"
 fi
 
 # Step 5: Build and start containers
@@ -130,5 +130,5 @@ echo ""
 echo "Health check:"
 docker-compose exec app python -c "import urllib.request; print(urllib.request.urlopen('http://localhost:8000/health').read().decode())"
 echo ""
-echo "Application URL: https://l-inteligenciapublica.stonelytics.tech"
+echo "Application URL: https://inteligenciapublica.stonelytics.tech"
 echo "=========================================="

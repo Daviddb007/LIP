@@ -42,7 +42,7 @@ docker compose up -d
 docker compose exec app flask seed
 
 # 5. Abrir
-https://l-inteligenciapublica.stonelytics.tech
+https://inteligenciapublica.stonelytics.tech
 ```
 
 ### Desarrollo Local
