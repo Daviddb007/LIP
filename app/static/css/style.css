@@ -89,6 +89,18 @@ body {
     background-color: var(--surface);
     padding-top: 48px;
     overflow-x: hidden;
+    width: 100%;
+    max-width: 100%;
+}
+
+main {
+    width: 100%;
+    max-width: 100%;
+}
+
+section {
+    width: 100%;
+    max-width: 100%;
 }
 
 img { max-width: 100%; height: auto; }
@@ -343,10 +355,11 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 /* ======================== HERO ======================== */
 .hero {
     position: relative;
+    width: 100%;
+    max-width: 100%;
     padding: var(--space-4xl) 0;
     background: linear-gradient(135deg, var(--navy) 0%, var(--navy-light) 50%, var(--navy-mid) 100%);
     color: white;
-    overflow: hidden;
 }
 
 .hero::before {
