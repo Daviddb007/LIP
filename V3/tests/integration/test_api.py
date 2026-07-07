@@ -30,7 +30,7 @@ class TestHome:
 
     def test_home_contains_title(self, client):
         response = client.get("/")
-        assert "Construyamos Colombia" in response.data.decode()
+        assert "Laboratorio de Inteligencia Pública" in response.data.decode()
 
 
 class TestIniciativa:

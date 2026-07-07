@@ -1,4 +1,4 @@
-"""App factory para Construyamos Colombia V3.
+"""App factory para Laboratorio de Inteligencia Pública V3.
 
 Inicializa la aplicación Flask con todas las extensiones,
 blueprints, error handlers y hooks de request.

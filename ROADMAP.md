@@ -8,7 +8,7 @@
 
 ## Visión
 
-> **Construyamos Colombia** no es una plataforma de participación ciudadana. Es un **Ecosistema de Inteligencia Pública** desarrollado por **StoneLytics** para conectar ciudadanía, conocimiento, evidencia y toma de decisiones mediante tecnología e inteligencia artificial.
+> **Laboratorio de Inteligencia Pública** no es una plataforma de participación ciudadana. Es un **Ecosistema de Inteligencia Pública** desarrollado por **StoneLytics** para conectar ciudadanía, conocimiento, evidencia y toma de decisiones mediante tecnología e inteligencia artificial.
 
 El ecosistema conecta cuatro grandes mundos:
 
@@ -251,17 +251,17 @@ Permitir integrar:
 
 ## Fase 12: Plataforma SaaS StoneLytics
 
-**Objetivo:** Convertir Construyamos Colombia en un producto comercial multi-tenant. Cada cliente podrá crear su propio portal, plan, políticas, observatorio, SRIE y dashboard sin modificar el código.
+**Objetivo:** Convertir Laboratorio de Inteligencia Pública en un producto comercial multi-tenant. Cada cliente podrá crear su propio portal, plan, políticas, observatorio, SRIE y dashboard sin modificar el código.
 
 ### Arquitectura de Producto
 
 ```
 SRIE Platform (producto SaaS)
-  └── Construyamos Colombia (implementación nacional → caso de éxito)
+  └── Laboratorio de Inteligencia Pública (implementación nacional → caso de éxito)
   └── Cliente N (gobernación, ministerio, universidad...)
 ```
 
-**SRIE** es el motor tecnológico (el producto SaaS de StoneLytics). **Construyamos Colombia** es la implementación nacional que demuestra sus capacidades. Mañana se puede desplegar la misma tecnología para cualquier organización cargando un nuevo marco estratégico y una nueva identidad visual.
+**SRIE** es el motor tecnológico (el producto SaaS de StoneLytics). **Laboratorio de Inteligencia Pública** es la implementación nacional que demuestra sus capacidades. Mañana se puede desplegar la misma tecnología para cualquier organización cargando un nuevo marco estratégico y una nueva identidad visual.
 
 ---
 
@@ -285,7 +285,7 @@ Stripe · Linear · Notion · Apple · Gov.uk · Vercel
 
 ## Filosofía Final
 
-Construyamos Colombia no debe convertirse en otro portal del Estado. Debe convertirse en el **primer Ecosistema Colombiano de Inteligencia Pública**, donde cualquier ciudadano pueda **aprender**, **participar**, **consultar**, **comparar**, **proponer** y **comprender** cómo se construyen las decisiones públicas.
+Laboratorio de Inteligencia Pública no debe convertirse en otro portal del Estado. Debe convertirse en el **primer Ecosistema Colombiano de Inteligencia Pública**, donde cualquier ciudadano pueda **aprender**, **participar**, **consultar**, **comparar**, **proponer** y **comprender** cómo se construyen las decisiones públicas.
 
 El motor **SRIE** será el corazón del ecosistema, transformando información dispersa en conocimiento estructurado para fortalecer la formulación de políticas públicas, la armonización de planes de desarrollo, la generación de evidencia y la toma de decisiones basada en datos.
 
@@ -293,4 +293,4 @@ El motor **SRIE** será el corazón del ecosistema, transformando información d
 
 ## Licencia
 
-Construyamos Colombia — StoneLytics © 2026
+Laboratorio de Inteligencia Pública — StoneLytics © 2026

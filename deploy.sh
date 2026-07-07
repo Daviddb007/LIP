@@ -1,11 +1,11 @@
 #!/bin/bash
-# Construyamos Colombia - Production Deployment Script
+# Laboratorio de Inteligencia Pública - Production Deployment Script
 # Run this script on the production server
 
 set -e
 
 echo "=========================================="
-echo "  CONSTRUYAMOS COLOMBIA - DEPLOY SCRIPT"
+echo "  LABORATORIO DE INTELIGENCIA PÚBLICA - DEPLOY SCRIPT"
 echo "=========================================="
 
 # Colors
@@ -15,7 +15,7 @@ YELLOW='\033[1;33m'
 NC='\033[0m'
 
 # Configuration
-APP_NAME="construyamos_colombia"
+APP_NAME="l_inteligenciapublica"
 APP_USER="www-data"
 APP_DIR="/var/www/$APP_NAME"
 PYTHON_VERSION="python3"
@@ -92,9 +92,9 @@ fi
 
 # Step 10: Configure systemd service
 echo -e "\n${YELLOW}[10/10] Configuring systemd service...${NC}"
-cat > /etc/systemd/system/construyamos.service << EOF
+cat > /etc/systemd/system/l-inteligenciapublica.service << EOF
 [Unit]
-Description=Construyamos Colombia Flask App
+Description=Laboratorio de Inteligencia Pública Flask App
 After=network.target postgresql.service redis.service
 
 [Service]
@@ -110,14 +110,14 @@ WantedBy=multi-user.target
 EOF
 
 systemctl daemon-reload
-systemctl enable construyamos
-systemctl start construyamos
+systemctl enable l-inteligenciapublica
+systemctl start l-inteligenciapublica
 
 # Configure Nginx
 echo -e "\n${YELLOW}Configuring Nginx...${NC}"
-read -p "Enter domain name (e.g., construyamos.stonelytics.tech): " DOMAIN
+read -p "Enter domain name (e.g., l-inteligenciapublica.stonelytics.tech): " DOMAIN
 
-cat > /etc/nginx/sites-available/construyamos << EOF
+cat > /etc/nginx/sites-available/l-inteligenciapublica << EOF
 server {
     listen 80;
     server_name $DOMAIN;
@@ -138,7 +138,7 @@ server {
 }
 EOF
 
-ln -sf /etc/nginx/sites-available/construyamos /etc/nginx/sites-enabled/
+ln -sf /etc/nginx/sites-available/l-inteligenciapublica /etc/nginx/sites-enabled/
 rm -f /etc/nginx/sites-enabled/default
 nginx -t
 systemctl reload nginx

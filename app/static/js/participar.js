@@ -783,7 +783,7 @@ function reiniciarConversacion() {
         <div class="message-bubble assistant-bubble animate-in">
             <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
             <div class="message-content">
-                <p class="mb-1">¡Hola! Soy el asistente de <strong>Construyamos Colombia</strong>, el Ecosistema Nacional de Inteligencia Pública.</p>
+                <p class="mb-1">¡Hola! Soy el asistente de <strong>Laboratorio de Inteligencia Pública</strong>, el Ecosistema Nacional de Inteligencia Pública.</p>
                 <p class="mb-1">Te voy a hacer algunas preguntas para entender tu visión y convertir tus ideas en evidencia para la toma de decisiones. No necesitas registrarte y toda tu participación es anónima.</p>
                 <p class="mb-0">¿Empezamos?</p>
                 <div class="message-actions mt-2">

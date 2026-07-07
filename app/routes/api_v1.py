@@ -56,7 +56,7 @@ def requerir_role(role_minimo):
 @limiter.limit("30 per minute")
 def api_root():
     return jsonify({
-        'api': 'Construyamos Colombia API v1',
+        'api': 'Laboratorio de Inteligencia Pública API v1',
         'version': '1.0.0',
         'documentacion': '/api/docs',
         'endpoints': {

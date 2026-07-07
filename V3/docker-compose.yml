@@ -1,4 +1,4 @@
-# Construyamos Colombia V3 — Docker Compose
+# Laboratorio de Inteligencia Pública V3 — Docker Compose
 services:
   app:
     build:

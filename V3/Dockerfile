@@ -1,4 +1,4 @@
-# Construyamos Colombia V3 — Multi-stage Docker build
+# Laboratorio de Inteligencia Pública V3 — Multi-stage Docker build
 # Stage 1: Builder
 FROM python:3.12-slim AS builder
 

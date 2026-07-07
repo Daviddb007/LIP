@@ -1,10 +1,10 @@
 @echo off
-title Construyamos Colombia - Servidor
+title Laboratorio de Inteligencia Pública - Servidor
 color 0A
 cls
 echo.
 echo  ╔══════════════════════════════════════════╗
-echo  ║     CONSTRUYAMOS COLOMBIA - SERVIDOR     ║
+echo  ║  LABORATORIO DE INTELIGENCIA PÚBLICA     ║
 echo  ╚══════════════════════════════════════════╝
 echo.
 
@@ -26,7 +26,7 @@ echo.
 
 :: Iniciar tunnel nombrado (usa config.yml automaticamente)
 set PROJECT_DIR=%~dp0
-start "Cloudflare Tunnel" /min cmd /c "cloudflared tunnel --config C:\Users\Usuario\.cloudflared\config_construyamos.yml run construyamos-colombia > "%PROJECT_DIR%tunnel.log" 2>&1"
+start "Cloudflare Tunnel" /min cmd /c "cloudflared tunnel --config C:\Users\Usuario\.cloudflared\config_inteligenciapublica.yml run l-inteligenciapublica > "%PROJECT_DIR%tunnel.log" 2>&1"
 
 :: Esperar a que el tunnel levante
 echo  Esperando que el tunnel conecte...
@@ -37,7 +37,7 @@ echo  ╔═══════════════════════�
 echo  ║           URLs DEL SERVIDOR              ║
 echo  ╠══════════════════════════════════════════╣
 echo  ║  Local:   http://localhost:13000         ║
-echo  ║  Publico: https://construyamos.stonelytics.tech ║
+echo  ║  Publico: https://l-inteligenciapublica.stonelytics.tech ║
 echo  ╚══════════════════════════════════════════╝
 echo.
 echo  [2/2] Iniciando servidor Flask...

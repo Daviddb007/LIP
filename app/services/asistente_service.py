@@ -80,13 +80,13 @@ CONOCIMIENTO: list[dict] = [
         'categoria': 'participacion',
         'palabras_clave': ['participar', 'cómo participar', 'participación ciudadana', 'mecanismos participación', 'votar', 'consulta'],
         'preguntas': ['¿cómo puedo participar?', 'participación ciudadana', 'mecanismos de participación', 'cómo influir en decisiones'],
-        'respuesta': 'En Colombia existen múltiples mecanismos de participación ciudadana. Los más importantes son: el voto (elecciones cada 4 años), el plebiscito (consulta popular para aprobar o rechazar decisiones), el referendo (aprobación de normas por voto popular), la consulta popular (decisión sobre asuntos territoriales), el cabildo abierto (discusión pública con autoridades), la iniciativa legislativa (propuestas ciudadanas de ley) y la revocatoria del mandato. Además, plataformas como Construyamos Colombia permiten participar en la construcción de políticas públicas.',
+        'respuesta': 'En Colombia existen múltiples mecanismos de participación ciudadana. Los más importantes son: el voto (elecciones cada 4 años), el plebiscito (consulta popular para aprobar o rechazar decisiones), el referendo (aprobación de normas por voto popular), la consulta popular (decisión sobre asuntos territoriales), el cabildo abierto (discusión pública con autoridades), la iniciativa legislativa (propuestas ciudadanas de ley) y la revocatoria del mandato. Además, plataformas como Laboratorio de Inteligencia Pública permiten participar en la construcción de políticas públicas.',
     },
     {
         'categoria': 'participacion',
         'palabras_clave': ['construyamos colombia', 'plataforma', 'ecosistema', 'stonelytics', 'participar construir'],
         'preguntas': ['¿qué es construyamos colombia?', 'cómo participar en construyamos colombia', 'stonelytics', 'políticas públicas'],
-        'respuesta': 'Construyamos Colombia es el primer Ecosistema Nacional de Inteligencia Pública desarrollado por StoneLytics con tecnología SRIE. Su objetivo es conectar la participación ciudadana con el conocimiento, la evidencia y la toma de decisiones públicas. Puedes participar de forma anónima y sin registro: ingresa a la sección "Participar", selecciona los temas que te interesan, describe los problemas que identificas y propón soluciones. Tu participación es analizada por el motor SRIE y convertida en inteligencia estratégica.',
+        'respuesta': 'Laboratorio de Inteligencia Pública es el primer Ecosistema Nacional de Inteligencia Pública desarrollado por StoneLytics con tecnología SRIE. Su objetivo es conectar la participación ciudadana con el conocimiento, la evidencia y la toma de decisiones públicas. Puedes participar de forma anónima y sin registro: ingresa a la sección "Participar", selecciona los temas que te interesan, describe los problemas que identificas y propón soluciones. Tu participación es analizada por el motor SRIE y convertida en inteligencia estratégica.',
     },
     {
         'categoria': 'politicas',
@@ -134,7 +134,7 @@ CONOCIMIENTO: list[dict] = [
         'categoria': 'general',
         'palabras_clave': ['construyamos colombia', 'ecosistema', 'inteligencia pública', 'srie'],
         'preguntas': ['asistente', 'quién eres', 'qué puedes hacer', 'ayuda'],
-        'respuesta': 'Soy el Asistente Público SRIE, un especialista en el Estado colombiano desarrollado por StoneLytics como parte del Ecosistema Nacional de Inteligencia Pública "Construyamos Colombia". Puedo responder preguntas sobre: cómo funciona el Estado colombiano, qué son las políticas públicas, qué entidades existen, cómo participar, qué instrumentos de planeación hay (PND, CONPES, leyes), y las políticas públicas en sectores como educación, salud, vivienda, ambiente y seguridad. Toda mi información proviene de fuentes oficiales y está verificada.',
+        'respuesta': 'Soy el Asistente Público SRIE, un especialista en el Estado colombiano desarrollado por StoneLytics como parte del Ecosistema Nacional de Inteligencia Pública "Laboratorio de Inteligencia Pública". Puedo responder preguntas sobre: cómo funciona el Estado colombiano, qué son las políticas públicas, qué entidades existen, cómo participar, qué instrumentos de planeación hay (PND, CONPES, leyes), y las políticas públicas en sectores como educación, salud, vivienda, ambiente y seguridad. Toda mi información proviene de fuentes oficiales y está verificada.',
     },
 ]
 

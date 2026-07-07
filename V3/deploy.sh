@@ -1,10 +1,10 @@
 #!/bin/bash
-# Construyamos Colombia V3 — Deploy script
+# Laboratorio de Inteligencia Pública V3 — Deploy script
 # Run from the V3 directory on the server
 
 set -e
 
-echo "=== Construyamos Colombia V3 — Deploy ==="
+echo "=== Laboratorio de Inteligencia Pública V3 — Deploy ==="
 echo ""
 
 # Check if .env exists
@@ -36,8 +36,8 @@ docker compose exec app flask seed
 echo ""
 echo "=== Deploy complete ==="
 echo ""
-echo "App: https://construyamos.stonelytics.tech"
-echo "Admin: https://construyamos.stonelytics.tech/admin/login"
+echo "App: https://l-inteligenciapublica.stonelytics.tech"
+echo "Admin: https://l-inteligenciapublica.stonelytics.tech/admin/login"
 echo ""
 echo "Containers:"
 docker compose ps

@@ -1,4 +1,4 @@
-"""Configuración por entorno para Construyamos Colombia V3.
+"""Configuración por entorno para Laboratorio de Inteligencia Pública V3.
 
 Jerarquía:
     Base → Development → Production → Testing

@@ -1,4 +1,4 @@
-# Construyamos Colombia V3
+# Laboratorio de Inteligencia Pública V3
 
 ## Sistema Nacional de Inteligencia Participativa
 
@@ -42,7 +42,7 @@ docker compose up -d
 docker compose exec app flask seed
 
 # 5. Abrir
-https://construyamos.stonelytics.tech
+https://l-inteligenciapublica.stonelytics.tech
 ```
 
 ### Desarrollo Local
