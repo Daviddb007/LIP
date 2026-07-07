@@ -87,7 +87,7 @@ body {
     line-height: 1.7;
     color: var(--text-1);
     background-color: var(--surface);
-    padding-top: 56px;
+    padding-top: 48px;
     overflow-x: hidden;
 }
 
@@ -126,9 +126,9 @@ a:hover { color: var(--blue-dark); }
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
     border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-    padding: 0.4rem 0;
+    padding: 0.3rem 0;
     transition: all var(--duration-md) var(--ease);
-    min-height: 52px;
+    min-height: 44px;
 }
 
 .navbar-premium.scrolled {
@@ -137,12 +137,13 @@ a:hover { color: var(--blue-dark); }
 }
 
 .navbar-brand {
-    font-size: 1.1rem;
+    font-size: 0.95rem;
     font-weight: 800;
-    letter-spacing: -0.3px;
+    letter-spacing: -0.2px;
     color: white !important;
     padding-top: 0;
     padding-bottom: 0;
+    margin-right: 0;
 }
 
 .navbar-brand span { color: var(--gold); }
@@ -150,9 +151,9 @@ a:hover { color: var(--blue-dark); }
 .nav-link {
     color: rgba(255, 255, 255, 0.75) !important;
     font-weight: 500;
-    font-size: 0.9375rem;
+    font-size: 0.85rem;
     transition: color var(--duration) var(--ease);
-    padding: 0.5rem 1rem !important;
+    padding: 0.35rem 0.65rem !important;
 }
 
 .nav-link:hover, .nav-link.active { color: white !important; }
@@ -1736,14 +1737,26 @@ textarea.form-control { resize: vertical; min-height: 120px; }
 @media (max-width: 991.98px) {
     .navbar-collapse {
         background: var(--navy);
-        padding: var(--space-md);
+        padding: 0.5rem;
         border-radius: var(--radius-md);
-        margin-top: var(--space-sm);
+        margin-top: 0.25rem;
+    }
+
+    .navbar-nav .nav-link {
+        padding: 0.3rem 0.5rem !important;
+        font-size: 0.85rem;
     }
 
     .hero { padding: var(--space-3xl) 0; }
     .section { padding: var(--space-3xl) 0; }
     .footer-bottom { flex-direction: column; gap: var(--space-md); text-align: center; }
+}
+
+@media (min-width: 992px) and (max-width: 1199.98px) {
+    .navbar-nav .nav-link {
+        padding: 0.3rem 0.4rem !important;
+        font-size: 0.8rem;
+    }
 }
 
 @media (max-width: 575.98px) {

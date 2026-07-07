@@ -54,28 +54,25 @@
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('iniciativa.iniciativa') }}">Conocimiento</a>
                     </li>
-                    <li class="nav-item">
+                    <li class="nav-item d-none d-xl-block">
                         <a class="nav-link" href="{{ url_for('biblioteca.lista') }}">Biblioteca</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('resultados.resultados') }}">Observatorio</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ url_for('participar.participar') }}">Participar</a>
-                    </li>
-                    <li class="nav-item">
+                    <li class="nav-item d-none d-xl-block">
                         <a class="nav-link" href="{{ url_for('asistente.pagina') }}">
                             <i class="bi bi-cpu me-1"></i>SRIE
                         </a>
                     </li>
-                    <li class="nav-item ms-lg-3 d-none d-lg-block">
-                        <a class="btn btn-outline btn-sm" href="{{ url_for('admin.login') }}" style="border-color: rgba(255,255,255,0.3); color: white;">
+                    <li class="nav-item ms-xl-2 d-none d-lg-block">
+                        <a class="btn btn-outline btn-sm py-1 px-2" href="{{ url_for('admin.login') }}" style="border-color: rgba(255,255,255,0.3); color: white; font-size: 0.8rem;">
                             <i class="bi bi-speedometer2 me-1"></i>Dashboard
                         </a>
                     </li>
-                    <li class="nav-item ms-lg-2 d-none d-lg-block">
-                        <a class="btn btn-nav-cta" href="{{ url_for('participar.participar') }}">
-                            <i class="bi bi-arrow-right-circle me-2"></i>Participar
+                    <li class="nav-item ms-xl-1 d-none d-lg-block">
+                        <a class="btn btn-nav-cta btn-sm py-1 px-3" href="{{ url_for('participar.participar') }}" style="font-size: 0.8rem;">
+                            <i class="bi bi-arrow-right-circle me-1"></i>Participar
                         </a>
                     </li>
                 </ul>
