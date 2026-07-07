@@ -1,129 +1,574 @@
 {% extends "base.html" %}
 
-{% block title %}La Iniciativa - Construyamos Colombia{% endblock %}
+{% block title %}Centro de Conocimiento Público - Construyamos Colombia{% endblock %}
 
 {% block content %}
 <section class="page-header bg-primary text-white" style="background: linear-gradient(135deg, var(--colombian-navy) 0%, #0f172a 100%);">
     <div class="container">
-        <h1 class="display-5 fw-bold">La Iniciativa</h1>
-        <p class="lead">Construyamos juntos el futuro de Colombia</p>
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <h1 class="display-5 fw-bold mb-2">Centro de Conocimiento Público</h1>
+                <p class="lead mb-0 opacity-90">Aprende cómo funciona el Estado colombiano y cómo se construyen las políticas públicas</p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <span class="badge bg-light text-dark px-3 py-2">
+                    <i class="bi bi-clock me-1"></i>15 minutos
+                </span>
+            </div>
+        </div>
     </div>
 </section>
 
-<section class="py-5">
+<section class="knowledge-section py-5">
     <div class="container">
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="card border-0 shadow-sm mb-5">
-                    <div class="card-body p-5">
-                        <h2 class="fw-bold text-center mb-4">
-                            <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
-                            El problema que resolvemos
-                        </h2>
-                        <p class="lead text-center">
-                            Actualmente millones de ciudadanos tienen ideas y necesidades, pero pocas veces
-                            estas quedan organizadas y convertidas en información útil para construir
-                            políticas públicas.
-                        </p>
-                        <div class="row g-4 mt-4">
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-x-circle-fill text-danger me-3 fs-4"></i>
-                                    <div>
-                                        <h5>Baja participación efectiva</h5>
-                                        <p class="text-muted mb-0">Los ciudadanos no tienen canales claros para hacer llegar sus propuestas.</p>
+        <div class="row">
+            <div class="col-lg-3">
+                <nav class="knowledge-sidebar sticky-top" style="top: 100px;">
+                    <div class="knowledge-sidebar-header">
+                        <i class="bi bi-compass-fill me-2"></i> Explorar
+                    </div>
+                    <ul class="knowledge-nav">
+                        <li>
+                            <a href="#modulo-que-es" class="knowledge-nav-link active" data-module="que-es">
+                                <i class="bi bi-question-circle"></i>
+                                <span>¿Qué es una política pública?</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#modulo-como-nace" class="knowledge-nav-link" data-module="como-nace">
+                                <i class="bi bi-diagram-3"></i>
+                                <span>¿Cómo nace una política?</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#modulo-instrumentos" class="knowledge-nav-link" data-module="instrumentos">
+                                <i class="bi bi-tools"></i>
+                                <span>Instrumentos del Estado</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#modulo-glosario" class="knowledge-nav-link" data-module="glosario">
+                                <i class="bi bi-book"></i>
+                                <span>Glosario interactivo</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#modulo-casos" class="knowledge-nav-link" data-module="casos">
+                                <i class="bi bi-folder2-open"></i>
+                                <span>Casos reales</span>
+                            </a>
+                        </li>
+                    </ul>
+                    <div class="knowledge-sidebar-footer">
+                        <div class="d-flex align-items-center gap-2">
+                            <i class="bi bi-cpu text-primary"></i>
+                            <small class="text-muted">Conectado con SRIE</small>
+                        </div>
+                    </div>
+                </nav>
+            </div>
+
+            <div class="col-lg-9">
+                <div class="knowledge-content">
+
+                    <div id="modulo-que-es" class="knowledge-module active">
+                        <div class="knowledge-card">
+                            <div class="knowledge-card-header">
+                                <span class="knowledge-badge">Módulo 1</span>
+                                <h2><i class="bi bi-question-circle text-primary me-2"></i>¿Qué es una política pública?</h2>
+                            </div>
+                            <div class="knowledge-card-body">
+                                <div class="row align-items-center mb-5">
+                                    <div class="col-lg-7">
+                                        <p class="lead">
+                                            Una <strong>política pública</strong> es una decisión del Estado que busca resolver un problema que afecta a la sociedad. No es una simple idea: es un <strong>plan de acción</strong> con recursos, responsables y plazos concretos.
+                                        </p>
+                                        <div class="concept-highlights mt-4">
+                                            <div class="highlight-item">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                <span>Resuelve un <strong>problema real</strong> de la ciudadanía</span>
+                                            </div>
+                                            <div class="highlight-item">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                <span>Cuenta con <strong>presupuesto</strong> asignado por el Estado</span>
+                                            </div>
+                                            <div class="highlight-item">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                <span>Tiene <strong>entidades responsables</strong> de ejecutarla</span>
+                                            </div>
+                                            <div class="highlight-item">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                <span>Incluye <strong>indicadores</strong> para medir su impacto</span>
+                                            </div>
+                                            <div class="highlight-item">
+                                                <i class="bi bi-check-circle-fill text-success"></i>
+                                                <span>Se define mediante <strong>instrumentos formales</strong> (leyes, CONPES, decretos)</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-5 text-center mt-4 mt-lg-0">
+                                        <div class="concept-visual">
+                                            <svg viewBox="0 0 280 280" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <circle cx="140" cy="140" r="130" fill="url(#conceptGrad1)" opacity="0.1"/>
+                                                <circle cx="140" cy="140" r="100" fill="url(#conceptGrad2)" opacity="0.15"/>
+                                                <circle cx="140" cy="140" r="70" fill="url(#conceptGrad3)" opacity="0.2"/>
+                                                <circle cx="140" cy="140" r="45" fill="#071a40"/>
+                                                <text x="140" y="148" text-anchor="middle" fill="white" font-size="18" font-weight="bold">PP</text>
+                                                <text x="140" y="50" text-anchor="middle" fill="#2563eb" font-size="12" font-weight="600">PROBLEMA</text>
+                                                <text x="140" y="240" text-anchor="middle" fill="#10b981" font-size="12" font-weight="600">SOLUCIÓN</text>
+                                                <text x="45" y="145" text-anchor="middle" fill="#f59e0b" font-size="11" font-weight="600" transform="rotate(-90, 45, 145)">RECURSOS</text>
+                                                <text x="235" y="145" text-anchor="middle" fill="#8b5cf6" font-size="11" font-weight="600" transform="rotate(90, 235, 145)">RESPONSABLES</text>
+                                                <line x1="140" y1="95" x2="140" y2="50" stroke="#2563eb" stroke-width="2" stroke-dasharray="4,3"/>
+                                                <line x1="140" y1="185" x2="140" y2="230" stroke="#10b981" stroke-width="2" stroke-dasharray="4,3"/>
+                                                <line x1="95" y1="140" x2="55" y2="140" stroke="#f59e0b" stroke-width="2" stroke-dasharray="4,3"/>
+                                                <line x1="185" y1="140" x2="225" y2="140" stroke="#8b5cf6" stroke-width="2" stroke-dasharray="4,3"/>
+                                                <defs>
+                                                    <radialGradient id="conceptGrad1" cx="50%" cy="50%" r="50%">
+                                                        <stop offset="0%" stop-color="#2563eb"/>
+                                                        <stop offset="100%" stop-color="transparent"/>
+                                                    </radialGradient>
+                                                    <radialGradient id="conceptGrad2" cx="50%" cy="50%" r="50%">
+                                                        <stop offset="0%" stop-color="#f1c40f"/>
+                                                        <stop offset="100%" stop-color="transparent"/>
+                                                    </radialGradient>
+                                                    <radialGradient id="conceptGrad3" cx="50%" cy="50%" r="50%">
+                                                        <stop offset="0%" stop-color="#10b981"/>
+                                                        <stop offset="100%" stop-color="transparent"/>
+                                                    </radialGradient>
+                                                </defs>
+                                            </svg>
+                                            <small class="text-muted d-block mt-2">Elementos de una política pública</small>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-x-circle-fill text-danger me-3 fs-4"></i>
-                                    <div>
-                                        <h5>Información dispersa</h5>
-                                        <p class="text-muted mb-0">Las ideas se pierden en múltiples plataformas sin consolidar.</p>
+
+                                <div class="knowledge-divider">
+                                    <span><i class="bi bi-lightbulb-fill"></i> Ejemplos para entenderlo mejor</span>
+                                </div>
+
+                                <div class="row g-4 mt-3">
+                                    <div class="col-md-6">
+                                        <div class="example-card">
+                                            <div class="example-icon" style="background: #dbeafe; color: #2563eb;">
+                                                <i class="bi bi-house-door-fill"></i>
+                                            </div>
+                                            <h5>Subsidio de vivienda</h5>
+                                            <p>El Estado otorga un aporte económico a familias de bajos ingresos para comprar o mejorar su vivienda. Hay recursos asignados, responsables (Ministerio de Vivienda) y reglas claras de participación.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="example-card">
+                                            <div class="example-icon" style="background: #fef3c7; color: #d97706;">
+                                                <i class="bi bi-bus-front-fill"></i>
+                                            </div>
+                                            <h5>Subsidio de transporte</h5>
+                                            <p>El gobierno entrega un apoyo económico a la población más vulnerable para cubrir gastos de transporte público. Se define el presupuesto, los beneficiarios y los mecanismos de entrega.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="example-card">
+                                            <div class="example-icon" style="background: #d1fae5; color: #059669;">
+                                                <i class="bi bi-tree-fill"></i>
+                                            </div>
+                                            <h5>Política de reforestación</h5>
+                                            <p>El Estado diseña un plan para recuperar bosques y ecosistemas degradados. Involucra entidades ambientales, comunidades locales y recursos de cooperación internacional.</p>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="example-card">
+                                            <div class="example-icon" style="background: #ede9fe; color: #7c3aed;">
+                                                <i class="bi bi-book-fill"></i>
+                                            </div>
+                                            <h5>Programa de alimentación escolar</h5>
+                                            <p>El Estado garantiza un complemento alimenticio a niños y niñas en instituciones educativas públicas para mejorar su nutrición y permanencia en el sistema escolar.</p>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-x-circle-fill text-danger me-3 fs-4"></i>
-                                    <div>
-                                        <h5>Escasa sistematización</h5>
-                                        <p class="text-muted mb-0">No hay mecanismos para organizar y analizar la información recibida.</p>
-                                    </div>
+
+                                <div class="knowledge-divider mt-5">
+                                    <span><i class="bi bi-pencil-square"></i> Caso práctico</span>
                                 </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-x-circle-fill text-danger me-3 fs-4"></i>
-                                    <div>
-                                        <h5>Dificultad para priorizar</h5>
-                                        <p class="text-muted mb-0">Es complejo identificar qué temas son más relevantes para los ciudadanos.</p>
+
+                                <div class="practical-case mt-4">
+                                    <div class="row align-items-center">
+                                        <div class="col-lg-2 text-center mb-3 mb-lg-0">
+                                            <div class="case-step-circle">1</div>
+                                        </div>
+                                        <div class="col-lg-10">
+                                            <h5 class="fw-bold">Identificación del problema</h5>
+                                            <p class="text-secondary mb-0">En una ciudad colombiana, el 40% de los jóvenes no estudia ni trabaja (NINI). La comunidad organizada eleva esta preocupación al gobierno municipal.</p>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-center mt-3">
+                                        <div class="col-lg-2 text-center mb-3 mb-lg-0">
+                                            <div class="case-step-circle">2</div>
+                                        </div>
+                                        <div class="col-lg-10">
+                                            <h5 class="fw-bold">Diseño de la política</h5>
+                                            <p class="text-secondary mb-0">La Secretaría de Desarrollo Económico diseña el programa "Jóvenes con Futuro": becas técnicas, subsidio de transporte y pasantías en empresas locales.</p>
+                                        </div>
+                                    </div>
+                                    <div class="row align-items-center mt-3">
+                                        <div class="col-lg-2 text-center mb-3 mb-lg-0">
+                                            <div class="case-step-circle">3</div>
+                                        </div>
+                                        <div class="col-lg-10">
+                                            <h5 class="fw-bold">Implementación y resultados</h5>
+                                            <p class="text-secondary mb-0">En 6 meses, 2.000 jóvenes se benefician del programa. La deserción escolar se reduce un 15%. La política se evalúa y se ajusta para el siguiente año.</p>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card border-0 shadow-sm mb-5">
-                    <div class="card-body p-5">
-                        <h2 class="fw-bold text-center mb-4">
-                            <i class="bi bi-check-circle-fill text-success me-2"></i>
-                            La solución que brindamos
-                        </h2>
-                        <p class="lead text-center">
-                            Construyamos Colombia permite transformar la participación ciudadana en evidencia
-                            concreta para la toma de decisiones.
-                        </p>
-                        <div class="row g-4 mt-4">
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-check-circle-fill text-success me-3 fs-4"></i>
-                                    <div>
-                                        <h5>Recoger propuestas ciudadanas</h5>
-                                        <p class="text-muted mb-0">Un formulario simple y ágil que toma menos de 5 minutos.</p>
-                                    </div>
-                                </div>
+                    <div id="modulo-como-nace" class="knowledge-module">
+                        <div class="knowledge-card">
+                            <div class="knowledge-card-header">
+                                <span class="knowledge-badge">Módulo 2</span>
+                                <h2><i class="bi bi-diagram-3 text-primary me-2"></i>¿Cómo nace una política pública?</h2>
                             </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-check-circle-fill text-success me-3 fs-4"></i>
-                                    <div>
-                                        <h5>Identificar prioridades territoriales</h5>
-                                        <p class="text-muted mb-0">Saber qué necesidades son más urgentes en cada región.</p>
+                            <div class="knowledge-card-body">
+                                <p class="lead">Toda política pública sigue un ciclo de vida. Cada etapa es crucial para que la solución sea efectiva y responda a las necesidades reales de la ciudadanía.</p>
+
+                                <div class="policy-timeline mt-5">
+                                    <div class="policy-timeline-item" data-step="1">
+                                        <div class="policy-timeline-marker" style="background: #ef4444;">
+                                            <i class="bi bi-exclamation-triangle-fill"></i>
+                                        </div>
+                                        <div class="policy-timeline-content">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h5 class="fw-bold mb-1">1. Identificación del problema</h5>
+                                                <span class="policy-step-badge" style="background: #ef4444;">Inicio</span>
+                                            </div>
+                                            <p class="text-secondary mb-2">Se detecta una situación que afecta negativamente a la sociedad y que requiere intervención del Estado. Puede surgir de la ciudadanía, datos estadísticos o estudios técnicos.</p>
+                                            <div class="policy-example">
+                                                <i class="bi bi-chat-quote-fill me-1"></i>
+                                                <em>"La tasa de desempleo juvenil en la ciudad supera el 30%"</em>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-check-circle-fill text-success me-3 fs-4"></i>
-                                    <div>
-                                        <h5>Detectar tendencias</h5>
-                                        <p class="text-muted mb-0">Identificar patrones y temas recurrentes en las propuestas.</p>
+                                    <div class="policy-timeline-item" data-step="2">
+                                        <div class="policy-timeline-marker" style="background: #f97316;">
+                                            <i class="bi bi-calendar-event-fill"></i>
+                                        </div>
+                                        <div class="policy-timeline-content">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h5 class="fw-bold mb-1">2. Agenda pública</h5>
+                                                <span class="policy-step-badge" style="background: #f97316;">Priorización</span>
+                                            </div>
+                                            <p class="text-secondary mb-2">El problema logra posicionarse en la agenda del gobierno. No todos los problemas entran: se priorizan según su gravedad, urgencia y viabilidad política.</p>
+                                            <div class="policy-example">
+                                                <i class="bi bi-chat-quote-fill me-1"></i>
+                                                <em>"El alcalde anuncia que el empleo juvenil será prioridad de su gobierno"</em>
+                                            </div>
+                                        </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-check-circle-fill text-success me-3 fs-4"></i>
-                                    <div>
-                                        <h5>Generar evidencia basada en participación</h5>
-                                        <p class="text-muted mb-0">Datos reales para fundamentar decisiones de política pública.</p>
+                                    <div class="policy-timeline-item" data-step="3">
+                                        <div class="policy-timeline-marker" style="background: #eab308;">
+                                            <i class="bi bi-search-heart-fill"></i>
+                                        </div>
+                                        <div class="policy-timeline-content">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h5 class="fw-bold mb-1">3. Diagnóstico</h5>
+                                                <span class="policy-step-badge" style="background: #eab308;">Análisis</span>
+                                            </div>
+                                            <p class="text-secondary mb-2">Se estudia el problema a fondo: sus causas, consecuencias, población afectada y recursos disponibles. Se recopilan datos y evidencia para entender la magnitud del problema.</p>
+                                            <div class="policy-example">
+                                                <i class="bi bi-chat-quote-fill me-1"></i>
+                                                <em>"Se realiza una encuesta a 5.000 jóvenes para entender las barreras de acceso al empleo"</em>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="policy-timeline-item" data-step="4">
+                                        <div class="policy-timeline-marker" style="background: #3b82f6;">
+                                            <i class="bi bi-file-earmark-text-fill"></i>
+                                        </div>
+                                        <div class="policy-timeline-content">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h5 class="fw-bold mb-1">4. Formulación</h5>
+                                                <span class="policy-step-badge" style="background: #3b82f6;">Diseño</span>
+                                            </div>
+                                            <p class="text-secondary mb-2">Se diseña la política pública: se definen objetivos, metas, actividades, presupuesto, responsables, indicadores y cronograma. Se redacta el documento formal.</p>
+                                            <div class="policy-example">
+                                                <i class="bi bi-chat-quote-fill me-1"></i>
+                                                <em>"Se crea el programa 'Empleo Joven' con $5.000M de presupuesto y 3 líneas de acción"</em>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="policy-timeline-item" data-step="5">
+                                        <div class="policy-timeline-marker" style="background: #8b5cf6;">
+                                            <i class="bi bi-hammer"></i>
+                                        </div>
+                                        <div class="policy-timeline-content">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h5 class="fw-bold mb-1">5. Implementación</h5>
+                                                <span class="policy-step-badge" style="background: #8b5cf6;">Ejecución</span>
+                                            </div>
+                                            <p class="text-secondary mb-2">La política se pone en marcha. Las entidades responsables ejecutan las actividades planeadas, asignan los recursos y atienden a la población beneficiaria.</p>
+                                            <div class="policy-example">
+                                                <i class="bi bi-chat-quote-fill me-1"></i>
+                                                <em>"Se abren inscripciones, se firman convenios con empresas y se inician las capacitaciones"</em>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="policy-timeline-item" data-step="6">
+                                        <div class="policy-timeline-marker" style="background: #06b6d4;">
+                                            <i class="bi bi-graph-up-arrow"></i>
+                                        </div>
+                                        <div class="policy-timeline-content">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h5 class="fw-bold mb-1">6. Seguimiento</h5>
+                                                <span class="policy-step-badge" style="background: #06b6d4;">Monitoreo</span>
+                                            </div>
+                                            <p class="text-secondary mb-2">Se monitorea la ejecución: ¿se están cumpliendo las metas? ¿se está gastando el presupuesto adecuadamente? ¿los beneficiarios están recibiendo el servicio?</p>
+                                            <div class="policy-example">
+                                                <i class="bi bi-chat-quote-fill me-1"></i>
+                                                <em>"Reporte trimestral: 1.200 jóvenes capacitados, 60% del presupuesto ejecutado"</em>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="policy-timeline-item" data-step="7">
+                                        <div class="policy-timeline-marker" style="background: #10b981;">
+                                            <i class="bi bi-clipboard-data-fill"></i>
+                                        </div>
+                                        <div class="policy-timeline-content">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h5 class="fw-bold mb-1">7. Evaluación</h5>
+                                                <span class="policy-step-badge" style="background: #10b981;">Medición</span>
+                                            </div>
+                                            <p class="text-secondary mb-2">Se evalúa si la política logró sus objetivos. ¿Se redujo el desempleo juvenil? ¿La inversión tuvo el impacto esperado? ¿Qué se puede mejorar?</p>
+                                            <div class="policy-example">
+                                                <i class="bi bi-chat-quote-fill me-1"></i>
+                                                <em>"Evaluación de impacto: el desempleo juvenil se redujo un 12% en 18 meses"</em>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="policy-timeline-item" data-step="8">
+                                        <div class="policy-timeline-marker" style="background: #071a40;">
+                                            <i class="bi bi-arrow-repeat"></i>
+                                        </div>
+                                        <div class="policy-timeline-content">
+                                            <div class="d-flex justify-content-between align-items-start">
+                                                <h5 class="fw-bold mb-1">8. Mejoramiento continuo</h5>
+                                                <span class="policy-step-badge" style="background: #071a40;">Optimización</span>
+                                            </div>
+                                            <p class="text-secondary mb-2">Con base en la evaluación, se ajusta la política: se corrigen errores, se refuerzan aciertos, se asignan más recursos si es necesario. El ciclo vuelve a comenzar.</p>
+                                            <div class="policy-example">
+                                                <i class="bi bi-chat-quote-fill me-1"></i>
+                                                <em>"Se amplía el programa a 5 nuevos municipios y se incluye un componente de emprendimiento"</em>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="text-center">
-                    <a href="{{ url_for('participar.participar') }}" class="btn btn-primary btn-lg px-5 py-3">
-                        <i class="bi bi-arrow-right-circle me-2"></i>Comenzar participación
-                    </a>
+                    <div id="modulo-instrumentos" class="knowledge-module">
+                        <div class="knowledge-card">
+                            <div class="knowledge-card-header">
+                                <span class="knowledge-badge">Módulo 3</span>
+                                <h2><i class="bi bi-tools text-primary me-2"></i>Instrumentos del Estado</h2>
+                            </div>
+                            <div class="knowledge-card-body">
+                                <p class="lead">El Estado colombiano utiliza diversos instrumentos formales para materializar las políticas públicas. Cada uno tiene un propósito, alcance y proceso de aprobación diferente.</p>
+
+                                <div class="row g-4 mt-4">
+                                    {% for instrumento in [
+                                        {'icono': 'file-earmark-text', 'nombre': 'Plan Nacional de Desarrollo', 'sigla': 'PND', 'color': '#2563eb', 'descripcion': 'Es la hoja de ruta del gobierno para un período de 4 años. Define las prioridades, metas, inversiones y políticas públicas que guiarán al país durante el cuatrienio.', 'ejemplo': 'El PND 2027-2030 define las bases del desarrollo social, económico y ambiental de Colombia.', 'responsable': 'Departamento Nacional de Planeación (DNP)'},
+                                        {'icono': 'file-earmark-richtext', 'nombre': 'Documento CONPES', 'sigla': 'CONPES', 'color': '#7c3aed', 'descripcion': 'Documento de política aprobado por el Consejo Nacional de Política Económica y Social. Establece lineamientos estratégicos para sectores específicos y asigna recursos.', 'ejemplo': 'CONPES de política de economía naranja o CONPES de cambio climático.', 'responsable': 'Consejo Nacional de Política Económica y Social'},
+                                        {'icono': 'bookmark-check', 'nombre': 'Ley', 'sigla': 'Ley', 'color': '#dc2626', 'descripcion': 'Norma aprobada por el Congreso de la República. Tiene el rango más alto después de la Constitución. Crea derechos, obligaciones e instituciones.', 'ejemplo': 'Ley de víctimas (Ley 1448 de 2011) o Ley de educación superior.', 'responsable': 'Congreso de la República'},
+                                        {'icono': 'file-check', 'nombre': 'Decreto', 'sigla': 'Decreto', 'color': '#f97316', 'descripcion': 'Norma emitida por el Presidente de la República para reglamentar leyes o ejercer funciones ejecutivas. No requiere aprobación del Congreso.', 'ejemplo': 'Decreto que reglamenta la entrega de subsidios de vivienda.', 'responsable': 'Presidencia de la República'},
+                                        {'icono': 'building', 'nombre': 'Política Pública Sectorial', 'sigla': 'Política', 'color': '#10b981', 'descripcion': 'Conjunto de decisiones y acciones de un sector específico (salud, educación, vivienda, etc.) para resolver problemas en su ámbito de competencia.', 'ejemplo': 'Política Nacional de Salud Mental o Política de inclusión educativa.', 'responsable': 'Ministerio correspondiente'},
+                                        {'icono': 'folder', 'nombre': 'Programa', 'sigla': 'Programa', 'color': '#06b6d4', 'descripcion': 'Conjunto organizado de proyectos y actividades que buscan un objetivo específico dentro de una política pública. Tiene presupuesto y metas concretas.', 'ejemplo': 'Programa de alimentación escolar (PAE) o Familias en Acción.', 'responsable': 'Entidad ejecutora designada'},
+                                        {'icono': 'briefcase', 'nombre': 'Proyecto', 'sigla': 'Proyecto', 'color': '#ec4899', 'descripcion': 'Unidad operativa más pequeña dentro de un programa. Tiene un alcance, presupuesto y duración definida. Genera productos o servicios específicos.', 'ejemplo': 'Construcción de 200 viviendas en el municipio X o perforación de un pozo de agua.', 'responsable': 'Entidad territorial o ejecutora'},
+                                        {'icono': 'map', 'nombre': 'Plan Territorial', 'sigla': 'PT', 'color': '#14b8a6', 'descripcion': 'Instrumento de planeación de gobernaciones y alcaldías. Define las prioridades de desarrollo del territorio en concordancia con el PND.', 'ejemplo': 'Plan de Desarrollo Departamental de Antioquia o Plan de Desarrollo Distrital de Bogotá.', 'responsable': 'Gobernaciones y Alcaldías'},
+                                        {'icono': 'globe2', 'nombre': 'ODS', 'sigla': 'ODS', 'color': '#6366f1', 'descripcion': 'Objetivos de Desarrollo Sostenible de Naciones Unidas. Son 17 metas globales que Colombia ha adoptado como marco de referencia para sus políticas públicas.', 'ejemplo': 'ODS 4: Educación de calidad. ODS 8: Trabajo decente y crecimiento económico.', 'responsable': 'Naciones Unidas y gobiernos nacionales'},
+                                        {'icono': 'bar-chart', 'nombre': 'Indicador', 'sigla': 'Indicador', 'color': '#a855f7', 'descripcion': 'Medida cuantitativa que permite evaluar el avance y resultado de una política pública. Responde a la pregunta: ¿estamos logrando lo que nos propusimos?', 'ejemplo': 'Tasa de desempleo, cobertura educativa, índice de pobreza multidimensional.', 'responsable': 'DANE y entidades sectoriales'},
+                                    ] %}
+                                    <div class="col-md-6">
+                                        <div class="instrument-card" style="--instrument-color: {{ instrumento.color }};">
+                                            <div class="instrument-header" onclick="toggleInstrument(this)">
+                                                <div class="instrument-icon" style="background: {{ instrumento.color }}15; color: {{ instrumento.color }};">
+                                                    <i class="bi bi-{{ instrumento.icono }}"></i>
+                                                </div>
+                                                <div class="instrument-info">
+                                                    <h6 class="fw-bold mb-0">{{ instrumento.nombre }}</h6>
+                                                    <span class="instrument-sigla" style="background: {{ instrumento.color }}20; color: {{ instrumento.color }};">{{ instrumento.sigla }}</span>
+                                                </div>
+                                                <i class="bi bi-chevron-down instrument-toggle"></i>
+                                            </div>
+                                            <div class="instrument-body" style="display: none;">
+                                                <p class="text-secondary mb-3">{{ instrumento.descripcion }}</p>
+                                                <div class="instrument-detail">
+                                                    <div class="detail-item">
+                                                        <i class="bi bi-chat-quote-fill" style="color: {{ instrumento.color }};"></i>
+                                                        <span>{{ instrumento.ejemplo }}</span>
+                                                    </div>
+                                                    <div class="detail-item">
+                                                        <i class="bi bi-person-badge-fill" style="color: {{ instrumento.color }};"></i>
+                                                        <span><strong>Responsable:</strong> {{ instrumento.responsable }}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="modulo-glosario" class="knowledge-module">
+                        <div class="knowledge-card">
+                            <div class="knowledge-card-header">
+                                <span class="knowledge-badge">Módulo 4</span>
+                                <h2><i class="bi bi-book text-primary me-2"></i>Glosario interactivo</h2>
+                            </div>
+                            <div class="knowledge-card-body">
+                                <p class="lead">Explora los conceptos clave del Estado colombiano y las políticas públicas. Cada término está conectado con otros para que puedas navegar y aprender.</p>
+
+                                <div class="glossary-search mb-4">
+                                    <i class="bi bi-search"></i>
+                                    <input type="text" class="form-control" id="glossarySearch" placeholder="Busca un concepto..." oninput="buscarGlosario(this.value)">
+                                </div>
+
+                                <div class="glossary-tags mb-4" id="glossaryTags">
+                                    <button class="glossary-tag active" onclick="filtrarGlosario('todas', this)">Todas</button>
+                                    <button class="glossary-tag" onclick="filtrarGlosario('planeacion', this)">Planeación</button>
+                                    <button class="glossary-tag" onclick="filtrarGlosario('normas', this)">Normas</button>
+                                    <button class="glossary-tag" onclick="filtrarGlosario('territorio', this)">Territorio</button>
+                                    <button class="glossary-tag" onclick="filtrarGlosario('evaluacion', this)">Evaluación</button>
+                                </div>
+
+                                <div class="glossary-grid" id="glossaryContainer"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="modulo-casos" class="knowledge-module">
+                        <div class="knowledge-card">
+                            <div class="knowledge-card-header">
+                                <span class="knowledge-badge">Módulo 5</span>
+                                <h2><i class="bi bi-folder2-open text-primary me-2"></i>Casos reales</h2>
+                            </div>
+                            <div class="knowledge-card-body">
+                                <p class="lead">Conoce ejemplos concretos de políticas públicas implementadas en Colombia. Cada caso muestra el ciclo completo: del problema a la solución.</p>
+
+                                <div class="row g-4 mt-4">
+                                    <div class="col-md-6">
+                                        <div class="real-case-card">
+                                            <div class="real-case-image" style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);">
+                                                <i class="bi bi-people-fill"></i>
+                                            </div>
+                                            <div class="real-case-body">
+                                                <span class="real-case-tag" style="background: #dbeafe; color: #2563eb;">Inclusión social</span>
+                                                <h5 class="fw-bold mt-2">Familias en Acción</h5>
+                                                <p class="text-secondary small">Programa de transferencias monetarias condicionadas que entrega subsidios a familias en situación de pobreza, a cambio de que los niños asistan a la escuela y tengan controles de salud.</p>
+                                                <div class="real-case-stats">
+                                                    <div><strong>4M+</strong> <small>familias</small></div>
+                                                    <div><strong>20+</strong> <small>años</small></div>
+                                                    <div><strong>Nacional</strong> <small>cobertura</small></div>
+                                                </div>
+                                                <button class="btn btn-outline-primary btn-sm mt-3" onclick="expandirCaso(this)">
+                                                    <i class="bi bi-plus-circle me-1"></i>Ver más
+                                                </button>
+                                                <div class="real-case-detail mt-3" style="display: none;">
+                                                    <p class="text-secondary small mb-2"><strong>Problema:</strong> Altos niveles de pobreza y baja asistencia escolar en zonas rurales y urbanas marginadas.</p>
+                                                    <p class="text-secondary small mb-2"><strong>Solución:</strong> Transferencias económicas condicionadas a corresponsabilidades en salud y educación.</p>
+                                                    <p class="text-secondary small mb-0"><strong>Resultado:</strong> Aumento significativo en la matrícula escolar y mejora en indicadores de salud infantil.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="real-case-card">
+                                            <div class="real-case-image" style="background: linear-gradient(135deg, #065f46 0%, #10b981 100%);">
+                                                <i class="bi bi-tree-fill"></i>
+                                            </div>
+                                            <div class="real-case-body">
+                                                <span class="real-case-tag" style="background: #d1fae5; color: #059669;">Ambiente</span>
+                                                <h5 class="fw-bold mt-2">Política de Cambio Climático</h5>
+                                                <p class="text-secondary small">Estrategia nacional para reducir emisiones de gases de efecto invernadero y adaptar al país a los efectos del cambio climático, con metas a 2030 y 2050.</p>
+                                                <div class="real-case-stats">
+                                                    <div><strong>51%</strong> <small>reducción CO₂</small></div>
+                                                    <div><strong>2030</strong> <small>meta</small></div>
+                                                    <div><strong>30+</strong> <small>medidas</small></div>
+                                                </div>
+                                                <button class="btn btn-outline-primary btn-sm mt-3" onclick="expandirCaso(this)">
+                                                    <i class="bi bi-plus-circle me-1"></i>Ver más
+                                                </button>
+                                                <div class="real-case-detail mt-3" style="display: none;">
+                                                    <p class="text-secondary small mb-2"><strong>Problema:</strong> Colombia es altamente vulnerable al cambio climático (inundaciones, sequías, deslizamientos).</p>
+                                                    <p class="text-secondary small mb-2"><strong>Solución:</strong> Estrategia nacional con metas sectoriales de mitigación y adaptación.</p>
+                                                    <p class="text-secondary small mb-0"><strong>Resultado:</strong> Integración del cambio climático en 32 planes departamentales de desarrollo.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="real-case-card">
+                                            <div class="real-case-image" style="background: linear-gradient(135deg, #7c3aed 0%, #a855f7 100%);">
+                                                <i class="bi bi-book-fill"></i>
+                                            </div>
+                                            <div class="real-case-body">
+                                                <span class="real-case-tag" style="background: #ede9fe; color: #7c3aed;">Educación</span>
+                                                <h5 class="fw-bold mt-2">Jornada Única Escolar</h5>
+                                                <p class="text-secondary small">Política que amplía el tiempo de permanencia de los estudiantes en instituciones educativas oficiales, pasando de media jornada a jornada completa para mejorar la calidad educativa.</p>
+                                                <div class="real-case-stats">
+                                                    <div><strong>50k+</strong> <small>estudiantes</small></div>
+                                                    <div><strong>1.000+</strong> <small>sedes</small></div>
+                                                    <div><strong>7h</strong> <small>jornada</small></div>
+                                                </div>
+                                                <button class="btn btn-outline-primary btn-sm mt-3" onclick="expandirCaso(this)">
+                                                    <i class="bi bi-plus-circle me-1"></i>Ver más
+                                                </button>
+                                                <div class="real-case-detail mt-3" style="display: none;">
+                                                    <p class="text-secondary small mb-2"><strong>Problema:</strong> Baja calidad educativa por jornadas escolares reducidas (4 horas en muchos casos).</p>
+                                                    <p class="text-secondary small mb-2"><strong>Solución:</strong> Ampliación gradual a jornada única de 7 horas con alimentación y actividades extracurriculares.</p>
+                                                    <p class="text-secondary small mb-0"><strong>Resultado:</strong> Mejora en pruebas estandarizadas y reducción de la exposición a riesgos sociales.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="real-case-card">
+                                            <div class="real-case-image" style="background: linear-gradient(135deg, #b45309 0%, #f59e0b 100%);">
+                                                <i class="bi bi-house-door-fill"></i>
+                                            </div>
+                                            <div class="real-case-body">
+                                                <span class="real-case-tag" style="background: #fef3c7; color: #d97706;">Vivienda</span>
+                                                <h5 class="fw-bold mt-2">Mi Casa Ya</h5>
+                                                <p class="text-secondary small">Programa de subsidios del gobierno nacional para facilitar la compra de vivienda nueva a hogares de ingresos bajos y medios, reduciendo la cuota inicial y la tasa de crédito hipotecario.</p>
+                                                <div class="real-case-stats">
+                                                    <div><strong>300k+</strong> <small>hogares</small></div>
+                                                    <div><strong>$30M</strong> <small>subsidio</small></div>
+                                                    <div><strong>Nacional</strong> <small>alcance</small></div>
+                                                </div>
+                                                <button class="btn btn-outline-primary btn-sm mt-3" onclick="expandirCaso(this)">
+                                                    <i class="bi bi-plus-circle me-1"></i>Ver más
+                                                </button>
+                                                <div class="real-case-detail mt-3" style="display: none;">
+                                                    <p class="text-secondary small mb-2"><strong>Problema:</strong> Déficit habitacional y dificultad de acceso a vivienda formal para hogares de bajos ingresos.</p>
+                                                    <p class="text-secondary small mb-2"><strong>Solución:</strong> Subsidio a la cuota inicial y cobertura de tasa de interés para crédito hipotecario.</p>
+                                                    <p class="text-secondary small mb-0"><strong>Resultado:</strong> Más de 300 mil hogares han accedido a vivienda propia con apoyo del Estado.</p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='js/conocimiento.js') }}"></script>
 {% endblock %}

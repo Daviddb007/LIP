@@ -1474,6 +1474,641 @@ body {
     border-radius: 24px;
 }
 
+.knowledge-section {
+    min-height: calc(100vh - 80px);
+    background: #f8fafc;
+}
+
+.knowledge-sidebar {
+    background: white;
+    border-radius: 20px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+
+.knowledge-sidebar-header {
+    padding: 1.25rem 1.5rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    border-bottom: 1px solid var(--border);
+}
+
+.knowledge-nav {
+    list-style: none;
+    padding: 0.5rem;
+    margin: 0;
+}
+
+.knowledge-nav li {
+    margin-bottom: 2px;
+}
+
+.knowledge-nav-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.85rem 1rem;
+    border-radius: 12px;
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.knowledge-nav-link i {
+    font-size: 1.1rem;
+    width: 24px;
+    text-align: center;
+    flex-shrink: 0;
+}
+
+.knowledge-nav-link:hover {
+    background: #f1f5f9;
+    color: var(--text-primary);
+}
+
+.knowledge-nav-link.active {
+    background: linear-gradient(135deg, #071a40 0%, #0f2f75 100%);
+    color: white;
+    font-weight: 600;
+}
+
+.knowledge-sidebar-footer {
+    padding: 1rem 1.5rem;
+    border-top: 1px solid var(--border);
+}
+
+.knowledge-module {
+    display: none;
+}
+
+.knowledge-module.active {
+    display: block;
+    animation: fadeInUp 0.4s ease-out;
+}
+
+.knowledge-card {
+    background: white;
+    border-radius: 24px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+    margin-bottom: 2rem;
+}
+
+.knowledge-card-header {
+    padding: 2rem 2.5rem;
+    border-bottom: 1px solid var(--border);
+}
+
+.knowledge-card-header h2 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-top: 0.75rem;
+    letter-spacing: -0.5px;
+}
+
+.knowledge-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 14px;
+    background: linear-gradient(135deg, #dbeafe 0%, #e0e7ff 100%);
+    color: var(--colombian-blue);
+    border-radius: 50px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.knowledge-card-body {
+    padding: 2.5rem;
+}
+
+.knowledge-divider {
+    text-align: center;
+    position: relative;
+    margin: 2rem 0;
+}
+
+.knowledge-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--border);
+}
+
+.knowledge-divider span {
+    position: relative;
+    z-index: 1;
+    background: white;
+    padding: 0 1.5rem;
+    font-weight: 600;
+    font-size: 1.05rem;
+    color: var(--text-secondary);
+}
+
+.knowledge-divider span i {
+    margin-right: 8px;
+}
+
+.concept-highlights {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.highlight-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+
+.highlight-item i {
+    margin-top: 3px;
+    flex-shrink: 0;
+}
+
+.concept-visual svg {
+    max-width: 250px;
+    height: auto;
+}
+
+.example-card {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.example-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.example-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    margin-bottom: 1rem;
+}
+
+.example-card h5 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+}
+
+.example-card p {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin: 0;
+    line-height: 1.6;
+}
+
+.practical-case {
+    background: #f8fafc;
+    border-radius: 20px;
+    padding: 2rem;
+    border: 1px solid var(--border);
+}
+
+.case-step-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #071a40 0%, #0f2f75 100%);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin: 0 auto;
+}
+
+.policy-timeline {
+    position: relative;
+    padding-left: 4rem;
+}
+
+.policy-timeline::before {
+    content: '';
+    position: absolute;
+    left: 1.75rem;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: linear-gradient(180deg, #ef4444 0%, #071a40 100%);
+    border-radius: 3px;
+}
+
+.policy-timeline-item {
+    position: relative;
+    margin-bottom: 2rem;
+    transition: all 0.3s ease;
+}
+
+.policy-timeline-marker {
+    position: absolute;
+    left: -2.75rem;
+    top: 0;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 18px;
+    z-index: 2;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.policy-timeline-content {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.policy-timeline-content:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateX(4px);
+}
+
+.policy-step-badge {
+    display: inline-block;
+    padding: 2px 12px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: white;
+    flex-shrink: 0;
+}
+
+.policy-example {
+    background: white;
+    border-radius: 10px;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--colombian-blue);
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.instrument-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.instrument-card:hover {
+    box-shadow: var(--shadow-md);
+}
+
+.instrument-card.expanded {
+    border-color: var(--instrument-color);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+}
+
+.instrument-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 1.25rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.instrument-header:hover {
+    background: #f8fafc;
+}
+
+.instrument-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 22px;
+    flex-shrink: 0;
+}
+
+.instrument-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.instrument-info h6 {
+    font-size: 0.95rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.instrument-sigla {
+    display: inline-block;
+    padding: 1px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    margin-top: 4px;
+}
+
+.instrument-toggle {
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    transition: transform 0.3s ease;
+    flex-shrink: 0;
+}
+
+.instrument-body {
+    padding: 0 1.25rem 1.25rem;
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+}
+
+.instrument-body p {
+    font-size: 0.9rem;
+    line-height: 1.6;
+}
+
+.instrument-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.detail-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.detail-item i {
+    margin-top: 3px;
+    flex-shrink: 0;
+    font-size: 0.9rem;
+}
+
+.glossary-search {
+    position: relative;
+}
+
+.glossary-search i {
+    position: absolute;
+    left: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+    z-index: 5;
+}
+
+.glossary-search .form-control {
+    padding-left: 44px;
+    border-radius: 14px;
+    height: 52px;
+    font-size: 1rem;
+    border: 2px solid var(--border);
+    background: #f8fafc;
+}
+
+.glossary-search .form-control:focus {
+    border-color: var(--colombian-blue);
+    box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
+    background: white;
+}
+
+.glossary-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.glossary-tag {
+    padding: 6px 18px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.glossary-tag:hover {
+    border-color: var(--colombian-blue);
+    color: var(--colombian-blue);
+}
+
+.glossary-tag.active {
+    background: var(--colombian-blue);
+    border-color: var(--colombian-blue);
+    color: white;
+}
+
+.glossary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1rem;
+}
+
+.glossary-card {
+    background: #f8fafc;
+    border-radius: 16px;
+    padding: 1.5rem;
+    border: 1px solid var(--border);
+    transition: all 0.3s ease;
+}
+
+.glossary-card:hover {
+    box-shadow: var(--shadow-md);
+    border-color: var(--colombian-blue);
+}
+
+.glossary-card-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 0.75rem;
+}
+
+.glossary-card-header h5 {
+    font-size: 1rem;
+}
+
+.glossary-sigla {
+    padding: 2px 10px;
+    border-radius: 6px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    background: #dbeafe;
+    color: var(--colombian-blue);
+}
+
+.glossary-category {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 2px 10px;
+    border-radius: 50px;
+}
+
+.categoria-planeacion { background: #dbeafe; color: #2563eb; }
+.categoria-normas { background: #fee2e2; color: #dc2626; }
+.categoria-territorio { background: #d1fae5; color: #059669; }
+.categoria-evaluacion { background: #ede9fe; color: #7c3aed; }
+
+.glossary-enlaces {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.glossary-enlace {
+    padding: 3px 12px;
+    border-radius: 50px;
+    border: 1px solid var(--border);
+    background: white;
+    font-size: 0.75rem;
+    color: var(--colombian-blue);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.glossary-enlace:hover {
+    background: var(--colombian-blue);
+    color: white;
+    border-color: var(--colombian-blue);
+}
+
+.real-case-card {
+    background: white;
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    overflow: hidden;
+    transition: all 0.3s ease;
+    height: 100%;
+}
+
+.real-case-card:hover {
+    box-shadow: var(--shadow-md);
+    transform: translateY(-3px);
+}
+
+.real-case-image {
+    height: 120px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: rgba(255,255,255,0.8);
+}
+
+.real-case-body {
+    padding: 1.25rem;
+}
+
+.real-case-tag {
+    display: inline-block;
+    padding: 3px 12px;
+    border-radius: 50px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.real-case-stats {
+    display: flex;
+    gap: 1.5rem;
+    padding: 0.75rem 0;
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+}
+
+.real-case-stats div {
+    text-align: center;
+}
+
+.real-case-stats strong {
+    display: block;
+    font-size: 1rem;
+    color: var(--text-primary);
+}
+
+.real-case-stats small {
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    text-transform: uppercase;
+}
+
+.real-case-detail {
+    border-top: 1px solid var(--border);
+    padding-top: 1rem;
+}
+
+@media (max-width: 992px) {
+    .knowledge-sidebar {
+        margin-bottom: 2rem;
+        position: relative !important;
+        top: 0 !important;
+    }
+
+    .knowledge-nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 4px;
+    }
+
+    .knowledge-nav li {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .knowledge-card-header,
+    .knowledge-card-body {
+        padding: 1.5rem;
+    }
+
+    .knowledge-card-header h2 {
+        font-size: 1.35rem;
+    }
+
+    .glossary-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
 @media (max-width: 768px) {
     .conversation-card {
         height: calc(100vh - 140px);
@@ -1497,5 +2132,16 @@ body {
 
     .summary-label {
         min-width: auto;
+    }
+
+    .policy-timeline {
+        padding-left: 3rem;
+    }
+
+    .policy-timeline-marker {
+        width: 36px;
+        height: 36px;
+        font-size: 14px;
+        left: -2.25rem;
     }
 }
