@@ -8,6 +8,7 @@ from app.models.problema import Problema
 from app.decorators import get_client_ip
 from app.services.validation import validate_participacion
 from app.services.participacion_service import crear_participacion
+from app.services.srie_service import clasificar
 
 participar_bp = Blueprint('participar', __name__)
 
@@ -33,10 +34,21 @@ def api_problemas(sector_id: int):
     return jsonify([{'id': p.id, 'nombre': p.nombre} for p in problemas])
 
 
+@participar_bp.route('/api/clasificar', methods=['POST'])
+def api_clasificar():
+    """Preview SRIE classification without saving (for conversational feedback)."""
+    data = request.get_json(silent=True)
+    if not data:
+        return jsonify({'error': 'Datos requeridos'}), 400
+
+    resultado = clasificar(data)
+    return jsonify(resultado)
+
+
 @participar_bp.route('/api/enviar', methods=['POST'])
 @limiter.limit("5 per minute")
 def api_enviar():
-    """Submit a new participation with validation and rate limiting."""
+    """Submit a new participation with validation, rate limiting, and SRIE classification."""
     client_ip = get_client_ip()
 
     data = request.get_json(silent=True)
@@ -50,6 +62,12 @@ def api_enviar():
         'success': True,
         'message': 'Participación registrada exitosamente',
         'id': participacion.id,
+        'srie': {
+            'pilar': participacion.srie_pilar,
+            'urgencia': participacion.srie_urgencia,
+            'impacto': participacion.srie_impacto,
+            'explicacion': participacion.srie_explicacion,
+        }
     })
 
 

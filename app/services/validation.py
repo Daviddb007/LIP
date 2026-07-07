@@ -23,7 +23,28 @@ def validate_participacion(data: dict) -> None:
 
     _validate_sectores(data)
     _validate_propuesta(data)
+    _validate_contexto(data)
+    _validate_actores(data)
+    _validate_beneficiarios(data)
     _validate_optional_fields(data)
+
+
+def _validate_contexto(data: dict) -> None:
+    contexto = data.get('contexto_ciudadano', '')
+    if contexto and len(contexto) > 500:
+        raise ValidationError('El contexto debe tener máximo 500 caracteres')
+
+
+def _validate_actores(data: dict) -> None:
+    actores = data.get('actores_responsables', '')
+    if actores and len(actores) > 300:
+        raise ValidationError('Los actores responsables deben tener máximo 300 caracteres')
+
+
+def _validate_beneficiarios(data: dict) -> None:
+    beneficiarios = data.get('beneficiarios', '')
+    if beneficiarios and len(beneficiarios) > 300:
+        raise ValidationError('Los beneficiarios deben tener máximo 300 caracteres')
 
 
 def _validate_sectores(data: dict) -> None:

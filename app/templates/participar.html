@@ -5,251 +5,67 @@
 {% block content %}
 <input type="hidden" id="apiProblemasUrl" value="/api/problemas/">
 <input type="hidden" id="apiEnviarUrl" value="{{ url_for('participar.api_enviar') }}">
+<input type="hidden" id="apiClasificarUrl" value="{{ url_for('participar.api_clasificar') }}">
 <input type="hidden" id="apiConfirmacionUrl" value="{{ url_for('participar.confirmacion') }}">
 <div class="flag-accent"></div>
 
-<section class="page-header bg-primary text-white" style="background: linear-gradient(135deg, var(--colombian-navy) 0%, #0f172a 100%);">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-8">
-                <h1 class="display-5 fw-bold mb-2">Formulario de Participación</h1>
-                <p class="lead mb-0 opacity-90">Comparte tus ideas para el futuro de Colombia</p>
-            </div>
-            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <span class="badge bg-light text-dark px-3 py-2">
-                    <i class="bi bi-clock me-1"></i>3-5 minutos
-                </span>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="py-5">
+<section class="conversation-section">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <!-- Step Indicators -->
-                <div class="d-flex justify-content-between align-items-center mb-4 px-2">
-                    <div class="step-indicator active">1</div>
-                    <div class="step-line flex-grow-1 mx-2" style="height: 2px; background: #e2e8f0;"></div>
-                    <div class="step-indicator">2</div>
-                    <div class="step-line flex-grow-1 mx-2" style="height: 2px; background: #e2e8f0;"></div>
-                    <div class="step-indicator">3</div>
-                    <div class="step-line flex-grow-1 mx-2" style="height: 2px; background: #e2e8f0;"></div>
-                    <div class="step-indicator">4</div>
-                    <div class="step-line flex-grow-1 mx-2" style="height: 2px; background: #e2e8f0;"></div>
-                    <div class="step-indicator">5</div>
-                </div>
-
-                <!-- Progress Bar -->
-                <div class="progress mb-4" style="height: 6px;">
-                    <div class="progress-bar" id="progressBar" style="width: 20%"></div>
-                </div>
-
-                <div class="card form-card shadow-sm">
-                    <div class="card-body p-4 p-lg-5">
-                        <!-- Step 1: Select Sectors -->
-                        <div id="step1" class="form-step active">
-                            <div class="text-center mb-4">
-                                <h3 class="fw-bold">
-                                    <i class="bi bi-list-check text-primary me-2"></i>
-                                    Selecciona tus temas
-                                </h3>
-                                <p class="text-muted">
-                                    Selecciona entre 1 y 3 sectores que consideras más importantes para Colombia.
-                                </p>
-                                <span id="sectorCounter" class="badge bg-light text-muted">0/3 seleccionados</span>
-                            </div>
-                            
-                            <div class="row g-3" id="sectoresContainer">
-                                {% for sector in sectores %}
-                                <div class="col-md-6">
-                                    <div class="form-check card p-3 sector-card" data-id="{{ sector.id }}">
-                                        <input class="form-check-input d-none" type="checkbox"
-                                               name="sectores" value="{{ sector.id }}" id="sector{{ sector.id }}">
-                                        <label class="form-check-label w-100 d-flex align-items-center"
-                                               for="sector{{ sector.id }}">
-                                            <div class="sector-icon me-3">
-                                                <i class="bi bi-{{ sector.icono or 'folder' }}"></i>
-                                            </div>
-                                            <span class="fw-medium">{{ sector.nombre }}</span>
-                                            <i class="bi bi-check-circle-fill text-primary ms-auto d-none check-icon"></i>
-                                        </label>
-                                    </div>
+            <div class="col-lg-8 col-xl-7">
+                <div class="conversation-card">
+                    <div class="conversation-header">
+                        <div class="conversation-avatar">
+                            <i class="bi bi-chat-dots-fill"></i>
+                        </div>
+                        <div>
+                            <h5 class="mb-0 fw-bold">Construyamos Colombia</h5>
+                            <small class="text-white-50">Conversación ciudadana · Anónimo</small>
+                        </div>
+                        <div class="ms-auto">
+                            <span class="conversation-badge">
+                                <i class="bi bi-shield-lock-fill me-1"></i>Seguro
+                            </span>
+                        </div>
+                    </div>
+                    
+                    <div class="conversation-body" id="conversacionBody">
+                        <div class="message-bubble assistant-bubble animate-in">
+                            <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+                            <div class="message-content">
+                                <p class="mb-1">¡Hola! Soy el asistente de <strong>Construyamos Colombia</strong>, el Ecosistema Nacional de Inteligencia Pública.</p>
+                                <p class="mb-1">Te voy a hacer algunas preguntas para entender tu visión y convertir tus ideas en evidencia para la toma de decisiones. No necesitas registrarte y toda tu participación es anónima.</p>
+                                <p class="mb-0">¿Empezamos?</p>
+                                <div class="message-actions mt-2">
+                                    <button class="btn btn-sm btn-primary" onclick="iniciarConversacion()">
+                                        <i class="bi bi-play-fill me-1"></i>¡Sí, empecemos!
+                                    </button>
                                 </div>
-                                {% endfor %}
-                            </div>
-
-                            <div class="d-flex justify-content-end mt-4">
-                                <button class="btn btn-primary btn-lg px-4" onclick="nextStep(2)">
-                                    Continuar <i class="bi bi-arrow-right ms-2"></i>
-                                </button>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- Step 2: Main Problem -->
-                        <div id="step2" class="form-step" style="display: none;">
-                            <div class="text-center mb-4">
-                                <h3 class="fw-bold">
-                                    <i class="bi bi-exclamation-triangle text-primary me-2"></i>
-                                    Problemas por sector
-                                </h3>
-                                <p class="text-muted">
-                                    Selecciona el problema más importante en cada sector que elegiste.
-                                </p>
-                            </div>
-                            
-                            <div id="problemasContainer" class="mb-4">
-                                <p class="text-muted">Cargando problemas...</p>
-                            </div>
-                            
-                            <div class="d-flex justify-content-between">
-                                <button class="btn btn-outline-secondary" onclick="prevStep(1)">
-                                    <i class="bi bi-arrow-left me-2"></i> Anterior
-                                </button>
-                                <button class="btn btn-primary px-4" onclick="nextStep(3)">
-                                    Continuar <i class="bi bi-arrow-right ms-2"></i>
-                                </button>
+                    <div class="conversation-footer" id="conversacionFooter" style="display: none;">
+                        <div id="inputContainer" class="input-container">
+                            <div id="inputOptions"></div>
+                            <div id="inputText" style="display: none;">
+                                <div class="input-group">
+                                    <textarea class="form-control" id="txtInput" rows="1" placeholder="Escribe tu respuesta aquí..." maxlength="500"></textarea>
+                                    <button class="btn btn-primary" id="btnSendText" onclick="enviarTexto()">
+                                        <i class="bi bi-send-fill"></i>
+                                    </button>
+                                </div>
+                                <div class="d-flex justify-content-between mt-1 px-1">
+                                    <small class="text-muted char-hint"><i class="bi bi-lightbulb me-1"></i>Sé específico y claro</small>
+                                    <small><span id="charCountFooter" class="fw-bold">0</span>/500</small>
+                                </div>
                             </div>
                         </div>
-
-                        <!-- Step 3: Priority -->
-                        <div id="step3" class="form-step" style="display: none;">
-                            <div class="text-center mb-4">
-                                <h3 class="fw-bold">
-                                    <i class="bi bi-arrow-up-circle text-primary me-2"></i>
-                                    Priorización
-                                </h3>
-                                <p class="text-muted">
-                                    Selecciona el sector más importante y opcionalmente escribe un problema específico.
-                                </p>
+                        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                            <div class="typing-dots">
+                                <span></span><span></span><span></span>
                             </div>
-                            
-                            <div id="prioridadContainer" class="mb-4"></div>
-                            
-                            <div class="d-flex justify-content-between">
-                                <button class="btn btn-outline-secondary" onclick="prevStep(2)">
-                                    <i class="bi bi-arrow-left me-2"></i> Anterior
-                                </button>
-                                <button class="btn btn-primary px-4" onclick="nextStep(4)">
-                                    Continuar <i class="bi bi-arrow-right ms-2"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Step 4: Proposal -->
-                        <div id="step4" class="form-step" style="display: none;">
-                            <div class="text-center mb-4">
-                                <h3 class="fw-bold">
-                                    <i class="bi bi-pencil-square text-primary me-2"></i>
-                                    <span id="step4Title">Tu propuesta</span>
-                                </h3>
-                                <p class="text-muted" id="step4Subtitle">
-                                    Escribe tu propuesta concreta para resolver el problema identificado.
-                                </p>
-                            </div>
-                            
-                            <div id="propuestaContainer" class="mb-4"></div>
-                            
-                            <div class="d-flex justify-content-between">
-                                <button class="btn btn-outline-secondary" onclick="prevStep(3)">
-                                    <i class="bi bi-arrow-left me-2"></i> Anterior
-                                </button>
-                                <button class="btn btn-primary px-4" onclick="nextStep(5)">
-                                    Continuar <i class="bi bi-arrow-right ms-2"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Step 5: Optional Info -->
-                        <div id="step5" class="form-step" style="display: none;">
-                            <div class="text-center mb-4">
-                                <h3 class="fw-bold">
-                                    <i class="bi bi-geo-alt text-primary me-2"></i>
-                                    Información opcional
-                                </h3>
-                                <p class="text-muted">
-                                    Esta información nos ayuda a realizar análisis territoriales. No son credenciales.
-                                </p>
-                            </div>
-                            
-                            <div class="row g-3">
-                                <div class="col-md-6">
-                                    <label class="form-label fw-medium">Departamento</label>
-                                    <select class="form-select" id="departamento">
-                                        <option value="">Selecciona...</option>
-                                        <option value="Amazonas">Amazonas</option>
-                                        <option value="Antioquia">Antioquia</option>
-                                        <option value="Arauca">Arauca</option>
-                                        <option value="Atlántico">Atlántico</option>
-                                        <option value="Bolívar">Bolívar</option>
-                                        <option value="Boyacá">Boyacá</option>
-                                        <option value="Caldas">Caldas</option>
-                                        <option value="Caquetá">Caquetá</option>
-                                        <option value="Casanare">Casanare</option>
-                                        <option value="Cauca">Cauca</option>
-                                        <option value="Cesar">Cesar</option>
-                                        <option value="Chocó">Chocó</option>
-                                        <option value="Córdoba">Córdoba</option>
-                                        <option value="Cundinamarca">Cundinamarca</option>
-                                        <option value="Guainía">Guainía</option>
-                                        <option value="Guaviare">Guaviare</option>
-                                        <option value="Huila">Huila</option>
-                                        <option value="La Guajira">La Guajira</option>
-                                        <option value="Magdalena">Magdalena</option>
-                                        <option value="Meta">Meta</option>
-                                        <option value="Nariño">Nariño</option>
-                                        <option value="Norte de Santander">Norte de Santander</option>
-                                        <option value="Putumayo">Putumayo</option>
-                                        <option value="Quindío">Quindío</option>
-                                        <option value="Risaralda">Risaralda</option>
-                                        <option value="Santander">Santander</option>
-                                        <option value="Sucre">Sucre</option>
-                                        <option value="Tolima">Tolima</option>
-                                        <option value="Valle del Cauca">Valle del Cauca</option>
-                                        <option value="Vaupés">Vaupés</option>
-                                        <option value="Vichada">Vichada</option>
-                                        <option value="Bogotá D.C.">Bogotá D.C.</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-medium">Municipio</label>
-                                    <input type="text" class="form-control" id="municipio"
-                                           placeholder="Ej: Medellín">
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-medium">Rango de edad</label>
-                                    <select class="form-select" id="rango_edad">
-                                        <option value="">Selecciona...</option>
-                                        <option value="16-18">16-18 años</option>
-                                        <option value="19-25">19-25 años</option>
-                                        <option value="26-35">26-35 años</option>
-                                        <option value="36-45">36-45 años</option>
-                                        <option value="46-55">46-55 años</option>
-                                        <option value="56-65">56-65 años</option>
-                                        <option value="66+">66+ años</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-6">
-                                    <label class="form-label fw-medium">Género (opcional)</label>
-                                    <select class="form-select" id="genero">
-                                        <option value="">Selecciona...</option>
-                                        <option value="Masculino">Masculino</option>
-                                        <option value="Femenino">Femenino</option>
-                                        <option value="Otro">Otro</option>
-                                        <option value="Prefiero no decir">Prefiero no decir</option>
-                                    </select>
-                                </div>
-                            </div>
-                            
-                            <div class="d-flex justify-content-between mt-4">
-                                <button class="btn btn-outline-secondary" onclick="prevStep(4)">
-                                    <i class="bi bi-arrow-left me-2"></i> Anterior
-                                </button>
-                                <button class="btn btn-success btn-lg px-4" onclick="enviarParticipacion()" id="btnEnviar">
-                                    <i class="bi bi-send me-2"></i>Enviar participación
-                                </button>
-                            </div>
+                            <small class="text-muted ms-2">Analizando tu respuesta...</small>
                         </div>
                     </div>
                 </div>
@@ -257,6 +73,36 @@
         </div>
     </div>
 </section>
+
+<div id="srieResultModal" class="modal fade" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg" style="border-radius: 24px;">
+            <div class="modal-header border-0 pt-4 px-4" style="background: linear-gradient(135deg, #071a40 0%, #0f2f75 100%); color: white; border-radius: 24px 24px 0 0;">
+                <div>
+                    <h5 class="fw-bold mb-1"><i class="bi bi-cpu-fill me-2"></i>Clasificación SRIE</h5>
+                    <small class="text-white-50">Tu participación fue analizada por el motor de inteligencia estratégica</small>
+                </div>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div id="srieResultContent">
+                    <div class="text-center py-4">
+                        <div class="spinner-border text-primary" role="status"></div>
+                        <p class="mt-2 text-muted">Generando clasificación...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer border-0 px-4 pb-4 justify-content-center">
+                <a href="{{ url_for('participar.confirmacion') }}" class="btn btn-primary btn-lg px-5" style="border-radius: 16px;">
+                    <i class="bi bi-check-circle me-2"></i>Ver detalle completo
+                </a>
+                <button class="btn btn-outline-secondary btn-lg px-4 ms-2" style="border-radius: 16px;" data-bs-dismiss="modal">
+                    Cerrar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block scripts %}

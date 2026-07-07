@@ -4,22 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="language" content="Spanish">
-    <meta name="description" content="Participa en la co-construcción del Plan Nacional de Desarrollo 2027-2030. Registra las problemáticas de tu región y define las prioridades de Colombia aquí.">
+    <meta name="description" content="Construyamos Colombia — Ecosistema Nacional de Inteligencia Pública. Participa, aprende y consulta cómo se construyen las decisiones públicas en Colombia.">
     <meta name="robots" content="index, follow">
-    <meta name="author" content="Gobierno de la República de Colombia">
+    <meta name="author" content="StoneLytics">
 
-    <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Consulta Ciudadana PND 2027-2030 | Gobierno de Colombia">
-    <meta property="og:description" content="Participa en la co-construcción del Plan Nacional de Desarrollo 2027-2030.">
+    <meta property="og:title" content="Construyamos Colombia | Ecosistema de Inteligencia Pública">
+    <meta property="og:description" content="El primer ecosistema colombiano que conecta ciudadanía, conocimiento, evidencia y toma de decisiones.">
     <meta property="og:image" content="{{ url_for('static', filename='img/favicon.webp', _external=True) }}">
 
-    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Consulta Ciudadana PND 2027-2030">
-    <meta name="twitter:description" content="Participa en la co-construcción del Plan Nacional de Desarrollo 2027-2030.">
+    <meta name="twitter:title" content="Construyamos Colombia | Ecosistema de Inteligencia Pública">
+    <meta name="twitter:description" content="El primer ecosistema colombiano que conecta ciudadanía, conocimiento, evidencia y toma de decisiones.">
 
-    <title>{% block title %}Consulta Ciudadana PND 2027-2030 | Gobierno de Colombia{% endblock %}</title>
+    <title>{% block title %}Construyamos Colombia | Ecosistema de Inteligencia Pública{% endblock %}</title>
 
     <link rel="icon" type="image/webp" href="{{ url_for('static', filename='img/favicon.webp') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -30,12 +28,14 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
 </head>
 <body>
-    <!-- Navbar Premium -->
     <nav class="navbar navbar-expand-lg navbar-premium fixed-top">
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home.index') }}">
-                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" height="45" class="me-3" style="filter: brightness(0) invert(1);">
-                <span class="navbar-brand-text d-none d-sm-inline">Construyamos<span>Colombia</span></span>
+                <img src="{{ url_for('static', filename='img/logo.png') }}" alt="Logo" height="40" class="me-3" style="filter: brightness(0) invert(1);">
+                <div>
+                    <span class="navbar-brand-text d-none d-sm-inline">Construyamos<span>Colombia</span></span>
+                    <span class="navbar-badge d-none d-md-inline">Inteligencia Pública</span>
+                </div>
             </a>
             
             <div class="d-flex align-items-center">
@@ -53,10 +53,13 @@
                         <a class="nav-link text-white" href="{{ url_for('home.index') }}">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ url_for('iniciativa.iniciativa') }}">La Iniciativa</a>
+                        <a class="nav-link text-white" href="{{ url_for('iniciativa.iniciativa') }}">Conocimiento</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link text-white" href="{{ url_for('resultados.resultados') }}">Resultados</a>
+                        <a class="nav-link text-white" href="{{ url_for('resultados.resultados') }}">Observatorio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link text-white" href="{{ url_for('participar.participar') }}">Participar</a>
                     </li>
                     <li class="nav-item ms-lg-4 d-none d-lg-block">
                         <a class="btn btn-nav-cta" href="{{ url_for('participar.participar') }}">
@@ -68,7 +71,6 @@
         </div>
     </nav>
 
-    <!-- Toast Container -->
     <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index: 9999;">
         <div id="appToast" class="toast" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="toast-header">
@@ -84,30 +86,30 @@
         {% block content %}{% endblock %}
     </main>
 
-    <!-- Footer Premium -->
     <footer class="footer-premium">
         <div class="container">
             <div class="row g-5">
                 <div class="col-lg-4">
                     <div class="footer-brand">Construyamos<span>Colombia</span></div>
-                    <p class="text-white-50">
-                        Participación ciudadana basada en evidencia para la construcción del Plan Nacional de Desarrollo 2027-2030.
+                    <span class="footer-sub-brand">Ecosistema Nacional de Inteligencia Pública</span>
+                    <p class="text-white-50 mt-3">
+                        Conectamos ciudadanía, conocimiento, evidencia y toma de decisiones para fortalecer la formulación de políticas públicas en Colombia.
                     </p>
                     <p class="text-white-50">
-                        Una iniciativa de <strong class="text-warning fw-bold">Stonelytics</strong>
+                        Desarrollado por <strong class="text-warning fw-bold">StoneLytics</strong>
                     </p>
                 </div>
                 <div class="col-lg-2 col-md-4">
-                    <h6 class="footer-heading">Navegación</h6>
+                    <h6 class="footer-heading">Ecosistema</h6>
                     <ul class="footer-links">
                         <li><a href="{{ url_for('home.index') }}"><i class="bi bi-chevron-right"></i> Inicio</a></li>
-                        <li><a href="{{ url_for('iniciativa.iniciativa') }}"><i class="bi bi-chevron-right"></i> La iniciativa</a></li>
-                        <li><a href="{{ url_for('resultados.resultados') }}"><i class="bi bi-chevron-right"></i> Resultados</a></li>
+                        <li><a href="{{ url_for('iniciativa.iniciativa') }}"><i class="bi bi-chevron-right"></i> Conocimiento</a></li>
+                        <li><a href="{{ url_for('resultados.resultados') }}"><i class="bi bi-chevron-right"></i> Observatorio</a></li>
                         <li><a href="{{ url_for('participar.participar') }}"><i class="bi bi-chevron-right"></i> Participar</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-4">
-                    <h6 class="footer-heading">Contacto</h6>
+                    <h6 class="footer-heading">StoneLytics</h6>
                     <div class="footer-contact">
                         <i class="bi bi-envelope-fill"></i>
                         <a href="mailto:info@stonelytics.tech">info@stonelytics.tech</a>
@@ -142,7 +144,6 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
     <script>
-        // Navbar scroll effect
         window.addEventListener('scroll', function() {
             const navbar = document.querySelector('.navbar-premium');
             if (window.scrollY > 50) {
@@ -152,7 +153,6 @@
             }
         });
 
-        // Toast notification function
         function showToast(message, title = 'Notificación', type = 'info') {
             const toast = document.getElementById('appToast');
             const toastTitle = document.getElementById('toastTitle');
@@ -177,7 +177,6 @@
             bsToast.show();
         }
 
-        // Counter animation
         function animateCounter(element, target, duration = 2000) {
             let start = 0;
             const increment = target / (duration / 16);
@@ -192,7 +191,6 @@
             }, 16);
         }
 
-        // Intersection Observer for animations
         const observerOptions = {
             threshold: 0.1,
             rootMargin: '0px 0px -50px 0px'
@@ -211,7 +209,6 @@
             animateOnScroll.observe(el);
         });
 
-        // Confetti Animation
         function launchConfetti() {
             const container = document.createElement('div');
             container.className = 'confetti-container';

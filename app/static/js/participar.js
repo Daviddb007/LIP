@@ -1,8 +1,21 @@
-let sectoresSeleccionados = [];
-let sectorPrioritarioId = null;
-let problemasSeleccionados = {};
-let tipoPropuesta = 'unificada';
 let apiUrls = {};
+let conversationData = {
+    sectores: [],
+    problemas: {},
+    sectorPrioritarioId: null,
+    problemaPrincipal: '',
+    contextoCiudadano: '',
+    propuesta: '',
+    actoresResponsables: '',
+    beneficiarios: '',
+    departamento: '',
+    municipio: '',
+    rangoEdad: '',
+    genero: ''
+};
+let currentStep = 'welcome';
+let allSectores = [];
+let allProblemas = {};
 
 function escapeHtml(str) {
     const div = document.createElement('div');
@@ -14,533 +27,603 @@ document.addEventListener('DOMContentLoaded', function() {
     apiUrls = {
         problemas: document.getElementById('apiProblemasUrl')?.value || '/api/problemas/',
         enviar: document.getElementById('apiEnviarUrl')?.value || '/api/enviar',
+        clasificar: document.getElementById('apiClasificarUrl')?.value || '/api/clasificar',
         confirmacion: document.getElementById('apiConfirmacionUrl')?.value || '/confirmacion'
     };
-    initSectorCards();
-    initCharCounter();
+
+    const input = document.getElementById('txtInput');
+    if (input) {
+        input.addEventListener('input', function() {
+            this.style.height = 'auto';
+            this.style.height = Math.min(this.scrollHeight, 120) + 'px';
+            document.getElementById('charCountFooter').textContent = this.value.length;
+        });
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                enviarTexto();
+            }
+        });
+    }
+
+    loadSectores();
 });
 
-function initSectorCards() {
-    document.querySelectorAll('.sector-card').forEach(card => {
-        card.addEventListener('click', function(e) {
-            e.preventDefault();
+async function loadSectores() {
+    try {
+        const response = await fetch('/api/sectores');
+        allSectores = await response.json();
 
-            const checkbox = this.querySelector('input[type="checkbox"]');
-            const id = parseInt(checkbox.value);
-
-            if (checkbox.checked) {
-                checkbox.checked = false;
-                this.classList.remove('selected');
-                sectoresSeleccionados = sectoresSeleccionados.filter(s => s !== id);
-                delete problemasSeleccionados[id];
-            } else {
-                if (sectoresSeleccionados.length >= 3) {
-                    showToast('Máximo 3 sectores permitidos', 'Límite alcanzado', 'error');
-                    return;
-                }
-                checkbox.checked = true;
-                this.classList.add('selected');
-                sectoresSeleccionados.push(id);
-            }
-            updateSectorCounter();
-        });
-    });
-}
-
-function updateSectorCounter() {
-    const counter = document.getElementById('sectorCounter');
-    if (counter) {
-        counter.textContent = `${sectoresSeleccionados.length}/3 seleccionados`;
-        if (sectoresSeleccionados.length === 3) {
-            counter.classList.add('text-warning');
-            counter.classList.remove('text-muted');
-        } else {
-            counter.classList.remove('text-warning');
-            counter.classList.add('text-muted');
+        for (const s of allSectores) {
+            const res = await fetch(`${apiUrls.problemas}${s.id}`);
+            allProblemas[s.id] = await res.json();
         }
+    } catch (e) {
+        console.error('Error loading sectors:', e);
     }
 }
 
-function initCharCounter() {
-    const textarea = document.getElementById('propuesta');
-    const counter = document.getElementById('charCount');
+function scrollToBottom() {
+    const body = document.getElementById('conversacionBody');
+    setTimeout(() => {
+        body.scrollTop = body.scrollHeight;
+    }, 100);
+}
 
-    if (textarea && counter) {
-        textarea.addEventListener('input', function() {
-            counter.textContent = this.value.length;
-            if (this.value.length > 450) {
-                counter.classList.add('text-danger');
-            } else {
-                counter.classList.remove('text-danger');
-            }
-        });
+function addMessage(content, type = 'assistant') {
+    const body = document.getElementById('conversacionBody');
+    const bubble = document.createElement('div');
+    bubble.className = `message-bubble ${type}-bubble animate-in`;
+    bubble.innerHTML = content;
+    body.appendChild(bubble);
+    scrollToBottom();
+    return bubble;
+}
+
+function showTyping() {
+    document.getElementById('loadingIndicator').style.display = 'flex';
+    document.getElementById('inputContainer').style.display = 'none';
+    scrollToBottom();
+}
+
+function hideTyping() {
+    document.getElementById('loadingIndicator').style.display = 'none';
+    document.getElementById('inputContainer').style.display = 'block';
+}
+
+function showTextInput(placeholder = 'Escribe tu respuesta aquí...') {
+    document.getElementById('inputOptions').style.display = 'none';
+    document.getElementById('inputText').style.display = 'block';
+    const input = document.getElementById('txtInput');
+    input.placeholder = placeholder;
+    input.value = '';
+    input.style.height = 'auto';
+    document.getElementById('charCountFooter').textContent = '0';
+    document.getElementById('conversacionFooter').style.display = 'block';
+    setTimeout(() => input.focus(), 300);
+}
+
+function showOptions(options) {
+    document.getElementById('inputText').style.display = 'none';
+    const container = document.getElementById('inputOptions');
+    container.style.display = 'flex';
+
+    let html = '';
+    options.forEach((opt, i) => {
+        let classes = 'option-btn btn ';
+        if (opt.variant === 'primary') {
+            classes += 'btn-primary';
+        } else if (opt.variant === 'success') {
+            classes += 'btn-success';
+        } else if (opt.variant === 'outline') {
+            classes += 'btn-outline-primary';
+        } else {
+            classes += 'btn-outline-secondary';
+        }
+        if (opt.selected) {
+            classes += ' selected';
+        }
+        html += `<button class="${classes}" onclick="handleOptionClick(this, ${i})" data-action="${opt.action || ''}" data-value="${escapeHtml(opt.value || '')}">`;
+        if (opt.icon) html += `<i class="bi bi-${opt.icon} me-2"></i>`;
+        html += `${escapeHtml(opt.label)}</button>`;
+    });
+    container.innerHTML = html;
+    document.getElementById('conversacionFooter').style.display = 'block';
+}
+
+function handleOptionClick(btn, index) {
+    const options = btn.parentElement.querySelectorAll('.option-btn');
+    const action = btn.dataset.action;
+
+    if (action === 'toggle-sector') {
+        btn.classList.toggle('selected');
+        return;
+    }
+    if (action === 'toggle-problema') {
+        options.forEach(o => o.classList.remove('selected'));
+        btn.classList.add('selected');
+        return;
+    }
+    if (action === 'next') {
+        const actionFn = btn.dataset.value;
+        if (typeof window[actionFn] === 'function') {
+            window[actionFn]();
+        }
+        return;
     }
 }
 
-function updateProgress(step) {
-    const totalSteps = 5;
-    const progress = (step / totalSteps) * 100;
-    document.getElementById('progressBar').style.width = progress + '%';
-    
-    document.querySelectorAll('.step-indicator').forEach((el, index) => {
-        if (index + 1 < step) {
-            el.classList.add('completed');
-            el.classList.remove('active');
-        } else if (index + 1 === step) {
-            el.classList.add('active');
-            el.classList.remove('completed');
-        } else {
-            el.classList.remove('active', 'completed');
-        }
-    });
+function iniciarConversacion() {
+    addMessage(`
+        <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="message-content">
+            <p class="mb-2"><strong>¡Genial!</strong> Primero, cuéntame ¿sobre qué temas te gustaría hablar?</p>
+            <p class="mb-0 text-muted small">Puedes seleccionar hasta 3 temas de la lista.</p>
+        </div>
+    `);
+
+    showTyping();
+    setTimeout(() => {
+        hideTyping();
+        renderSectorSelection();
+        currentStep = 'sectores';
+    }, 800);
 }
 
-function showLoading(btn, loading = true) {
-    if (loading) {
-        btn.disabled = true;
-        btn.dataset.originalHtml = btn.innerHTML;
-        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Cargando...';
+function renderSectorSelection() {
+    let optionsHtml = '';
+    allSectores.forEach(s => {
+        const selected = conversationData.sectores.includes(s.id) ? 'selected' : '';
+        optionsHtml += `<button class="option-btn btn btn-outline-secondary ${selected}" onclick="toggleSector(this, ${s.id})" data-action="toggle-sector">
+            <i class="bi bi-${s.icono || 'folder'} me-2"></i>${escapeHtml(s.nombre)}
+        </button>`;
+    });
+
+    const container = document.getElementById('inputOptions');
+    container.style.display = 'flex';
+    container.innerHTML = `
+        <div class="sector-options-grid">
+            ${optionsHtml}
+        </div>
+        <div class="w-100 text-center mt-3">
+            <small class="text-muted" id="sectorCountMsg">${conversationData.sectores.length}/3 seleccionados</small>
+            <button class="btn btn-primary ms-3" onclick="confirmarSectores()" id="btnConfirmSectores">
+                <i class="bi bi-arrow-right me-1"></i>Continuar
+            </button>
+        </div>
+    `;
+    document.getElementById('inputText').style.display = 'none';
+    document.getElementById('conversacionFooter').style.display = 'block';
+}
+
+function toggleSector(btn, id) {
+    const idx = conversationData.sectores.indexOf(id);
+    if (idx >= 0) {
+        conversationData.sectores.splice(idx, 1);
+        btn.classList.remove('selected');
+    } else if (conversationData.sectores.length < 3) {
+        conversationData.sectores.push(id);
+        btn.classList.add('selected');
     } else {
-        btn.disabled = false;
-        btn.innerHTML = btn.dataset.originalHtml;
+        showToast('Máximo 3 temas permitidos', 'Límite alcanzado', 'error');
+        return;
     }
+    document.getElementById('sectorCountMsg').textContent = `${conversationData.sectores.length}/3 seleccionados`;
 }
 
-function nextStep(step) {
-    if (step === 2 && sectoresSeleccionados.length === 0) {
-        showToast('Selecciona al menos un sector', 'Campo requerido', 'error');
+function confirmarSectores() {
+    if (conversationData.sectores.length === 0) {
+        showToast('Selecciona al menos un tema', 'Campo requerido', 'error');
         return;
     }
 
-    if (step === 2) {
-        loadProblemas();
-    }
+    const nombres = conversationData.sectores.map(id => {
+        const s = allSectores.find(s => s.id === id);
+        return s ? s.nombre : '';
+    }).filter(Boolean);
 
-    if (step === 3) {
-        const hasAtLeastOne = sectoresSeleccionados.some(id => problemasSeleccionados[id]);
-        if (!hasAtLeastOne) {
-            showToast('Selecciona al menos un problema', 'Campo requerido', 'error');
-            return;
-        }
-        loadPrioridadConProblemas();
-    }
+    addMessage(`
+        <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="message-content">
+            <p class="mb-1">¡Gracias! Has seleccionado: <strong>${nombres.join(', ')}</strong>.</p>
+        </div>
+    `);
 
-    if (step === 4) {
-        const sectorRadio = document.querySelector('input[name="sectorPrioridad"]:checked');
-        if (!sectorRadio) {
-            showToast('Selecciona el sector prioritario', 'Campo requerido', 'error');
-            return;
-        }
-        loadPropuestaForm();
-    }
-
-    if (step === 5) {
-        const hasAtLeastOne = sectoresSeleccionados.some(id => problemasSeleccionados[id]);
-        if (!hasAtLeastOne) {
-            showToast('Selecciona al menos un problema', 'Campo requerido', 'error');
-            prevStep(3);
-            return;
-        }
-    }
-
-    document.querySelectorAll('.form-step').forEach(el => el.style.display = 'none');
-    document.getElementById('step' + step).style.display = 'block';
-    updateProgress(step);
-    
-    document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    showTyping();
+    setTimeout(() => {
+        hideTyping();
+        renderProblemasStep();
+    }, 600);
 }
 
-function prevStep(step) {
-    document.querySelectorAll('.form-step').forEach(el => el.style.display = 'none');
-    document.getElementById('step' + step).style.display = 'block';
-    updateProgress(step);
+function renderProblemasStep() {
+    addMessage(`
+        <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="message-content">
+            <p class="mb-1">Ahora, para cada tema, ¿cuál es el problema más importante que identificas?</p>
+        </div>
+    `);
+
+    showTyping();
+    setTimeout(() => {
+        hideTyping();
+        renderProblemasSelection();
+        currentStep = 'problemas';
+    }, 600);
 }
 
-async function loadProblemas() {
-    const container = document.getElementById('problemasContainer');
-    container.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-muted">Cargando problemas...</p></div>';
+function renderProblemasSelection() {
+    let html = '';
+    conversationData.sectores.forEach(sectorId => {
+        const sector = allSectores.find(s => s.id === sectorId);
+        const problemas = allProblemas[sectorId] || [];
+        const selected = conversationData.problemas[sectorId] || '';
 
-    try {
-        let html = '';
+        html += `<div class="problema-step-group mb-3">
+            <h6 class="fw-bold mb-2"><i class="bi bi-folder-fill me-2 text-primary"></i>${escapeHtml(sector ? sector.nombre : '')}</h6>
+            <div class="d-flex flex-wrap gap-2">`;
 
-        for (const sectorId of sectoresSeleccionados) {
-            const card = document.querySelector(`[data-id="${sectorId}"]`);
-            const sectorNombre = card ? card.querySelector('label span').textContent : `Sector ${sectorId}`;
-
-            const response = await fetch(`${apiUrls.problemas}${sectorId}`);
-            const problemas = await response.json();
-
-            const selectedProblem = problemasSeleccionados[sectorId] || null;
-
-            html += `
-                <div class="mb-4">
-                    <h6 class="fw-bold text-muted mb-3">
-                        <i class="bi bi-folder-fill me-2"></i>${escapeHtml(sectorNombre)}
-                    </h6>
-                    <div class="problemas-grid" data-sector-group="${sectorId}">
-            `;
-
-            problemas.forEach(p => {
-                const safeName = escapeHtml(p.nombre);
-                const isSelected = selectedProblem === safeName;
-                html += `
-                    <div class="problema-card ${isSelected ? 'selected' : ''}" 
-                         data-nombre="${safeName}" data-sector-id="${sectorId}" 
-                         onclick="selectProblema(this, ${sectorId})">
-                        <div class="problema-icon"><i class="bi bi-exclamation-triangle"></i></div>
-                        <div class="problema-name">${safeName}</div>
-                    </div>
-                `;
-            });
-
-            html += `
-                    </div>
-                </div>
-            `;
-        }
-
-        container.innerHTML = html;
-
-    } catch (error) {
-        container.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>Error al cargar problemas.</div>';
-    }
-}
-
-function selectProblema(element, sectorId) {
-    const group = element.closest('.problemas-grid');
-    if (group) {
-        group.querySelectorAll('.problema-card').forEach(card => card.classList.remove('selected'));
-    }
-    element.classList.add('selected');
-    problemasSeleccionados[sectorId] = element.dataset.nombre;
-}
-
-async function loadPrioridadConProblemas() {
-    const container = document.getElementById('prioridadContainer');
-    container.innerHTML = '<div class="text-center py-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2 text-muted">Cargando opciones...</p></div>';
-
-    try {
-        let html = '';
-        
-        for (const sectorId of sectoresSeleccionados) {
-            const card = document.querySelector(`[data-id="${sectorId}"]`);
-            const sectorNombre = card ? card.querySelector('label span').textContent : `Sector ${sectorId}`;
-            
-            const response = await fetch(`${apiUrls.problemas}${sectorId}`);
-            const problemas = await response.json();
-            
-            const isExpanded = sectoresSeleccionados.indexOf(sectorId) === 0;
-            const selectedProblem = problemasSeleccionados[sectorId] || null;
-
-            html += `
-                <div class="sector-prioridad-section mb-4 ${isExpanded ? 'expanded' : ''}" data-sector-id="${sectorId}">
-                    <div class="sector-prioridad-header" onclick="toggleSectorProblemas(this, event)">
-                        <div class="d-flex align-items-center">
-                            <input class="form-check-input me-3" type="radio" name="sectorPrioridad" 
-                                   value="${sectorId}" id="prioridad${sectorId}" 
-                                   ${isExpanded ? 'checked' : ''}
-                                   onclick="event.stopPropagation()">
-                            <h6 class="mb-0 fw-bold">${escapeHtml(sectorNombre)}</h6>
-                            ${selectedProblem ? '<span class="badge bg-success ms-2"><i class="bi bi-check-lg"></i> Seleccionado</span>' : ''}
-                        </div>
-                        <i class="bi bi-chevron-down toggle-icon"></i>
-                    </div>
-                    <div class="sector-prioridad-body" id="sectorProblemas${sectorId}" style="display: ${isExpanded ? 'block' : 'none'};">
-                        <div class="problemas-prioridad-grid">
-            `;
-            
-            problemas.forEach(p => {
-                const safeName = escapeHtml(p.nombre);
-                const isSelected = selectedProblem === safeName;
-                html += `
-                    <div class="problema-prioridad-card ${isSelected ? 'selected' : ''}" 
-                         data-nombre="${safeName}" 
-                         onclick="selectProblemaPrioridad(this, ${sectorId})">
-                        <i class="bi bi-check-circle-fill text-success ${isSelected ? '' : 'd-none'} check-icon"></i>
-                        <span>${safeName}</span>
-                    </div>
-                `;
-            });
-            
-            html += `
-                            <div class="problema-prioridad-card custom-problema" onclick="toggleCustomPrioridad(${sectorId})">
-                                <i class="bi bi-plus-circle"></i>
-                                <span>Otro</span>
-                            </div>
-                        </div>
-                        <div class="custom-prioridad-input mt-2" id="customPrioridad${sectorId}" style="display: none;">
-                            <input type="text" class="form-control form-control-sm" 
-                                   placeholder="Escribe un problema personalizado..." 
-                                   data-sector="${sectorId}" maxlength="200">
-                        </div>
-                    </div>
-                </div>
-            `;
-        }
-        
-        html += `
-            <div class="alert alert-info alert-sm mt-3">
-                <i class="bi bi-info-circle me-2"></i>
-                <small>Selecciona el sector que consideras más importante y opcionalmente escribe un problema específico.</small>
-            </div>
-        `;
-
-        container.innerHTML = html;
-
-    } catch (error) {
-        container.innerHTML = '<div class="alert alert-danger"><i class="bi bi-exclamation-triangle me-2"></i>Error al cargar opciones.</div>';
-    }
-}
-
-function toggleSectorProblemas(header, event) {
-    if (event) event.stopPropagation();
-
-    const section = header.closest('.sector-prioridad-section');
-    const body = section.querySelector('.sector-prioridad-body');
-    const isExpanded = section.classList.contains('expanded');
-
-    document.querySelectorAll('.sector-prioridad-section').forEach(s => {
-        if (s !== section) {
-            s.classList.remove('expanded');
-            s.querySelector('.sector-prioridad-body').style.display = 'none';
-        }
-    });
-
-    if (isExpanded) {
-        section.classList.remove('expanded');
-        body.style.display = 'none';
-    } else {
-        section.classList.add('expanded');
-        body.style.display = 'block';
-    }
-}
-
-function selectProblemaPrioridad(element, sectorId) {
-    const body = document.getElementById(`sectorProblemas${sectorId}`);
-    body.querySelectorAll('.problema-prioridad-card').forEach(card => {
-        card.classList.remove('selected');
-        card.querySelector('.check-icon')?.classList.add('d-none');
-    });
-    
-    element.classList.add('selected');
-    element.querySelector('.check-icon')?.classList.remove('d-none');
-    
-    document.getElementById(`customPrioridad${sectorId}`).style.display = 'none';
-    
-    problemasSeleccionados[sectorId] = element.dataset.nombre;
-
-    document.querySelectorAll('.sector-prioridad-section').forEach(s => {
-        const sId = parseInt(s.dataset.sectorId);
-        if (sId === sectorId) {
-            const header = s.querySelector('.sector-prioridad-header');
-            const existingBadge = header.querySelector('.badge');
-            if (existingBadge) existingBadge.remove();
-            header.querySelector('.d-flex').insertAdjacentHTML('beforeend', 
-                '<span class="badge bg-success ms-2"><i class="bi bi-check-lg"></i> Seleccionado</span>');
-        }
-    });
-}
-
-function toggleCustomPrioridad(sectorId) {
-    const input = document.getElementById(`customPrioridad${sectorId}`);
-    const allInputs = document.querySelectorAll('.custom-prioridad-input');
-    
-    allInputs.forEach(i => {
-        if (i.id !== `customPrioridad${sectorId}`) {
-            i.style.display = 'none';
-        }
-    });
-    
-    if (input.style.display === 'none' || !input.style.display) {
-        input.style.display = 'block';
-        input.querySelector('input').focus();
-    } else {
-        input.style.display = 'none';
-    }
-}
-
-function selectTipoPropuesta(element) {
-    document.querySelectorAll('.tipo-propuesta-card').forEach(card => card.classList.remove('selected'));
-    element.classList.add('selected');
-    tipoPropuesta = element.dataset.tipo;
-}
-
-function loadPropuestaForm() {
-    const container = document.getElementById('propuestaContainer');
-    const titleEl = document.getElementById('step4Title');
-    const subtitleEl = document.getElementById('step4Subtitle');
-
-    if (tipoPropuesta === 'por_sector' && sectoresSeleccionados.length > 1) {
-        titleEl.textContent = 'Propuestas por sector';
-        subtitleEl.textContent = 'Escribe una propuesta para cada sector que seleccionaste.';
-
-        let html = '';
-
-        if (sectoresSeleccionados.length > 1) {
-            html += `
-                <div class="mb-4">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="card p-3 tipo-propuesta-card selected" data-tipo="unificada" onclick="selectTipoPropuesta(this); loadPropuestaForm();">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-chat-left-text text-primary fs-3 me-3"></i>
-                                    <div>
-                                        <h6 class="fw-bold mb-1">Propuesta unificada</h6>
-                                        <small class="text-muted">Una sola propuesta que aborde todos los sectores.</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card p-3 tipo-propuesta-card" data-tipo="por_sector" onclick="selectTipoPropuesta(this); loadPropuestaForm();">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-grid-3x3-gap text-primary fs-3 me-3"></i>
-                                    <div>
-                                        <h6 class="fw-bold mb-1">Propuesta por sector</h6>
-                                        <small class="text-muted">Escribe una propuesta separada para cada sector.</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <hr class="my-3">
-            `;
-        }
-
-        for (const sectorId of sectoresSeleccionados) {
-            const card = document.querySelector(`[data-id="${sectorId}"]`);
-            const sectorNombre = card ? card.querySelector('label span').textContent : `Sector ${sectorId}`;
-            html += `
-                <div class="mb-4">
-                    <label class="form-label fw-bold">
-                        <i class="bi bi-folder-fill me-2 text-primary"></i>${escapeHtml(sectorNombre)}
-                    </label>
-                    <textarea class="form-control propuesta-sector-textarea" rows="3"
-                              maxlength="500" data-sector-id="${sectorId}"
-                              placeholder="Escribe tu propuesta para el sector ${escapeHtml(sectorNombre)}..."></textarea>
-                    <div class="d-flex justify-content-between mt-1">
-                        <small class="text-muted"><i class="bi bi-lightbulb me-1"></i>Sé específico y claro</small>
-                        <small><span class="char-count fw-bold">0</span>/500</small>
-                    </div>
-                </div>
-            `;
-        }
-        container.innerHTML = html;
-
-        container.querySelectorAll('.propuesta-sector-textarea').forEach(textarea => {
-            textarea.addEventListener('input', function() {
-                this.nextElementSibling.querySelector('.char-count').textContent = this.value.length;
-                if (this.value.length > 450) {
-                    this.nextElementSibling.querySelector('.char-count').classList.add('text-danger');
-                } else {
-                    this.nextElementSibling.querySelector('.char-count').classList.remove('text-danger');
-                }
-            });
+        problemas.forEach(p => {
+            const isSel = selected === p.nombre ? 'selected' : '';
+            html += `<button class="option-btn btn btn-outline-secondary ${isSel}" onclick="selectProblema(this, ${sectorId}, '${escapeHtml(p.nombre)}')">
+                ${escapeHtml(p.nombre)}
+            </button>`;
         });
-    } else {
-        tipoPropuesta = 'unificada';
-        titleEl.textContent = 'Tu propuesta';
 
-        let subtitle = 'Escribe tu propuesta concreta para resolver el problema identificado.';
-        let typeChooser = '';
+        html += `<button class="option-btn btn btn-outline-secondary ${selected && !problemas.find(p => p.nombre === selected) ? 'selected' : ''}" onclick="selectProblemaCustom(${sectorId})">
+            <i class="bi bi-pencil me-1"></i>Otro
+        </button>`;
 
-        if (sectoresSeleccionados.length > 1) {
-            subtitle = 'Elige el tipo de propuesta y escribe tu respuesta.';
-            typeChooser = `
-                <div class="mb-4">
-                    <div class="row g-3">
-                        <div class="col-md-6">
-                            <div class="card p-3 tipo-propuesta-card selected" data-tipo="unificada" onclick="selectTipoPropuesta(this); loadPropuestaForm();">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-chat-left-text text-primary fs-3 me-3"></i>
-                                    <div>
-                                        <h6 class="fw-bold mb-1">Propuesta unificada</h6>
-                                        <small class="text-muted">Una sola propuesta que aborde todos los sectores.</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card p-3 tipo-propuesta-card" data-tipo="por_sector" onclick="selectTipoPropuesta(this); loadPropuestaForm();">
-                                <div class="d-flex align-items-start">
-                                    <i class="bi bi-grid-3x3-gap text-primary fs-3 me-3"></i>
-                                    <div>
-                                        <h6 class="fw-bold mb-1">Propuesta por sector</h6>
-                                        <small class="text-muted">Escribe una propuesta separada para cada sector.</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+        html += `</div></div>`;
+    });
+
+    html += `<div class="w-100 text-center mt-3">
+        <button class="btn btn-primary" onclick="confirmarProblemas()">
+            <i class="bi bi-arrow-right me-1"></i>Continuar
+        </button>
+    </div>`;
+
+    const container = document.getElementById('inputOptions');
+    container.style.display = 'flex';
+    container.innerHTML = html;
+    document.getElementById('inputText').style.display = 'none';
+    document.getElementById('conversacionFooter').style.display = 'block';
+}
+
+function selectProblema(btn, sectorId, nombre) {
+    const group = btn.closest('.problema-step-group');
+    group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    conversationData.problemas[sectorId] = nombre;
+}
+
+function selectProblemaCustom(sectorId) {
+    const group = document.querySelector(`.problema-step-group:nth-child(${conversationData.sectores.indexOf(sectorId) + 1})`);
+    group.querySelectorAll('.option-btn').forEach(b => b.classList.remove('selected'));
+
+    const answer = prompt('Describe el problema que identificas:');
+    if (answer && answer.trim()) {
+        conversationData.problemas[sectorId] = answer.trim();
+
+        const customBtn = Array.from(group.querySelectorAll('.option-btn')).find(b => b.textContent.includes('Otro'));
+        if (customBtn) customBtn.classList.add('selected');
+    }
+}
+
+function confirmarProblemas() {
+    const sinProblema = conversationData.sectores.some(id => !conversationData.problemas[id]);
+    if (sinProblema) {
+        showToast('Selecciona un problema para cada tema', 'Campo requerido', 'error');
+        return;
+    }
+
+    let detalles = '';
+    conversationData.sectores.forEach(id => {
+        const sector = allSectores.find(s => s.id === id);
+        detalles += `<li><strong>${escapeHtml(sector ? sector.nombre : '')}:</strong> ${escapeHtml(conversationData.problemas[id])}</li>`;
+    });
+
+    addMessage(`
+        <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="message-content">
+            <p class="mb-1">Perfecto. Estos son los problemas que identificaste:</p>
+            <ul class="mb-1">${detalles}</ul>
+        </div>
+    `);
+
+    showTyping();
+    setTimeout(() => {
+        hideTyping();
+        renderContextoStep();
+    }, 600);
+}
+
+function renderContextoStep() {
+    addMessage(`
+        <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="message-content">
+            <p class="mb-1">Cuéntame, <strong>¿por qué crees que ocurre este problema?</strong> ¿Hay algo en tu experiencia o en tu comunidad que ayude a entenderlo mejor?</p>
+            <p class="mb-0 text-muted small">Describe brevemente el contexto que conoces.</p>
+        </div>
+    `);
+
+    showTextInput('Ej: En mi barrio falta inversión en alcantarillado desde hace 10 años...');
+    currentStep = 'contexto';
+}
+
+function enviarTexto() {
+    const input = document.getElementById('txtInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    addMessage(`
+        <div class="message-avatar user-avatar"><i class="bi bi-person-fill"></i></div>
+        <div class="message-content user-content">
+            <p class="mb-0">${escapeHtml(text)}</p>
+        </div>
+    `, 'user');
+
+    input.value = '';
+    input.style.height = 'auto';
+    document.getElementById('charCountFooter').textContent = '0';
+    document.getElementById('inputText').style.display = 'none';
+    document.getElementById('conversacionFooter').style.display = 'none';
+
+    processTextInput(text);
+}
+
+function processTextInput(text) {
+    switch (currentStep) {
+        case 'contexto':
+            conversationData.contextoCiudadano = text;
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                renderPropuestaStep();
+            }, 600);
+            break;
+        case 'propuesta':
+            conversationData.propuesta = text;
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                renderActoresStep();
+            }, 600);
+            break;
+        case 'actores':
+            conversationData.actoresResponsables = text;
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                renderBeneficiariosStep();
+            }, 600);
+            break;
+        case 'beneficiarios':
+            conversationData.beneficiarios = text;
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                renderUbicacionStep();
+            }, 600);
+            break;
+        case 'ubicacion':
+            conversationData.departamento = text;
+            showTyping();
+            setTimeout(() => {
+                hideTyping();
+                renderFinalStep();
+            }, 600);
+            break;
+    }
+}
+
+function renderPropuestaStep() {
+    addMessage(`
+        <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="message-content">
+            <p class="mb-1">Muy valioso ese contexto. Ahora, <strong>¿qué propones concretamente para solucionar este problema?</strong></p>
+            <p class="mb-0 text-muted small">Describe tu propuesta de forma clara y específica.</p>
+        </div>
+    `);
+
+    showTextInput('Ej: Crear un programa de subsidios para mejoramiento de vivienda...');
+    currentStep = 'propuesta';
+}
+
+function renderActoresStep() {
+    addMessage(`
+        <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="message-content">
+            <p class="mb-1">Buena propuesta. <strong>¿Quiénes crees que deberían ser los responsables de implementarla?</strong></p>
+            <p class="mb-0 text-muted small">Ej: La alcaldía municipal, el Ministerio de Vivienda, la comunidad organizada...</p>
+        </div>
+    `);
+
+    showTextInput('Ej: La gobernación departamental y las juntas de acción comunal...');
+    currentStep = 'actores';
+}
+
+function renderBeneficiariosStep() {
+    addMessage(`
+        <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="message-content">
+            <p class="mb-1">¿Y <strong>quiénes serían los beneficiarios</strong> de esta propuesta?</p>
+            <p class="mb-0 text-muted small">Ej: Jóvenes entre 18 y 25 años, campesinos de la región, madres cabezas de hogar...</p>
+        </div>
+    `);
+
+    showTextInput('Ej: Familias en situación de pobreza del departamento...');
+    currentStep = 'beneficiarios';
+}
+
+function renderUbicacionStep() {
+    addMessage(`
+        <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="message-content">
+            <p class="mb-1">Para cerrar, cuéntanos <strong>¿desde qué parte de Colombia nos escribes?</strong></p>
+            <p class="mb-0 text-muted small">Esta información nos ayuda a hacer análisis territorial. Es opcional.</p>
+        </div>
+    `);
+
+    const container = document.getElementById('inputOptions');
+    container.style.display = 'flex';
+    container.innerHTML = `
+        <div class="w-100">
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <select class="form-select" id="selDepartamento">
+                        <option value="">Selecciona tu departamento</option>
+                        <option value="Amazonas">Amazonas</option>
+                        <option value="Antioquia">Antioquia</option>
+                        <option value="Arauca">Arauca</option>
+                        <option value="Atlántico">Atlántico</option>
+                        <option value="Bolívar">Bolívar</option>
+                        <option value="Boyacá">Boyacá</option>
+                        <option value="Caldas">Caldas</option>
+                        <option value="Caquetá">Caquetá</option>
+                        <option value="Casanare">Casanare</option>
+                        <option value="Cauca">Cauca</option>
+                        <option value="Cesar">Cesar</option>
+                        <option value="Chocó">Chocó</option>
+                        <option value="Córdoba">Córdoba</option>
+                        <option value="Cundinamarca">Cundinamarca</option>
+                        <option value="Guainía">Guainía</option>
+                        <option value="Guaviare">Guaviare</option>
+                        <option value="Huila">Huila</option>
+                        <option value="La Guajira">La Guajira</option>
+                        <option value="Magdalena">Magdalena</option>
+                        <option value="Meta">Meta</option>
+                        <option value="Nariño">Nariño</option>
+                        <option value="Norte de Santander">Norte de Santander</option>
+                        <option value="Putumayo">Putumayo</option>
+                        <option value="Quindío">Quindío</option>
+                        <option value="Risaralda">Risaralda</option>
+                        <option value="Santander">Santander</option>
+                        <option value="Sucre">Sucre</option>
+                        <option value="Tolima">Tolima</option>
+                        <option value="Valle del Cauca">Valle del Cauca</option>
+                        <option value="Vaupés">Vaupés</option>
+                        <option value="Vichada">Vichada</option>
+                        <option value="Bogotá D.C.">Bogotá D.C.</option>
+                    </select>
                 </div>
-                <hr class="my-3">
-            `;
-        }
-
-        subtitleEl.textContent = subtitle;
-        container.innerHTML = `
-            ${typeChooser}
-            <div class="form-group">
-                <textarea class="form-control form-control-lg" id="propuesta" rows="5"
-                          maxlength="500" placeholder="Ejemplo: Crear incentivos tributarios para empresas que contraten jóvenes sin experiencia."></textarea>
-                <div class="d-flex justify-content-between mt-2">
-                    <small class="text-muted"><i class="bi bi-lightbulb me-1"></i>Sé específico y claro</small>
-                    <small><span id="charCount" class="fw-bold">0</span>/500</small>
+                <div class="col-md-6">
+                    <input type="text" class="form-control" id="txtMunicipio" placeholder="Municipio (opcional)">
+                </div>
+                <div class="col-12 mt-2">
+                    <select class="form-select" id="selEdad">
+                        <option value="">Rango de edad (opcional)</option>
+                        <option value="16-18">16-18 años</option>
+                        <option value="19-25">19-25 años</option>
+                        <option value="26-35">26-35 años</option>
+                        <option value="36-45">36-45 años</option>
+                        <option value="46-55">46-55 años</option>
+                        <option value="56-65">56-65 años</option>
+                        <option value="66+">66+ años</option>
+                    </select>
                 </div>
             </div>
-        `;
-        initCharCounter();
-    }
+            <div class="text-center mt-3">
+                <button class="btn btn-primary" onclick="confirmarUbicacion()">
+                    <i class="bi bi-arrow-right me-1"></i>Continuar
+                </button>
+                <button class="btn btn-outline-secondary ms-2" onclick="saltarUbicacion()">
+                    Saltar este paso
+                </button>
+            </div>
+        </div>
+    `;
+    document.getElementById('inputText').style.display = 'none';
+    document.getElementById('conversacionFooter').style.display = 'block';
+    currentStep = 'ubicacion';
 }
 
-function getPropuestas() {
-    if (tipoPropuesta === 'por_sector' && sectoresSeleccionados.length > 1) {
-        const textareas = document.querySelectorAll('.propuesta-sector-textarea');
-        const propuestas = [];
-        textareas.forEach(textarea => {
-            propuestas.push({
-                sector_id: parseInt(textarea.dataset.sectorId),
-                propuesta: textarea.value.trim()
-            });
-        });
-        return { tipo: 'por_sector', propuestas };
-    } else {
-        const textarea = document.getElementById('propuesta');
-        return { tipo: 'unificada', propuestas: [{ propuesta: textarea?.value || '' }] };
-    }
+function confirmarUbicacion() {
+    const depto = document.getElementById('selDepartamento').value;
+    const municipio = document.getElementById('txtMunicipio').value;
+    const edad = document.getElementById('selEdad').value;
+
+    conversationData.departamento = depto;
+    conversationData.municipio = municipio;
+    conversationData.rangoEdad = edad;
+
+    const locStr = depto ? `desde ${municipio ? municipio + ', ' : ''}${depto}` : '';
+    addMessage(`
+        <div class="message-avatar user-avatar"><i class="bi bi-person-fill"></i></div>
+        <div class="message-content user-content">
+            <p class="mb-0">${locStr || 'Prefiero no decirlo'}</p>
+        </div>
+    `, 'user');
+
+    showTyping();
+    setTimeout(() => {
+        hideTyping();
+        renderFinalStep();
+    }, 600);
+}
+
+function saltarUbicacion() {
+    addMessage(`
+        <div class="message-avatar user-avatar"><i class="bi bi-person-fill"></i></div>
+        <div class="message-content user-content">
+            <p class="mb-0">Prefiero continuar sin compartir ubicación</p>
+        </div>
+    `, 'user');
+
+    showTyping();
+    setTimeout(() => {
+        hideTyping();
+        renderFinalStep();
+    }, 600);
+}
+
+function renderFinalStep() {
+    addMessage(`
+        <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+        <div class="message-content">
+            <p class="mb-2"><strong>¡Hemos terminado!</strong> Revisemos tus respuestas antes de enviar:</p>
+            <div class="conversation-summary">
+                ${conversationData.sectores.map(id => {
+                    const s = allSectores.find(s => s.id === id);
+                    return `<div class="summary-item"><span class="summary-label">Tema:</span> <span class="summary-value">${escapeHtml(s ? s.nombre : '')}</span></div>
+                    <div class="summary-item"><span class="summary-label">Problema:</span> <span class="summary-value">${escapeHtml(conversationData.problemas[id])}</span></div>`;
+                }).join('')}
+                <div class="summary-item"><span class="summary-label">Contexto:</span> <span class="summary-value">${escapeHtml(conversationData.contextoCiudadano)}</span></div>
+                <div class="summary-item"><span class="summary-label">Propuesta:</span> <span class="summary-value">${escapeHtml(conversationData.propuesta)}</span></div>
+                <div class="summary-item"><span class="summary-label">Responsables:</span> <span class="summary-value">${escapeHtml(conversationData.actoresResponsables)}</span></div>
+                <div class="summary-item"><span class="summary-label">Beneficiarios:</span> <span class="summary-value">${escapeHtml(conversationData.beneficiarios)}</span></div>
+                ${conversationData.departamento ? `<div class="summary-item"><span class="summary-label">Ubicación:</span> <span class="summary-value">${escapeHtml(conversationData.departamento)}${conversationData.municipio ? ', ' + escapeHtml(conversationData.municipio) : ''}</span></div>` : ''}
+            </div>
+        </div>
+    `);
+
+    showOptions([
+        { label: 'Enviar participación', icon: 'send-fill', action: 'next', value: 'enviarParticipacion', variant: 'success' },
+        { label: 'Volver a empezar', icon: 'arrow-counterclockwise', action: 'next', value: 'reiniciarConversacion', variant: 'outline' }
+    ]);
+    currentStep = 'final';
 }
 
 async function enviarParticipacion() {
-    const btn = document.getElementById('btnEnviar');
-    showLoading(btn, true);
+    document.getElementById('inputOptions').style.display = 'none';
+    document.getElementById('conversacionFooter').style.display = 'none';
 
-    const prioridadRadio = document.querySelector('input[name="sectorPrioridad"]:checked');
-    
-    const problemaPrincipal = problemasSeleccionados[prioridadRadio ? parseInt(prioridadRadio.value) : sectoresSeleccionados[0]] || 'No especificado';
+    showTyping();
 
-    const customPrioridadInputs = document.querySelectorAll('.custom-prioridad-input input');
-    let problemaPrioridadCustom = null;
-    customPrioridadInputs.forEach(input => {
-        if (input.value.trim()) {
-            problemaPrioridadCustom = input.value.trim();
-        }
-    });
-
-    const propuestasData = getPropuestas();
-
+    const firstSectorId = conversationData.sectores[0];
     const data = {
-        sectores: sectoresSeleccionados,
-        sector_prioritario_id: prioridadRadio ? parseInt(prioridadRadio.value) : sectoresSeleccionados[0],
-        problema_principal: problemaPrioridadCustom || problemaPrincipal,
-        problema_otro: '',
-        tipo_propuesta: propuestasData.tipo,
-        propuestas: propuestasData.propuestas,
-        propuesta: propuestasData.propuestas[0]?.propuesta || '',
-        departamento: document.getElementById('departamento').value,
-        municipio: document.getElementById('municipio').value,
-        rango_edad: document.getElementById('rango_edad').value,
-        genero: document.getElementById('genero').value
+        sectores: conversationData.sectores,
+        sector_prioritario_id: firstSectorId,
+        problema_principal: conversationData.problemas[firstSectorId] || '',
+        contexto_ciudadano: conversationData.contextoCiudadano,
+        propuesta: conversationData.propuesta,
+        actores_responsables: conversationData.actoresResponsables,
+        beneficiarios: conversationData.beneficiarios,
+        tipo_propuesta: 'unificada',
+        departamento: conversationData.departamento,
+        municipio: conversationData.municipio,
+        rango_edad: conversationData.rangoEdad,
+        genero: ''
     };
 
     try {
@@ -552,20 +635,164 @@ async function enviarParticipacion() {
 
         const result = await response.json();
 
+        hideTyping();
+
         if (result.success) {
-            showToast('¡Participación registrada exitosamente!', 'Éxito', 'success');
+            addMessage(`
+                <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+                <div class="message-content">
+                    <div class="text-center mb-3">
+                        <div style="font-size: 3rem; color: var(--success-color);"><i class="bi bi-check-circle-fill"></i></div>
+                        <h5 class="fw-bold mt-2 mb-1">¡Participación registrada!</h5>
+                        <p class="text-muted small mb-3">Gracias por contribuir a la inteligencia pública de Colombia.</p>
+                    </div>
+                    <button class="btn btn-primary w-100" onclick="mostrarClasificacionSRIE(${result.id})">
+                        <i class="bi bi-cpu-fill me-2"></i>Ver clasificación SRIE
+                    </button>
+                </div>
+            `);
+
             if (typeof launchConfetti === 'function') {
                 launchConfetti();
             }
-            setTimeout(() => {
-                window.location.href = apiUrls.confirmacion;
-            }, 2000);
+
+            document.getElementById('conversacionFooter').style.display = 'none';
         } else {
-            showToast(result.error || 'Error al enviar', 'Error', 'error');
-            showLoading(btn, false);
+            addMessage(`
+                <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+                <div class="message-content">
+                    <div class="alert alert-danger mb-2">
+                        <i class="bi bi-exclamation-triangle me-2"></i>${escapeHtml(result.error || 'Error al enviar')}
+                    </div>
+                    <button class="btn btn-outline-primary btn-sm" onclick="intentarDeNuevo()">Intentar de nuevo</button>
+                </div>
+            `);
         }
     } catch (error) {
-        showToast('Error de conexión. Intenta de nuevo.', 'Error', 'error');
-        showLoading(btn, false);
+        hideTyping();
+        addMessage(`
+            <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+            <div class="message-content">
+                <div class="alert alert-danger mb-2">
+                    <i class="bi bi-exclamation-triangle me-2"></i>Error de conexión. Intenta de nuevo.
+                </div>
+                <button class="btn btn-outline-primary btn-sm" onclick="intentarDeNuevo()">Intentar de nuevo</button>
+            </div>
+        `);
     }
+}
+
+function intentarDeNuevo() {
+    renderFinalStep();
+}
+
+async function mostrarClasificacionSRIE(id) {
+    const modal = new bootstrap.Modal(document.getElementById('srieResultModal'));
+    modal.show();
+
+    const content = document.getElementById('srieResultContent');
+
+    try {
+        const payload = {
+            sectores: conversationData.sectores,
+            problema_principal: conversationData.problemas[conversationData.sectores[0]],
+            propuesta: conversationData.propuesta,
+            contexto_ciudadano: conversationData.contextoCiudadano,
+            actores_responsables: conversationData.actoresResponsables,
+            beneficiarios: conversationData.beneficiarios,
+        };
+
+        const response = await fetch(apiUrls.clasificar, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        });
+
+        const srie = await response.json();
+
+        content.innerHTML = `
+            <div class="srie-result">
+                <div class="row g-4">
+                    <div class="col-md-4">
+                        <div class="srie-card" style="border-top: 4px solid ${srie.pilar.color};">
+                            <div class="srie-card-icon" style="background: ${srie.pilar.color}20; color: ${srie.pilar.color};">
+                                <i class="bi bi-${srie.pilar.icono}"></i>
+                            </div>
+                            <h6 class="fw-bold mt-2">Pilar Estratégico</h6>
+                            <p class="fw-semibold" style="color: ${srie.pilar.color};">${srie.pilar.nombre}</p>
+                            <div class="progress" style="height: 6px;">
+                                <div class="progress-bar" style="width: ${srie.pilar.confianza}%; background: ${srie.pilar.color};"></div>
+                            </div>
+                            <small class="text-muted">Confianza: ${srie.pilar.confianza}%</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="srie-card" style="border-top: 4px solid ${srie.urgencia.color};">
+                            <div class="srie-card-icon" style="background: ${srie.urgencia.color}20; color: ${srie.urgencia.color};">
+                                <i class="bi bi-exclamation-triangle-fill"></i>
+                            </div>
+                            <h6 class="fw-bold mt-2">Urgencia</h6>
+                            <p class="fw-semibold" style="color: ${srie.urgencia.color};">${srie.urgencia.nivel}</p>
+                            <small class="text-muted">${srie.urgencia.descripcion}</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="srie-card" style="border-top: 4px solid ${srie.impacto.color};">
+                            <div class="srie-card-icon" style="background: ${srie.impacto.color}20; color: ${srie.impacto.color};">
+                                <i class="bi bi-globe-americas"></i>
+                            </div>
+                            <h6 class="fw-bold mt-2">Impacto</h6>
+                            <p class="fw-semibold" style="color: ${srie.impacto.color};">${srie.impacto.nivel}</p>
+                            <small class="text-muted">${srie.impacto.descripcion}</small>
+                        </div>
+                    </div>
+                </div>
+                <div class="srie-explicacion mt-4 p-3" style="background: #f8fafc; border-radius: 16px;">
+                    <h6 class="fw-bold mb-2"><i class="bi bi-info-circle me-1"></i>Explicación</h6>
+                    <p class="mb-0 text-secondary" style="line-height: 1.7;">${srie.explicacion.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')}</p>
+                </div>
+            </div>
+        `;
+    } catch (e) {
+        content.innerHTML = `
+            <div class="text-center py-4">
+                <i class="bi bi-exclamation-circle text-warning" style="font-size: 3rem;"></i>
+                <p class="mt-2 text-muted">No se pudo generar la clasificación en este momento.</p>
+            </div>
+        `;
+    }
+}
+
+function reiniciarConversacion() {
+    conversationData = {
+        sectores: [],
+        problemas: {},
+        sectorPrioritarioId: null,
+        problemaPrincipal: '',
+        contextoCiudadano: '',
+        propuesta: '',
+        actoresResponsables: '',
+        beneficiarios: '',
+        departamento: '',
+        municipio: '',
+        rangoEdad: '',
+        genero: ''
+    };
+    currentStep = 'welcome';
+    document.getElementById('conversacionBody').innerHTML = `
+        <div class="message-bubble assistant-bubble animate-in">
+            <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
+            <div class="message-content">
+                <p class="mb-1">¡Hola! Soy el asistente de <strong>Construyamos Colombia</strong>, el Ecosistema Nacional de Inteligencia Pública.</p>
+                <p class="mb-1">Te voy a hacer algunas preguntas para entender tu visión y convertir tus ideas en evidencia para la toma de decisiones. No necesitas registrarte y toda tu participación es anónima.</p>
+                <p class="mb-0">¿Empezamos?</p>
+                <div class="message-actions mt-2">
+                    <button class="btn btn-sm btn-primary" onclick="iniciarConversacion()">
+                        <i class="bi bi-play-fill me-1"></i>¡Sí, empecemos!
+                    </button>
+                </div>
+            </div>
+        </div>
+    `;
+    document.getElementById('conversacionFooter').style.display = 'none';
 }

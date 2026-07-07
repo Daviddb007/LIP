@@ -1,11 +1,9 @@
 {% extends "base.html" %}
 
-{% block title %}Consulta Ciudadana PND 2027-2030 | Gobierno de Colombia{% endblock %}
+{% block title %}Construyamos Colombia | Ecosistema de Inteligencia Pública{% endblock %}
 
 {% block content %}
-<!-- Hero Section Premium -->
 <section class="hero-section">
-    <!-- Floating Particles -->
     <div class="particle" style="width: 300px; height: 300px; background: radial-gradient(circle, rgba(37, 99, 235, 0.2) 0%, transparent 70%); top: 10%; left: 5%; animation-delay: 0s;"></div>
     <div class="particle" style="width: 200px; height: 200px; background: radial-gradient(circle, rgba(241, 196, 15, 0.15) 0%, transparent 70%); bottom: 20%; right: 10%; animation-delay: 5s;"></div>
     <div class="particle" style="width: 150px; height: 150px; background: radial-gradient(circle, rgba(255, 255, 255, 0.1) 0%, transparent 70%); top: 40%; right: 30%; animation-delay: 10s;"></div>
@@ -15,7 +13,7 @@
             <div class="col-lg-6 hero-content">
                 <div class="hero-badge">
                     <i class="bi bi-shield-check"></i>
-                    Participación ciudadana segura y anónima
+                    Ecosistema Nacional de Inteligencia Pública
                 </div>
                 
                 <h1 class="hero-title">
@@ -24,9 +22,8 @@
                 </h1>
                 
                 <p class="hero-subtitle">
-                    Construyamos juntos las prioridades ciudadanas para el país que queremos. 
-                    Tu participación ayuda a convertir las ideas de los colombianos en evidencia 
-                    para la toma de decisiones.
+                    El primer ecosistema colombiano que conecta la voz de los ciudadanos con el conocimiento, 
+                    la evidencia y la toma de decisiones públicas, impulsado por inteligencia artificial.
                 </p>
                 
                 <div class="hero-cta-group">
@@ -36,24 +33,21 @@
                     </a>
                     <a href="{{ url_for('iniciativa.iniciativa') }}" class="btn btn-hero-secondary">
                         <i class="bi bi-play-circle"></i>
-                        Conoce la iniciativa
+                        Explorar conocimiento
                     </a>
                 </div>
             </div>
             
             <div class="col-lg-6 hero-illustration d-none d-lg-block">
                 <svg class="hero-visual" viewBox="0 0 500 500" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Colombia Map Stylized -->
                     <circle cx="250" cy="250" r="200" fill="url(#heroGrad1)" opacity="0.1"/>
                     <circle cx="250" cy="250" r="150" fill="url(#heroGrad2)" opacity="0.15"/>
                     <circle cx="250" cy="250" r="100" fill="url(#heroGrad3)" opacity="0.2"/>
                     
-                    <!-- Connection Lines -->
                     <path d="M150 200 Q250 150 350 200" stroke="rgba(241,196,15,0.4)" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
                     <path d="M150 300 Q250 350 350 300" stroke="rgba(37,99,235,0.4)" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
                     <path d="M200 150 Q250 250 200 350" stroke="rgba(255,255,255,0.2)" stroke-width="2" fill="none" stroke-dasharray="5,5"/>
                     
-                    <!-- People Nodes -->
                     <circle cx="150" cy="200" r="25" fill="#2563eb" opacity="0.9"/>
                     <circle cx="150" cy="200" r="15" fill="white"/>
                     <text x="150" y="205" text-anchor="middle" fill="#2563eb" font-size="14" font-weight="bold">B</text>
@@ -78,12 +72,10 @@
                     <circle cx="350" cy="280" r="12" fill="white"/>
                     <text x="350" y="285" text-anchor="middle" fill="#06b6d4" font-size="11" font-weight="bold">S</text>
                     
-                    <!-- Center Hub -->
                     <circle cx="250" cy="250" r="40" fill="url(#heroGrad4)"/>
                     <circle cx="250" cy="250" r="30" fill="white"/>
                     <text x="250" y="255" text-anchor="middle" fill="#071a40" font-size="20" font-weight="bold">CC</text>
                     
-                    <!-- Connection Lines to Center -->
                     <line x1="150" y1="200" x2="250" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
                     <line x1="250" y1="150" x2="250" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
                     <line x1="350" y1="200" x2="250" y2="250" stroke="rgba(255,255,255,0.3)" stroke-width="2"/>
@@ -115,7 +107,42 @@
     </div>
 </section>
 
-<!-- Stats Section -->
+<section class="ecosystem-section">
+    <div class="container">
+        <div class="section-header">
+            <span class="section-badge"><i class="bi bi-diagram-3"></i> El Ecosistema</span>
+            <h2 class="section-title">Cuatro mundos conectados por SRIE</h2>
+            <p class="section-subtitle">Un motor de inteligencia estratégica transforma información dispersa en conocimiento estructurado</p>
+        </div>
+        
+        <div class="ecosystem-flow">
+            <div class="ecosystem-node">
+                <div class="node-icon"><i class="bi bi-people-fill"></i></div>
+                <h4>Ciudadanía</h4>
+                <p>Participación y voz ciudadana</p>
+            </div>
+            <div class="ecosystem-arrow"><i class="bi bi-arrow-right"></i></div>
+            <div class="ecosystem-node">
+                <div class="node-icon"><i class="bi bi-book-fill"></i></div>
+                <h4>Conocimiento Público</h4>
+                <p>Educación cívica e información</p>
+            </div>
+            <div class="ecosystem-arrow"><i class="bi bi-arrow-right"></i></div>
+            <div class="ecosystem-node">
+                <div class="node-icon"><i class="bi bi-cpu-fill"></i></div>
+                <h4>Inteligencia Estratégica</h4>
+                <p>Análisis y evidencia con IA</p>
+            </div>
+            <div class="ecosystem-arrow"><i class="bi bi-arrow-right"></i></div>
+            <div class="ecosystem-node">
+                <div class="node-icon"><i class="bi bi-check2-square"></i></div>
+                <h4>Toma de Decisiones</h4>
+                <p>Políticas basadas en datos</p>
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="stats-section">
     <div class="container">
         <div class="row g-4">
@@ -163,7 +190,6 @@
     </div>
 </section>
 
-<!-- Mission & Vision Section -->
 <section class="py-5 mt-5">
     <div class="container">
         <div class="row g-4">
@@ -171,9 +197,8 @@
                 <div class="mission-card">
                     <h3><i class="bi bi-bullseye"></i> Nuestra misión</h3>
                     <p>
-                        Crear un canal de participación simple, accesible y basado en datos que permita 
-                        convertir las ideas de los ciudadanos en información útil para la toma de 
-                        decisiones públicas.
+                        Conectar la participación ciudadana con la inteligencia estratégica para transformar 
+                        las ideas de los colombianos en evidencia útil para la toma de decisiones públicas.
                     </p>
                 </div>
             </div>
@@ -181,8 +206,9 @@
                 <div class="mission-card" style="background: linear-gradient(135deg, #1e40af 0%, #2563eb 100%);">
                     <h3><i class="bi bi-eye-fill"></i> Nuestra visión</h3>
                     <p>
-                        Democratizar la participación ciudadana mediante tecnología, analítica y evidencia, 
-                        construyendo un puente directo entre los ciudadanos y las políticas públicas.
+                        Ser el primer Ecosistema Colombiano de Inteligencia Pública, donde cualquier ciudadano 
+                        pueda aprender, participar, consultar, comparar, proponer y comprender cómo se construyen 
+                        las decisiones públicas.
                     </p>
                 </div>
             </div>
@@ -216,13 +242,12 @@
     </div>
 </section>
 
-<!-- Timeline Section -->
 <section class="py-5 bg-light">
     <div class="container">
         <div class="section-header">
             <span class="section-badge"><i class="bi bi-diagram-3"></i> Nuestro proceso</span>
-            <h2 class="section-title">¿Qué hacemos?</h2>
-            <p class="section-subtitle">Un proceso claro y transparente para transformar tu voz en evidencia</p>
+            <h2 class="section-title">¿Cómo funciona el ecosistema?</h2>
+            <p class="section-subtitle">Un proceso inteligente que transforma la voz ciudadana en conocimiento estratégico</p>
         </div>
         
         <div class="timeline">
@@ -242,7 +267,7 @@
                 <div class="timeline-content">
                     <span class="timeline-step">Paso 02</span>
                     <h4 class="timeline-title">Organizamos</h4>
-                    <p class="timeline-desc">Clasificamos y estructuramos la información por sectores y territorios.</p>
+                    <p class="timeline-desc">Clasificamos y estructuramos la información por sectores y territorios mediante SRIE.</p>
                 </div>
             </div>
             
@@ -250,7 +275,7 @@
                 <div class="timeline-content">
                     <span class="timeline-step">Paso 03</span>
                     <h4 class="timeline-title">Analizamos</h4>
-                    <p class="timeline-desc">Aplicamos analítica avanzada para identificar tendencias y patrones relevantes.</p>
+                    <p class="timeline-desc">Aplicamos analítica avanzada e inteligencia artificial para identificar tendencias y patrones.</p>
                 </div>
                 <div class="timeline-dot"><i class="bi bi-graph-up"></i></div>
                 <div class="timeline-content" style="visibility: hidden;"></div>
@@ -262,7 +287,7 @@
                 <div class="timeline-content">
                     <span class="timeline-step">Paso 04</span>
                     <h4 class="timeline-title">Generamos evidencia</h4>
-                    <p class="timeline-desc">Convertimos los datos en información útil para la toma de decisiones.</p>
+                    <p class="timeline-desc">Convertimos los datos en inteligencia estratégica para la toma de decisiones.</p>
                 </div>
             </div>
             
@@ -270,7 +295,7 @@
                 <div class="timeline-content">
                     <span class="timeline-step">Paso 05</span>
                     <h4 class="timeline-title">Construimos país</h4>
-                    <p class="timeline-desc">Las propuestas ciudadanas alimentan las políticas públicas del Plan Nacional.</p>
+                    <p class="timeline-desc">La inteligencia generada alimenta políticas públicas, planes de desarrollo y decisiones basadas en evidencia.</p>
                 </div>
                 <div class="timeline-dot"><i class="bi bi-flag-fill"></i></div>
                 <div class="timeline-content" style="visibility: hidden;"></div>
@@ -279,7 +304,6 @@
     </div>
 </section>
 
-<!-- FAQ Section -->
 <section class="py-5">
     <div class="container">
         <div class="section-header">
@@ -298,7 +322,7 @@
                         </h2>
                         <div id="faq1" class="accordion-collapse collapse show" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-secondary">
-                                Es una iniciativa ciudadana que busca recoger las ideas y propuestas de los colombianos para construir insumos reales para el Plan Nacional de Desarrollo 2027-2030.
+                                Es un Ecosistema Nacional de Inteligencia Pública que conecta la participación ciudadana con el conocimiento, la evidencia y la toma de decisiones. Impulsado por StoneLytics y su tecnología SRIE.
                             </div>
                         </div>
                     </div>
@@ -317,12 +341,12 @@
                     <div class="accordion-item border-0 mb-3 shadow-sm rounded-4 overflow-hidden">
                         <h2 class="accordion-header">
                             <button class="accordion-button collapsed fw-semibold" type="button" data-bs-toggle="collapse" data-bs-target="#faq3">
-                                ¿Cómo se utilizan mis datos?
+                                ¿Cómo se utiliza mi participación?
                             </button>
                         </h2>
                         <div id="faq3" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-secondary">
-                                Tus respuestas se utilizan de forma agregada para generar estadísticas e informes que alimentarán las políticas públicas. Nunca se comparte información individual.
+                                Tus respuestas son procesadas por el motor SRIE, que las clasifica y estructura para generar inteligencia estratégica. Los resultados agregados alimentan informes y análisis para la toma de decisiones públicas.
                             </div>
                         </div>
                     </div>
@@ -334,7 +358,7 @@
                         </h2>
                         <div id="faq4" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
                             <div class="accordion-body text-secondary">
-                                Esta iniciativa es liderada por Stonelytics, una empresa comprometida con la construcción de evidencia para la toma de decisiones basada en datos.
+                                Esta iniciativa es desarrollada por StoneLytics, una empresa comprometida con la construcción de inteligencia pública para la toma de decisiones basada en datos y evidencia.
                             </div>
                         </div>
                     </div>
@@ -356,12 +380,11 @@
     </div>
 </section>
 
-<!-- CTA Section -->
 <section class="py-5" style="background: linear-gradient(135deg, #071a40 0%, #0f2f75 100%);">
     <div class="container text-center">
-        <h2 class="fw-bold text-white mb-3" style="font-size: 2.5rem;">¿Listo para participar?</h2>
+        <h2 class="fw-bold text-white mb-3" style="font-size: 2.5rem;">¿Listo para construir país?</h2>
         <p class="text-white-50 mb-4" style="font-size: 1.15rem; max-width: 600px; margin: 0 auto;">
-            Tu opinión importa. Toma solo 3-5 minutos y ayúdanos a construir un mejor país.
+            Tu voz es el primer insumo de la inteligencia pública. Participa y ayuda a construir las decisiones del futuro.
         </p>
         <a href="{{ url_for('participar.participar') }}" class="btn btn-hero-primary">
             <i class="bi bi-arrow-right-circle"></i>
@@ -374,7 +397,6 @@
 {% block scripts %}
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Animate counters
         const counters = document.querySelectorAll('.counter');
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
