@@ -660,6 +660,25 @@ body {
     background: linear-gradient(90deg, #071a40 33%, #c41e3a 33%, #c41e3a 66%, #f1c40f 66%);
 }
 
+/* ========== PROPOSAL TYPE CHOICE ========== */
+.tipo-propuesta-card {
+    cursor: pointer;
+    border: 2px solid #e2e8f0;
+    transition: all 0.3s ease;
+    background: white;
+}
+
+.tipo-propuesta-card:hover {
+    border-color: var(--colombian-yellow);
+    background: #fffbeb;
+}
+
+.tipo-propuesta-card.selected {
+    border-color: var(--colombian-blue);
+    background: #eff6ff;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
 /* ========== PROBLEMA CARDS (Step 2) ========== */
 .problemas-grid {
     display: grid;

@@ -38,12 +38,24 @@ def _validate_sectores(data: dict) -> None:
 
 
 def _validate_propuesta(data: dict) -> None:
-    propuesta = data.get('propuesta', '')
+    tipo_propuesta = data.get('tipo_propuesta', 'unificada')
 
-    if not propuesta or not propuesta.strip():
-        raise ValidationError('La propuesta es requerida')
-    if len(propuesta) > 500:
-        raise ValidationError('La propuesta debe tener máximo 500 caracteres')
+    if tipo_propuesta == 'por_sector':
+        propuestas = data.get('propuestas', [])
+        if not propuestas or not isinstance(propuestas, list):
+            raise ValidationError('Debe enviar propuestas por sector')
+        for p in propuestas:
+            texto = p.get('propuesta', '')
+            if not texto or not texto.strip():
+                raise ValidationError('Todas las propuestas por sector son requeridas')
+            if len(texto) > 500:
+                raise ValidationError('Cada propuesta debe tener máximo 500 caracteres')
+    else:
+        propuesta = data.get('propuesta', '')
+        if not propuesta or not propuesta.strip():
+            raise ValidationError('La propuesta es requerida')
+        if len(propuesta) > 500:
+            raise ValidationError('La propuesta debe tener máximo 500 caracteres')
 
 
 def _validate_optional_fields(data: dict) -> None:

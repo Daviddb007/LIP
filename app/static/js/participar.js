@@ -1,6 +1,7 @@
 let sectoresSeleccionados = [];
 let sectorPrioritarioId = null;
 let problemasSeleccionados = {};
+let tipoPropuesta = 'unificada';
 let apiUrls = {};
 
 function escapeHtml(str) {
@@ -31,6 +32,7 @@ function initSectorCards() {
                 checkbox.checked = false;
                 this.classList.remove('selected');
                 sectoresSeleccionados = sectoresSeleccionados.filter(s => s !== id);
+                delete problemasSeleccionados[id];
             } else {
                 if (sectoresSeleccionados.length >= 3) {
                     showToast('Máximo 3 sectores permitidos', 'Límite alcanzado', 'error');
@@ -76,10 +78,10 @@ function initCharCounter() {
 }
 
 function updateProgress(step) {
-    const progress = (step / 5) * 100;
+    const totalSteps = 5;
+    const progress = (step / totalSteps) * 100;
     document.getElementById('progressBar').style.width = progress + '%';
     
-    // Update step indicators
     document.querySelectorAll('.step-indicator').forEach((el, index) => {
         if (index + 1 < step) {
             el.classList.add('completed');
@@ -115,8 +117,9 @@ function nextStep(step) {
     }
 
     if (step === 3) {
-        if (!problemasSeleccionados['principal']) {
-            showToast('Selecciona un problema', 'Campo requerido', 'error');
+        const hasAtLeastOne = sectoresSeleccionados.some(id => problemasSeleccionados[id]);
+        if (!hasAtLeastOne) {
+            showToast('Selecciona al menos un problema', 'Campo requerido', 'error');
             return;
         }
         loadPrioridadConProblemas();
@@ -128,13 +131,22 @@ function nextStep(step) {
             showToast('Selecciona el sector prioritario', 'Campo requerido', 'error');
             return;
         }
+        loadPropuestaForm();
+    }
+
+    if (step === 5) {
+        const hasAtLeastOne = sectoresSeleccionados.some(id => problemasSeleccionados[id]);
+        if (!hasAtLeastOne) {
+            showToast('Selecciona al menos un problema', 'Campo requerido', 'error');
+            prevStep(3);
+            return;
+        }
     }
 
     document.querySelectorAll('.form-step').forEach(el => el.style.display = 'none');
     document.getElementById('step' + step).style.display = 'block';
     updateProgress(step);
     
-    // Scroll to top of form
     document.querySelector('.form-card').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -158,18 +170,23 @@ async function loadProblemas() {
             const response = await fetch(`${apiUrls.problemas}${sectorId}`);
             const problemas = await response.json();
 
+            const selectedProblem = problemasSeleccionados[sectorId] || null;
+
             html += `
                 <div class="mb-4">
                     <h6 class="fw-bold text-muted mb-3">
                         <i class="bi bi-folder-fill me-2"></i>${escapeHtml(sectorNombre)}
                     </h6>
-                    <div class="problemas-grid">
+                    <div class="problemas-grid" data-sector-group="${sectorId}">
             `;
 
             problemas.forEach(p => {
                 const safeName = escapeHtml(p.nombre);
+                const isSelected = selectedProblem === safeName;
                 html += `
-                    <div class="problema-card" data-nombre="${safeName}" data-sector-id="${sectorId}" onclick="selectProblema(this)">
+                    <div class="problema-card ${isSelected ? 'selected' : ''}" 
+                         data-nombre="${safeName}" data-sector-id="${sectorId}" 
+                         onclick="selectProblema(this, ${sectorId})">
                         <div class="problema-icon"><i class="bi bi-exclamation-triangle"></i></div>
                         <div class="problema-name">${safeName}</div>
                     </div>
@@ -182,23 +199,6 @@ async function loadProblemas() {
             `;
         }
 
-        html += `
-            <div class="problema-card problema-custom" onclick="selectProblemaCustom(this)">
-                <div class="problema-icon"><i class="bi bi-pencil-square"></i></div>
-                <div class="problema-name">Otro (especificar)</div>
-            </div>
-        `;
-
-        html += `
-            <div id="customProblemaGroup" class="mt-3" style="display: none;">
-                <div class="input-group">
-                    <span class="input-group-text"><i class="bi bi-pencil"></i></span>
-                    <input type="text" class="form-control" id="problemaCustom" 
-                           placeholder="Escribe tu problema aquí..." maxlength="200">
-                </div>
-            </div>
-        `;
-
         container.innerHTML = html;
 
     } catch (error) {
@@ -206,21 +206,13 @@ async function loadProblemas() {
     }
 }
 
-function selectProblema(element) {
-    document.querySelectorAll('.problema-card').forEach(card => card.classList.remove('selected'));
+function selectProblema(element, sectorId) {
+    const group = element.closest('.problemas-grid');
+    if (group) {
+        group.querySelectorAll('.problema-card').forEach(card => card.classList.remove('selected'));
+    }
     element.classList.add('selected');
-    document.getElementById('customProblemaGroup').style.display = 'none';
-    document.getElementById('problemaCustom').value = '';
-    problemasSeleccionados['principal'] = element.dataset.nombre;
-    problemasSeleccionados['principal_sector_id'] = parseInt(element.dataset.sectorId) || null;
-}
-
-function selectProblemaCustom(element) {
-    document.querySelectorAll('.problema-card').forEach(card => card.classList.remove('selected'));
-    element.classList.add('selected');
-    document.getElementById('customProblemaGroup').style.display = 'block';
-    document.getElementById('problemaCustom').focus();
-    problemasSeleccionados['principal'] = 'Otro';
+    problemasSeleccionados[sectorId] = element.dataset.nombre;
 }
 
 async function loadPrioridadConProblemas() {
@@ -230,7 +222,6 @@ async function loadPrioridadConProblemas() {
     try {
         let html = '';
         
-        // For each selected sector, load its problems
         for (const sectorId of sectoresSeleccionados) {
             const card = document.querySelector(`[data-id="${sectorId}"]`);
             const sectorNombre = card ? card.querySelector('label span').textContent : `Sector ${sectorId}`;
@@ -239,13 +230,18 @@ async function loadPrioridadConProblemas() {
             const problemas = await response.json();
             
             const isExpanded = sectoresSeleccionados.indexOf(sectorId) === 0;
+            const selectedProblem = problemasSeleccionados[sectorId] || null;
+
             html += `
                 <div class="sector-prioridad-section mb-4 ${isExpanded ? 'expanded' : ''}" data-sector-id="${sectorId}">
-                    <div class="sector-prioridad-header" onclick="toggleSectorProblemas(this)">
+                    <div class="sector-prioridad-header" onclick="toggleSectorProblemas(this, event)">
                         <div class="d-flex align-items-center">
                             <input class="form-check-input me-3" type="radio" name="sectorPrioridad" 
-                                   value="${sectorId}" id="prioridad${sectorId}" ${isExpanded ? 'checked' : ''}>
+                                   value="${sectorId}" id="prioridad${sectorId}" 
+                                   ${isExpanded ? 'checked' : ''}
+                                   onclick="event.stopPropagation()">
                             <h6 class="mb-0 fw-bold">${escapeHtml(sectorNombre)}</h6>
+                            ${selectedProblem ? '<span class="badge bg-success ms-2"><i class="bi bi-check-lg"></i> Seleccionado</span>' : ''}
                         </div>
                         <i class="bi bi-chevron-down toggle-icon"></i>
                     </div>
@@ -255,9 +251,12 @@ async function loadPrioridadConProblemas() {
             
             problemas.forEach(p => {
                 const safeName = escapeHtml(p.nombre);
+                const isSelected = selectedProblem === safeName;
                 html += `
-                    <div class="problema-prioridad-card" data-nombre="${safeName}" onclick="selectProblemaPrioridad(this, ${sectorId})">
-                        <i class="bi bi-check-circle-fill text-success d-none check-icon"></i>
+                    <div class="problema-prioridad-card ${isSelected ? 'selected' : ''}" 
+                         data-nombre="${safeName}" 
+                         onclick="selectProblemaPrioridad(this, ${sectorId})">
+                        <i class="bi bi-check-circle-fill text-success ${isSelected ? '' : 'd-none'} check-icon"></i>
                         <span>${safeName}</span>
                     </div>
                 `;
@@ -293,12 +292,13 @@ async function loadPrioridadConProblemas() {
     }
 }
 
-function toggleSectorProblemas(header) {
+function toggleSectorProblemas(header, event) {
+    if (event) event.stopPropagation();
+
     const section = header.closest('.sector-prioridad-section');
     const body = section.querySelector('.sector-prioridad-body');
     const isExpanded = section.classList.contains('expanded');
 
-    // Collapse all other sections
     document.querySelectorAll('.sector-prioridad-section').forEach(s => {
         if (s !== section) {
             s.classList.remove('expanded');
@@ -328,6 +328,17 @@ function selectProblemaPrioridad(element, sectorId) {
     document.getElementById(`customPrioridad${sectorId}`).style.display = 'none';
     
     problemasSeleccionados[sectorId] = element.dataset.nombre;
+
+    document.querySelectorAll('.sector-prioridad-section').forEach(s => {
+        const sId = parseInt(s.dataset.sectorId);
+        if (sId === sectorId) {
+            const header = s.querySelector('.sector-prioridad-header');
+            const existingBadge = header.querySelector('.badge');
+            if (existingBadge) existingBadge.remove();
+            header.querySelector('.d-flex').insertAdjacentHTML('beforeend', 
+                '<span class="badge bg-success ms-2"><i class="bi bi-check-lg"></i> Seleccionado</span>');
+        }
+    });
 }
 
 function toggleCustomPrioridad(sectorId) {
@@ -348,15 +359,166 @@ function toggleCustomPrioridad(sectorId) {
     }
 }
 
+function selectTipoPropuesta(element) {
+    document.querySelectorAll('.tipo-propuesta-card').forEach(card => card.classList.remove('selected'));
+    element.classList.add('selected');
+    tipoPropuesta = element.dataset.tipo;
+}
+
+function loadPropuestaForm() {
+    const container = document.getElementById('propuestaContainer');
+    const titleEl = document.getElementById('step4Title');
+    const subtitleEl = document.getElementById('step4Subtitle');
+
+    if (tipoPropuesta === 'por_sector' && sectoresSeleccionados.length > 1) {
+        titleEl.textContent = 'Propuestas por sector';
+        subtitleEl.textContent = 'Escribe una propuesta para cada sector que seleccionaste.';
+
+        let html = '';
+
+        if (sectoresSeleccionados.length > 1) {
+            html += `
+                <div class="mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card p-3 tipo-propuesta-card selected" data-tipo="unificada" onclick="selectTipoPropuesta(this); loadPropuestaForm();">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-chat-left-text text-primary fs-3 me-3"></i>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Propuesta unificada</h6>
+                                        <small class="text-muted">Una sola propuesta que aborde todos los sectores.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-3 tipo-propuesta-card" data-tipo="por_sector" onclick="selectTipoPropuesta(this); loadPropuestaForm();">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-grid-3x3-gap text-primary fs-3 me-3"></i>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Propuesta por sector</h6>
+                                        <small class="text-muted">Escribe una propuesta separada para cada sector.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-3">
+            `;
+        }
+
+        for (const sectorId of sectoresSeleccionados) {
+            const card = document.querySelector(`[data-id="${sectorId}"]`);
+            const sectorNombre = card ? card.querySelector('label span').textContent : `Sector ${sectorId}`;
+            html += `
+                <div class="mb-4">
+                    <label class="form-label fw-bold">
+                        <i class="bi bi-folder-fill me-2 text-primary"></i>${escapeHtml(sectorNombre)}
+                    </label>
+                    <textarea class="form-control propuesta-sector-textarea" rows="3"
+                              maxlength="500" data-sector-id="${sectorId}"
+                              placeholder="Escribe tu propuesta para el sector ${escapeHtml(sectorNombre)}..."></textarea>
+                    <div class="d-flex justify-content-between mt-1">
+                        <small class="text-muted"><i class="bi bi-lightbulb me-1"></i>Sé específico y claro</small>
+                        <small><span class="char-count fw-bold">0</span>/500</small>
+                    </div>
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+
+        container.querySelectorAll('.propuesta-sector-textarea').forEach(textarea => {
+            textarea.addEventListener('input', function() {
+                this.nextElementSibling.querySelector('.char-count').textContent = this.value.length;
+                if (this.value.length > 450) {
+                    this.nextElementSibling.querySelector('.char-count').classList.add('text-danger');
+                } else {
+                    this.nextElementSibling.querySelector('.char-count').classList.remove('text-danger');
+                }
+            });
+        });
+    } else {
+        tipoPropuesta = 'unificada';
+        titleEl.textContent = 'Tu propuesta';
+
+        let subtitle = 'Escribe tu propuesta concreta para resolver el problema identificado.';
+        let typeChooser = '';
+
+        if (sectoresSeleccionados.length > 1) {
+            subtitle = 'Elige el tipo de propuesta y escribe tu respuesta.';
+            typeChooser = `
+                <div class="mb-4">
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="card p-3 tipo-propuesta-card selected" data-tipo="unificada" onclick="selectTipoPropuesta(this); loadPropuestaForm();">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-chat-left-text text-primary fs-3 me-3"></i>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Propuesta unificada</h6>
+                                        <small class="text-muted">Una sola propuesta que aborde todos los sectores.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card p-3 tipo-propuesta-card" data-tipo="por_sector" onclick="selectTipoPropuesta(this); loadPropuestaForm();">
+                                <div class="d-flex align-items-start">
+                                    <i class="bi bi-grid-3x3-gap text-primary fs-3 me-3"></i>
+                                    <div>
+                                        <h6 class="fw-bold mb-1">Propuesta por sector</h6>
+                                        <small class="text-muted">Escribe una propuesta separada para cada sector.</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <hr class="my-3">
+            `;
+        }
+
+        subtitleEl.textContent = subtitle;
+        container.innerHTML = `
+            ${typeChooser}
+            <div class="form-group">
+                <textarea class="form-control form-control-lg" id="propuesta" rows="5"
+                          maxlength="500" placeholder="Ejemplo: Crear incentivos tributarios para empresas que contraten jóvenes sin experiencia."></textarea>
+                <div class="d-flex justify-content-between mt-2">
+                    <small class="text-muted"><i class="bi bi-lightbulb me-1"></i>Sé específico y claro</small>
+                    <small><span id="charCount" class="fw-bold">0</span>/500</small>
+                </div>
+            </div>
+        `;
+        initCharCounter();
+    }
+}
+
+function getPropuestas() {
+    if (tipoPropuesta === 'por_sector' && sectoresSeleccionados.length > 1) {
+        const textareas = document.querySelectorAll('.propuesta-sector-textarea');
+        const propuestas = [];
+        textareas.forEach(textarea => {
+            propuestas.push({
+                sector_id: parseInt(textarea.dataset.sectorId),
+                propuesta: textarea.value.trim()
+            });
+        });
+        return { tipo: 'por_sector', propuestas };
+    } else {
+        const textarea = document.getElementById('propuesta');
+        return { tipo: 'unificada', propuestas: [{ propuesta: textarea?.value || '' }] };
+    }
+}
+
 async function enviarParticipacion() {
     const btn = document.getElementById('btnEnviar');
     showLoading(btn, true);
 
     const prioridadRadio = document.querySelector('input[name="sectorPrioridad"]:checked');
-    const problemaCustom = document.getElementById('problemaCustom')?.value;
-    const problemaSeleccionado = problemasSeleccionados['principal'] || null;
     
-    // Get custom problems from priority section
+    const problemaPrincipal = problemasSeleccionados[prioridadRadio ? parseInt(prioridadRadio.value) : sectoresSeleccionados[0]] || 'No especificado';
+
     const customPrioridadInputs = document.querySelectorAll('.custom-prioridad-input input');
     let problemaPrioridadCustom = null;
     customPrioridadInputs.forEach(input => {
@@ -365,12 +527,16 @@ async function enviarParticipacion() {
         }
     });
 
+    const propuestasData = getPropuestas();
+
     const data = {
         sectores: sectoresSeleccionados,
         sector_prioritario_id: prioridadRadio ? parseInt(prioridadRadio.value) : sectoresSeleccionados[0],
-        problema_principal: problemaCustom || problemaSeleccionado || problemaPrioridadCustom || 'No especificado',
-        problema_otro: problemaCustom || '',
-        propuesta: document.getElementById('propuesta').value,
+        problema_principal: problemaPrioridadCustom || problemaPrincipal,
+        problema_otro: '',
+        tipo_propuesta: propuestasData.tipo,
+        propuestas: propuestasData.propuestas,
+        propuesta: propuestasData.propuestas[0]?.propuesta || '',
         departamento: document.getElementById('departamento').value,
         municipio: document.getElementById('municipio').value,
         rango_edad: document.getElementById('rango_edad').value,

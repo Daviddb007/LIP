@@ -39,7 +39,7 @@ echo -e "\n${YELLOW}[2/7] Setting up application...${NC}"
 cd /var/www
 
 if [ ! -d "construyamos_colombia" ]; then
-    git clone <YOUR_REPOSITORY_URL> construyamos_colombia
+    git clone https://github.com/Daviddb007/Construyamos_Colombia.git construyamos_colombia
 fi
 
 cd construyamos_colombia

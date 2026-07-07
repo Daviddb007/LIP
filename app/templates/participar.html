@@ -79,7 +79,7 @@
                                 </div>
                                 {% endfor %}
                             </div>
-                            
+
                             <div class="d-flex justify-content-end mt-4">
                                 <button class="btn btn-primary btn-lg px-4" onclick="nextStep(2)">
                                     Continuar <i class="bi bi-arrow-right ms-2"></i>
@@ -92,10 +92,10 @@
                             <div class="text-center mb-4">
                                 <h3 class="fw-bold">
                                     <i class="bi bi-exclamation-triangle text-primary me-2"></i>
-                                    Problema principal
+                                    Problemas por sector
                                 </h3>
                                 <p class="text-muted">
-                                    Selecciona o describe el problema principal que identificas.
+                                    Selecciona el problema más importante en cada sector que elegiste.
                                 </p>
                             </div>
                             
@@ -142,21 +142,14 @@
                             <div class="text-center mb-4">
                                 <h3 class="fw-bold">
                                     <i class="bi bi-pencil-square text-primary me-2"></i>
-                                    Tu propuesta
+                                    <span id="step4Title">Tu propuesta</span>
                                 </h3>
-                                <p class="text-muted">
+                                <p class="text-muted" id="step4Subtitle">
                                     Escribe tu propuesta concreta para resolver el problema identificado.
                                 </p>
                             </div>
                             
-                            <div class="form-group mb-4">
-                                <textarea class="form-control form-control-lg" id="propuesta" rows="5"
-                                          maxlength="500" placeholder="Ejemplo: Crear incentivos tributarios para empresas que contraten jóvenes sin experiencia."></textarea>
-                                <div class="d-flex justify-content-between mt-2">
-                                    <small class="text-muted"><i class="bi bi-lightbulb me-1"></i>Sé específico y claro</small>
-                                    <small><span id="charCount" class="fw-bold">0</span>/500</small>
-                                </div>
-                            </div>
+                            <div id="propuestaContainer" class="mb-4"></div>
                             
                             <div class="d-flex justify-content-between">
                                 <button class="btn btn-outline-secondary" onclick="prevStep(3)">
