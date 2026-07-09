@@ -1,11 +1,12 @@
 from flask import Blueprint, jsonify
 
-from app import db
+from app import db, limiter
 
 health_bp = Blueprint('health', __name__)
 
 
 @health_bp.route('/health')
+@limiter.exempt
 def health_check():
     """Health check endpoint for monitoring and load balancers."""
     try:
