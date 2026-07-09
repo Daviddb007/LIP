@@ -545,6 +545,7 @@ textarea.form-control { resize: vertical; min-height: 120px; }
    STAT CARDS WITH ICONS (Observatorio)
    =================================================================== */
 .hero-section {
+    position: relative;
     background: linear-gradient(135deg,var(--navy),var(--navy-light) 50%,var(--navy-mid));
     color: #fff;
     overflow: hidden;
