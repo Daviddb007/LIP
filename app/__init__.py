@@ -88,6 +88,7 @@ def _register_blueprints(app: Flask) -> None:
     from app.routes.integraciones import integraciones_bp
     from app.routes.saas import saas_bp
     from app.routes.nosotros import nosotros_bp
+    import app.models.miembro  # ensure model is loaded for SQLAlchemy
 
     app.register_blueprint(home_bp)
     app.register_blueprint(iniciativa_bp)
