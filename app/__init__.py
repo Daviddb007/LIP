@@ -106,31 +106,31 @@ def _register_blueprints(flask_app: Flask) -> None:
     flask_app.register_blueprint(saas_bp)
     flask_app.register_blueprint(nosotros_bp)
 
-    @app.route('/api/docs')
+    @flask_app.route('/api/docs')
     def api_docs():
         from flask import render_template
         return render_template('api_docs.html')
 
 
-def _register_error_handlers(app: Flask) -> None:
+def _register_error_handlers(flask_app: Flask) -> None:
     """Register centralized error handlers."""
     from app.errors import register_error_handlers
 
-    register_error_handlers(app)
+    register_error_handlers(flask_app)
 
 
-def _register_request_hooks(app: Flask) -> None:
+def _register_request_hooks(flask_app: Flask) -> None:
     """Register request/response logging hooks."""
 
-    @app.before_request
+    @flask_app.before_request
     def before_request():
         g.start_time = time.time()
 
-    @app.after_request
+    @flask_app.after_request
     def after_request(response):
         if hasattr(g, 'start_time'):
             elapsed = time.time() - g.start_time
-            app.logger.info(
+            flask_app.logger.info(
                 '%s %s %s %.3fs',
                 request.method,
                 request.path,
