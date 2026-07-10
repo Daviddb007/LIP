@@ -71,7 +71,7 @@ def _init_extensions(app: Flask) -> None:
     limiter.storage_uri = storage_uri
 
 
-def _register_blueprints(app: Flask) -> None:
+def _register_blueprints(flask_app: Flask) -> None:
     """Register all application blueprints."""
     from app.routes.home import home_bp
     from app.routes.iniciativa import iniciativa_bp
@@ -88,23 +88,23 @@ def _register_blueprints(app: Flask) -> None:
     from app.routes.integraciones import integraciones_bp
     from app.routes.saas import saas_bp
     from app.routes.nosotros import nosotros_bp
-    import app.models.miembro  # ensure model is loaded for SQLAlchemy
+    from app.models.miembro import MiembroEquipo
 
-    app.register_blueprint(home_bp)
-    app.register_blueprint(iniciativa_bp)
-    app.register_blueprint(participar_bp)
-    app.register_blueprint(resultados_bp)
-    app.register_blueprint(admin_bp, url_prefix='/admin')
-    app.register_blueprint(health_bp)
-    app.register_blueprint(biblioteca_bp)
-    app.register_blueprint(asistente_bp)
-    app.register_blueprint(armonizacion_bp)
-    app.register_blueprint(laboratorio_bp)
-    app.register_blueprint(analitica_bp)
-    app.register_blueprint(api_v1_bp)
-    app.register_blueprint(integraciones_bp)
-    app.register_blueprint(saas_bp)
-    app.register_blueprint(nosotros_bp)
+    flask_app.register_blueprint(home_bp)
+    flask_app.register_blueprint(iniciativa_bp)
+    flask_app.register_blueprint(participar_bp)
+    flask_app.register_blueprint(resultados_bp)
+    flask_app.register_blueprint(admin_bp, url_prefix='/admin')
+    flask_app.register_blueprint(health_bp)
+    flask_app.register_blueprint(biblioteca_bp)
+    flask_app.register_blueprint(asistente_bp)
+    flask_app.register_blueprint(armonizacion_bp)
+    flask_app.register_blueprint(laboratorio_bp)
+    flask_app.register_blueprint(analitica_bp)
+    flask_app.register_blueprint(api_v1_bp)
+    flask_app.register_blueprint(integraciones_bp)
+    flask_app.register_blueprint(saas_bp)
+    flask_app.register_blueprint(nosotros_bp)
 
     @app.route('/api/docs')
     def api_docs():
