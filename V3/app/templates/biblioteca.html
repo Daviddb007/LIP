@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}Biblioteca Inteligente — Laboratorio de Inteligencia Pública{% endblock %}
+
+{% block content %}
+<section class="hero" style="padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="badge badge-primary mb-3">
+                    <i class="bi bi-collection me-1"></i>
+                    Biblioteca Inteligente · {{ politicas|length }} políticas
+                </div>
+                <h1 class="display-lg text-white mb-3">Biblioteca Inteligente</h1>
+                <p class="body-lg text-white-50" style="max-width: 600px;">
+                    Explora políticas públicas colombianas como experiencias interactivas, no como documentos
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="d-flex flex-wrap gap-3 mb-4">
+            <form method="GET" class="d-flex gap-2 flex-wrap" id="filterForm">
+                <select name="sector" class="form-select" style="max-width: 250px;" onchange="this.form.submit()">
+                    <option value="">Todos los sectores</option>
+                    {% for s in sectores %}
+                    <option value="{{ s.id }}" {% if sector_filter == s.id|string %}selected{% endif %}>{{ s.nombre }}</option>
+                    {% endfor %}
+                </select>
+                <select name="estado" class="form-select" style="max-width: 200px;" onchange="this.form.submit()">
+                    <option value="">Todos los estados</option>
+                    <option value="Activa" {% if estado_filter == 'Activa' %}selected{% endif %}>Activa</option>
+                    <option value="En formulación" {% if estado_filter == 'En formulación' %}selected{% endif %}>En formulación</option>
+                    <option value="Evaluación" {% if estado_filter == 'Evaluación' %}selected{% endif %}>En evaluación</option>
+                    <option value="Completada" {% if estado_filter == 'Completada' %}selected{% endif %}>Completada</option>
+                </select>
+            </form>
+        </div>
+
+        <div class="row g-4">
+            {% for p in politicas %}
+            <div class="col-md-6 col-lg-4">
+                <a href="{{ url_for('biblioteca.detalle', politica_id=p.id) }}" class="text-decoration-none">
+                    <div class="card-premium h-100">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            {% if p.sector %}
+                            <span class="badge badge-primary" style="font-size: 0.75rem;">{{ p.sector.nombre }}</span>
+                            {% endif %}
+                            <span class="badge {% if p.estado == 'Activa' %}bg-success{% elif p.estado == 'En formulación' %}bg-warning text-dark{% elif p.estado == 'Evaluación' %}bg-info{% else %}bg-secondary{% endif %}" style="font-size: 0.7rem;">{{ p.estado }}</span>
+                        </div>
+                        <h5 class="heading-md mb-2">{{ p.titulo }}</h5>
+                        <p class="text-muted-2 body-sm mb-3">{{ p.resumen_ejecutivo[:150] }}{% if p.resumen_ejecutivo|length > 150 %}...{% endif %}</p>
+                        <div class="d-flex gap-3 mb-3">
+                            {% if p.alcance %}
+                            <small class="text-muted-2"><i class="bi bi-geo-alt me-1"></i>{{ p.alcance }}</small>
+                            {% endif %}
+                            {% if p.presupuesto %}
+                            <small class="text-muted-2"><i class="bi bi-cash me-1"></i>{{ p.presupuesto }}</small>
+                            {% endif %}
+                        </div>
+                        <div class="mt-auto">
+                            <small class="text-blue fw-semibold">Ver ficha completa <i class="bi bi-arrow-right"></i></small>
+                        </div>
+                    </div>
+                </a>
+            </div>
+            {% else %}
+            <div class="col-12">
+                <div class="text-center py-5">
+                    <i class="bi bi-collection text-muted-2" style="font-size: 4rem;"></i>
+                    <h4 class="mt-3 text-muted-2">No hay políticas disponibles</h4>
+                    <p class="text-muted-2">Próximamente añadiremos políticas públicas colombianas.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}

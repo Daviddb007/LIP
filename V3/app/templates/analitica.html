@@ -1,0 +1,301 @@
+{% extends "base.html" %}
+
+{% block title %}Analítica Avanzada — Laboratorio de Inteligencia Pública{% endblock %}
+
+{% block content %}
+<section class="hero" style="padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="badge badge-primary mb-3">Analítica Avanzada</div>
+                <h1 class="display-lg text-white mb-3">Analítica Avanzada</h1>
+                <p class="body-lg text-white-50" style="max-width: 600px;">
+                    Nube de palabras, clustering semántico, tendencias, análisis territorial y predicciones
+                </p>
+            </div>
+            <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
+                <span class="badge" style="background: rgba(255,255,255,0.12); color: var(--gold);" id="statsBadge">
+                    <i class="bi bi-graph-up me-1"></i>SRIE Intelligence
+                </span>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card-elevated h-100">
+                    <div class="p-4 d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-tags-fill me-2 text-primary"></i>Nube de palabras</h5>
+                        <small class="text-muted-2" id="wordCount"></small>
+                    </div>
+                    <div class="p-4 pt-0" id="wordCloud" style="min-height: 350px; position: relative;">
+                        <p class="text-muted-2 text-center py-5"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-elevated h-100">
+                    <div class="p-4">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-diagram-3 me-2 text-success"></i>Clusters semánticos</h5>
+                    </div>
+                    <div class="p-4 pt-0" id="clustersContainer" style="min-height: 350px;">
+                        <p class="text-muted-2 text-center py-5"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-lg-8">
+                <div class="card-elevated h-100">
+                    <div class="p-4">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-graph-up me-2 text-info"></i>Tendencia de participación</h5>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <canvas id="chartTendencia" height="260"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card-elevated h-100">
+                    <div class="p-4">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-flask me-2 text-warning"></i>Predicciones SRIE</h5>
+                    </div>
+                    <div class="p-4 pt-0 text-center" id="prediccionesContainer">
+                        <p class="text-muted-2 py-5"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4 mt-2">
+            <div class="col-lg-5">
+                <div class="card-elevated h-100">
+                    <div class="p-4">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-geo-alt-fill me-2 text-danger"></i>Análisis territorial</h5>
+                    </div>
+                    <div class="p-4 pt-0" id="territorioContainer">
+                        <p class="text-muted-2 text-center py-5"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-7">
+                <div class="card-elevated h-100">
+                    <div class="p-4">
+                        <h5 class="mb-0 fw-bold"><i class="bi bi-bar-chart-fill me-2 text-primary"></i>Comparativas por sector</h5>
+                    </div>
+                    <div class="p-4 pt-0">
+                        <canvas id="chartComparativo" height="280"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+let chartTendencia = null;
+let chartComparativo = null;
+
+document.addEventListener('DOMContentLoaded', function() {
+    fetch('/api/v1/analitica')
+        .then(r => r.json())
+        .then(d => renderAnalitica(d))
+        .catch(e => console.error('Error:', e));
+});
+
+function renderAnalitica(d) {
+    document.getElementById('wordCount').textContent = d.resumen.total_palabras_unicas + ' palabras';
+    document.getElementById('statsBadge').innerHTML = '<i class="bi bi-graph-up me-1"></i>' + d.resumen.total_clusters + ' clusters · ' + d.resumen.departamentos_activos + ' regiones';
+
+    renderWordCloud(d.nube_palabras);
+    renderClusters(d.clusters);
+    renderTendencia(d.tendencias);
+    renderPredicciones(d.predicciones);
+    renderTerritorio(d.territorio);
+    renderComparativo(d.comparativas);
+}
+
+function renderWordCloud(palabras) {
+    const container = document.getElementById('wordCloud');
+    const maxFreq = Math.max(...palabras.map(p => p.frecuencia));
+    const minFreq = Math.min(...palabras.map(p => p.frecuencia));
+
+    let html = '<div style="display: flex; flex-wrap: wrap; gap: 12px; justify-content: center; align-items: center; min-height: 320px; padding: 20px;">';
+
+    const colores = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#f97316'];
+
+    palabras.forEach((p, i) => {
+        const proporcion = (p.frecuencia - minFreq) / (maxFreq - minFreq || 1);
+        const size = Math.max(12, Math.min(48, 12 + proporcion * 36));
+        const peso = proporcion > 0.6 ? 800 : proporcion > 0.3 ? 600 : 400;
+        const color = colores[i % colores.length];
+        const opacity = Math.max(0.4, proporcion);
+
+        html += '<span style="font-size: ' + size + 'px; font-weight: ' + peso + '; color: ' + color + '; opacity: ' + opacity + '; cursor: default; transition: transform 0.2s, opacity 0.2s; display: inline-block; line-height: 1.3;" onmouseover="this.style.transform=\'scale(1.1)\';this.style.opacity=\'1\'" onmouseout="this.style.transform=\'scale(1)\';this.style.opacity=\'' + opacity + '\'" title="' + p.texto + ': ' + p.frecuencia + ' menciones">' + p.texto + '</span>';
+    });
+
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function renderClusters(clusters) {
+    const container = document.getElementById('clustersContainer');
+    if (!clusters.length) {
+        container.innerHTML = '<p class="text-muted-2 text-center py-5">No hay datos suficientes para clustering.</p>';
+        return;
+    }
+
+    const maxVal = Math.max(...clusters.map(c => c.participaciones));
+    const colores = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+
+    let html = '<div class="p-2">';
+    clusters.forEach((c, i) => {
+        const width = (c.participaciones / maxVal) * 100;
+        html += '<div class="mb-3">' +
+            '<div class="d-flex justify-content-between small mb-1">' +
+                '<span class="fw-semibold">' + c.nombre + '</span>' +
+                '<span class="text-muted-2 fw-bold">' + c.participaciones + '</span>' +
+            '</div>' +
+            '<div class="progress-premium"><div class="bar" style="width: ' + width + '%; background: ' + colores[i % colores.length] + ';"></div></div>' +
+            (c.palabras_clave && c.palabras_clave.length ? '<small class="text-muted-2 mt-1 d-block">' + c.palabras_clave.join(' · ') + '</small>' : '') +
+        '</div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function renderTendencia(tendencia) {
+    const ctx = document.getElementById('chartTendencia').getContext('2d');
+    if (chartTendencia) chartTendencia.destroy();
+
+    chartTendencia = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: tendencia.map(t => t.mes),
+            datasets: [{
+                label: 'Participaciones',
+                data: tendencia.map(t => t.participaciones),
+                borderColor: '#2563eb',
+                backgroundColor: function(ctx) {
+                    const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 260);
+                    g.addColorStop(0, 'rgba(37, 99, 235, 0.2)');
+                    g.addColorStop(1, 'rgba(37, 99, 235, 0.0)');
+                    return g;
+                },
+                fill: true,
+                tension: 0.4,
+                pointRadius: 4,
+                pointHoverRadius: 7,
+                pointBackgroundColor: 'white',
+                pointBorderColor: '#2563eb',
+                pointBorderWidth: 2,
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: { legend: { display: false } },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+
+function renderPredicciones(p) {
+    const container = document.getElementById('prediccionesContainer');
+    const icon = p.proyeccion_tendencia === 'creciente' ? 'bi-graph-up-arrow text-success' :
+                 p.proyeccion_tendencia === 'decreciente' ? 'bi-graph-down-arrow text-danger' : 'bi-graph-split text-warning';
+    const label = p.proyeccion_tendencia === 'creciente' ? 'Creciendo' :
+                  p.proyeccion_tendencia === 'decreciente' ? 'Decreciendo' : 'Estable';
+    const confColor = p.confianza === 'alta' ? 'bg-success' : p.confianza === 'media' ? 'bg-warning text-dark' : 'bg-secondary';
+
+    container.innerHTML = '<div class="py-3">' +
+        '<i class="bi ' + icon + '" style="font-size: 3rem;"></i>' +
+        '<h3 class="fw-bold mt-2">' + label + '</h3>' +
+        '<div class="mt-3 p-3 bg-surface-2 rounded-xl">' +
+            '<small class="text-muted-2">Estimado próximo mes</small>' +
+            '<div class="fw-bold display-6" style="color: var(--blue);">' + p.estimado_proximo_mes + '</div>' +
+            '<small class="text-muted-2">participaciones proyectadas</small>' +
+        '</div>' +
+        '<div class="mt-3"><span class="badge ' + confColor + '">Confianza: ' + p.confianza + '</span></div>' +
+    '</div>';
+}
+
+function renderTerritorio(territorio) {
+    const container = document.getElementById('territorioContainer');
+    if (!territorio.length) {
+        container.innerHTML = '<p class="text-muted-2 text-center py-5">No hay datos territoriales.</p>';
+        return;
+    }
+
+    const maxVal = Math.max(...territorio.map(t => t.total));
+    const colores = ['#2563eb', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4'];
+
+    let html = '<div class="p-2">';
+    territorio.forEach((t, i) => {
+        const width = (t.total / maxVal) * 100;
+        html += '<div class="mb-3">' +
+            '<div class="d-flex justify-content-between small mb-1">' +
+                '<span class="fw-semibold">' + t.region + '</span>' +
+                '<span class="text-muted-2 fw-bold">' + t.total + '</span>' +
+            '</div>' +
+            '<div class="progress-premium"><div class="bar" style="width: ' + width + '%; background: ' + colores[i % colores.length] + '; height: 12px;"></div></div>' +
+            (t.departamentos && t.departamentos.length ? '<small class="text-muted-2 mt-1 d-block">' + t.departamentos.map(d => d.nombre + ' (' + d.participaciones + ')').join(', ') + '</small>' : '') +
+        '</div>';
+    });
+    html += '</div>';
+    container.innerHTML = html;
+}
+
+function renderComparativo(c) {
+    const ctx = document.getElementById('chartComparativo').getContext('2d');
+    if (chartComparativo) chartComparativo.destroy();
+
+    const sectores = c.sectores || [];
+
+    chartComparativo = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: sectores.map(s => s.nombre),
+            datasets: [
+                {
+                    label: 'Participaciones',
+                    data: sectores.map(s => s.participaciones),
+                    backgroundColor: '#2563eb80',
+                    borderRadius: 6,
+                },
+                {
+                    label: 'Políticas',
+                    data: sectores.map(s => s.politicas),
+                    backgroundColor: '#10b98180',
+                    borderRadius: 6,
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'top',
+                    labels: { boxWidth: 12, font: { size: 11 } }
+                }
+            },
+            scales: {
+                y: { beginAtZero: true, ticks: { stepSize: 1 } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+}
+</script>
+{% endblock %}

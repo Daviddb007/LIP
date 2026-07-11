@@ -1,0 +1,212 @@
+{% extends "base.html" %}
+
+{% block title %}SRIE Platform — StoneLytics{% endblock %}
+
+{% block content %}
+<section class="hero" style="min-height: 70vh;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 hero-content">
+                <div class="badge badge-primary mb-3">
+                    <i class="bi bi-cpu-fill me-1"></i>
+                    StoneLytics · SRIE Platform
+                </div>
+                <h1 class="display-xl mb-4">
+                    SRIE<br>
+                    <span class="text-gradient">Platform</span>
+                </h1>
+                <p class="body-lg text-white-50 mb-4" style="max-width: 540px;">
+                    La infraestructura de inteligencia pública configurable para gobiernos, 
+                    organizaciones e instituciones. Despliega tu propio ecosistema en minutos.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="#" class="btn btn-gold btn-lg" onclick="mostrarPlanes(); return false;">
+                        <i class="bi bi-rocket-takeoff me-2"></i>Crear mi portal
+                    </a>
+                    <a href="mailto:daviddb@stonelytics.tech" class="btn btn-outline btn-lg" style="border-color: rgba(255,255,255,0.3); color: white;">
+                        <i class="bi bi-telephone me-2"></i>Solicitar demo
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 d-none d-lg-block">
+                <div class="text-center">
+                    <div style="display: inline-block; background: rgba(255,255,255,0.05); border-radius: 24px; padding: 2rem; border: 1px solid rgba(255,255,255,0.1);">
+                        <div style="font-size: 4rem; color: var(--gold);"><i class="bi bi-cpu-fill"></i></div>
+                        <h4 style="color: white; font-weight: 800; margin-top: 1rem;">SRIE</h4>
+                        <p style="color: rgba(255,255,255,0.6); font-size: 0.9rem;">Sistema de Recolección e Inteligencia Estratégica</p>
+                        <div class="d-flex gap-3 justify-content-center mt-3">
+                            <span class="badge bg-light text-dark px-3 py-2">Multi-tenant</span>
+                            <span class="badge bg-light text-dark px-3 py-2">Configurable</span>
+                            <span class="badge bg-light text-dark px-3 py-2">White-label</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <div class="overline"><i class="bi bi-grid-3x3-gap-fill me-1"></i> Arquitectura</div>
+            <h2 class="display-md">Un motor, infinitas implementaciones</h2>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-lg-10">
+                <div style="text-align: center;">
+                    <div style="border: 1px solid var(--border); border-radius: 20px; overflow: hidden;">
+                        <div style="background: #071a40; color: white; padding: 1rem 1.5rem; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; justify-content: center;">
+                            <i class="bi bi-cpu-fill"></i>
+                            <span><strong>SRIE Engine</strong> — Núcleo de inteligencia</span>
+                        </div>
+                        <div style="padding: 1.25rem; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                            <span class="chip">Clasificación</span>
+                            <span class="chip">Analítica</span>
+                            <span class="chip">Armonización</span>
+                            <span class="chip">Predicciones</span>
+                            <span class="chip">API</span>
+                        </div>
+                    </div>
+                    <div style="padding: 8px 0; color: var(--gold); font-size: 1.5rem;"><i class="bi bi-arrow-down"></i></div>
+                    <div style="border: 1px solid var(--border); border-radius: 20px; overflow: hidden;">
+                        <div style="background: #0f2f75; color: white; padding: 1rem 1.5rem; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; justify-content: center;">
+                            <i class="bi bi-layers-fill"></i>
+                            <span><strong>Capa Multi-Tenant</strong> — Aislamiento por organización</span>
+                        </div>
+                        <div style="padding: 1.25rem; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                            <span class="chip">Datos separados</span>
+                            <span class="chip">Configuración propia</span>
+                            <span class="chip">Marcos estratégicos</span>
+                            <span class="chip">Identidad visual</span>
+                        </div>
+                    </div>
+                    <div style="padding: 8px 0; color: var(--gold); font-size: 1.5rem;"><i class="bi bi-arrow-down"></i></div>
+                    <div style="border: 1px solid var(--border); border-radius: 20px; overflow: hidden;">
+                        <div style="background: #1e40af; color: white; padding: 1rem 1.5rem; font-size: 0.9rem; display: flex; align-items: center; gap: 10px; justify-content: center;">
+                            <i class="bi bi-window-stack"></i>
+                            <span><strong>Portales Blancos</strong> — Implementaciones</span>
+                        </div>
+                        <div style="padding: 1.25rem; display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;">
+                            <span class="chip">Gobernaciones</span>
+                            <span class="chip">Ministerios</span>
+                            <span class="chip">Alcaldías</span>
+                            <span class="chip">Universidades</span>
+                            <span class="chip">ONG</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-alt" id="planes">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <div class="overline"><i class="bi bi-credit-card me-1"></i> Planes</div>
+            <h2 class="display-md">Elige tu plan</h2>
+        </div>
+        <div class="row g-4 justify-content-center">
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card-premium h-100">
+                    <h5 class="fw-bold">Gratuito</h5>
+                    <div class="display-lg fw-bold mb-2" style="color: var(--text-primary);">$0</div>
+                    <p class="text-muted-2 body-sm mb-4">Para organizaciones pequeñas que quieren empezar</p>
+                    <ul class="list-unstyled mb-4">
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> Hasta 100 participaciones/mes</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> Motor SRIE básico</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> Dashboard público</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> API de consulta</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-x-circle-fill text-muted-2"></i> Personalización visual</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-x-circle-fill text-muted-2"></i> Webhooks</li>
+                    </ul>
+                    <a href="#" class="btn btn-outline-primary w-100" onclick="crearOrganizacion('gratuito'); return false;">Comenzar gratis</a>
+                </div>
+            </div>
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card-premium h-100" style="border-color: var(--blue); box-shadow: 0 8px 30px rgba(37, 99, 235, 0.15); transform: scale(1.03); position: relative;">
+                    <span style="position: absolute; top: -10px; left: 50%; transform: translateX(-50%); background: var(--blue); color: white; padding: 4px 16px; border-radius: 50px; font-size: 0.65rem; font-weight: 700; letter-spacing: 0.5px;">MÁS POPULAR</span>
+                    <h5 class="fw-bold">Profesional</h5>
+                    <div class="display-lg fw-bold mb-2" style="color: var(--text-primary);">Consultar</div>
+                    <p class="text-muted-2 body-sm mb-4">Para gobiernos e instituciones con demanda media</p>
+                    <ul class="list-unstyled mb-4">
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> Hasta 10.000 participaciones/mes</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> SRIE avanzado con analítica</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> Dashboard configurable</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> API con token dedicado</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> Personalización visual</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> Webhooks y soporte prioritario</li>
+                    </ul>
+                    <a href="mailto:daviddb@stonelytics.tech" class="btn btn-gold w-100">Solicitar cotización</a>
+                </div>
+            </div>
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card-premium h-100">
+                    <h5 class="fw-bold">Empresarial</h5>
+                    <div class="display-lg fw-bold mb-2" style="color: var(--text-primary);">A medida</div>
+                    <p class="text-muted-2 body-sm mb-4">Para grandes organizaciones con necesidades complejas</p>
+                    <ul class="list-unstyled mb-4">
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> Participaciones ilimitadas</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> SRIE full + inteligencia predictiva</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> Múltiples dashboards</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> API dedicada + SLA</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> White-label completo</li>
+                        <li class="d-flex align-items-center gap-2 py-1 body-sm"><i class="bi bi-check-circle-fill text-success"></i> Infraestructura dedicada</li>
+                    </ul>
+                    <a href="mailto:daviddb@stonelytics.tech" class="btn btn-outline-primary w-100">Contactar</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section section-dark text-center">
+    <div class="container">
+        <div class="animate-on-scroll">
+            <h2 class="display-md text-white mb-3">El Laboratorio de Inteligencia Pública es tu caso de éxito</h2>
+            <p class="text-white-50 body-lg mb-4" style="max-width: 600px; margin: 0 auto;">
+                El mismo motor que impulsa el ecosistema nacional está disponible para tu organización.
+            </p>
+            <div class="d-flex gap-3 justify-content-center flex-wrap">
+                <a href="mailto:daviddb@stonelytics.tech" class="btn btn-gold btn-lg">
+                    <i class="bi bi-arrow-right-circle me-2"></i>Solicitar demo
+                </a>
+                <a href="{{ url_for('home.index') }}" class="btn btn-outline btn-lg" style="border-color: rgba(255,255,255,0.3); color: white;">
+                    <i class="bi bi-eye me-2"></i>Ver caso de éxito
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+function mostrarPlanes() {
+    document.getElementById('planes').scrollIntoView({ behavior: 'smooth' });
+}
+
+async function crearOrganizacion(plan) {
+    const nombre = prompt('Nombre de tu organización:');
+    if (!nombre) return;
+    const tipo = prompt('Tipo (ministerio, gobernacion, alcaldia, universidad, ong, empresa):', 'empresa') || 'empresa';
+    try {
+        const r = await fetch('/api/v1/organizaciones', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nombre, tipo, plan })
+        });
+        if (r.ok) {
+            const org = await r.json();
+            showToast('Portal creado: ' + org.slug + '. Revisa tu correo para más información.', '¡Bienvenido!', 'success');
+        } else {
+            const err = await r.json();
+            showToast(err.error || 'Error al crear', 'Error', 'error');
+        }
+    } catch(e) {
+        showToast('Error de conexión', 'Error', 'error');
+    }
+}
+</script>
+{% endblock %}

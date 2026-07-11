@@ -9,7 +9,7 @@ from __future__ import annotations
 import bleach
 
 from app.errors import ValidationError
-from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario
+from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario, Sector
 
 ALLOWED_TAGS: list[str] = []
 ALLOWED_ATTRIBUTES: dict = {}
@@ -44,6 +44,7 @@ def sanitize_text(text: str) -> str:
 def validate_participacion(data: dict) -> dict:
     """Valida y sanitiza datos de participación v2. Retorna datos sanitizados."""
     _validate_ubicacion(data)
+    _validate_sectores(data)
     _validate_problemas(data)
     _validate_textos(data)
     _validate_gobernanza(data)
@@ -80,6 +81,18 @@ def _validate_ubicacion(data: dict) -> None:
         raise ValidationError("La zona es requerida")
     if zona not in VALID_ZONAS:
         raise ValidationError("Zona inválida (debe ser 'urbana' o 'rural')")
+
+
+def _validate_sectores(data: dict) -> None:
+    """Valida que se seleccionen 1-3 sectores (compatibilidad con V2)."""
+    sectores_ids = data.get('sectores', [])
+
+    if not sectores_ids or not isinstance(sectores_ids, list):
+        raise ValidationError('Debe seleccionar al menos un sector')
+    if len(sectores_ids) > 3:
+        raise ValidationError('Debe seleccionar máximo 3 sectores')
+    if not all(isinstance(s, int) for s in sectores_ids):
+        raise ValidationError('IDs de sector inválidos')
 
 
 def _validate_problemas(data: dict) -> None:

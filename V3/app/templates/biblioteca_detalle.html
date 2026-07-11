@@ -1,0 +1,256 @@
+{% extends "base.html" %}
+
+{% block title %}{{ politica.titulo }} — Biblioteca Inteligente{% endblock %}
+
+{% block content %}
+<section class="hero" style="padding: var(--space-3xl) 0;">
+    <div class="container">
+        <a href="{{ url_for('biblioteca.lista') }}" class="btn btn-outline btn-sm mb-3" style="border-color: rgba(255,255,255,0.3); color: white; border-radius: 50px;">
+            <i class="bi bi-arrow-left me-1"></i> Volver a la biblioteca
+        </a>
+        <h1 class="display-lg text-white mb-3">{{ politica.titulo }}</h1>
+        <div class="d-flex flex-wrap gap-2">
+            {% if politica.sector %}
+            <span class="badge badge-primary" style="font-size: 0.8rem;">{{ politica.sector.nombre }}</span>
+            {% endif %}
+            <span class="badge {% if politica.estado == 'Activa' %}bg-success{% elif politica.estado == 'En formulación' %}bg-warning text-dark{% elif politica.estado == 'Evaluación' %}bg-info{% else %}bg-secondary{% endif %}" style="font-size: 0.8rem;">{{ politica.estado }}</span>
+            {% if politica.alcance %}
+            <span class="badge badge-primary" style="font-size: 0.8rem;"><i class="bi bi-geo-alt me-1"></i>{{ politica.alcance }}</span>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card-elevated p-4 mb-4">
+                    <div class="mb-4">
+                        <h3 class="heading-md mb-2"><i class="bi bi-file-text text-blue me-2"></i>Resumen ejecutivo</h3>
+                        <p class="text-muted-2">{{ politica.resumen_ejecutivo }}</p>
+                    </div>
+
+                    {% if politica.problema %}
+                    <div class="mb-4">
+                        <h3 class="heading-md mb-2"><i class="bi bi-exclamation-triangle text-danger me-2"></i>Problema que resuelve</h3>
+                        <p class="text-muted-2">{{ politica.problema }}</p>
+                    </div>
+                    {% endif %}
+
+                    {% if politica.objetivos %}
+                    <div class="mb-4">
+                        <h3 class="heading-md mb-2"><i class="bi bi-bullseye text-success me-2"></i>Objetivos</h3>
+                        <div class="d-flex flex-column gap-2">
+                            {% for obj in politica.objetivos.split(';') %}
+                            <div class="d-flex align-items-start gap-2">
+                                <i class="bi bi-check-circle-fill text-success mt-1"></i>
+                                <span class="text-muted-2">{{ obj.strip() }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <div class="row g-3">
+                        {% if politica.poblacion_objetivo %}
+                        <div class="col-md-6">
+                            <div class="bg-surface-2 rounded-xl p-3">
+                                <i class="bi bi-people-fill text-blue"></i>
+                                <h6 class="fw-bold mt-2 mb-1">Población objetivo</h6>
+                                <p class="text-muted-2 body-sm mb-0">{{ politica.poblacion_objetivo }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if politica.presupuesto %}
+                        <div class="col-md-6">
+                            <div class="bg-surface-2 rounded-xl p-3">
+                                <i class="bi bi-cash-stack text-success"></i>
+                                <h6 class="fw-bold mt-2 mb-1">Presupuesto</h6>
+                                <p class="text-muted-2 body-sm mb-0">{{ politica.presupuesto }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if politica.entidades_responsables %}
+                        <div class="col-md-6">
+                            <div class="bg-surface-2 rounded-xl p-3">
+                                <i class="bi bi-building text-warning"></i>
+                                <h6 class="fw-bold mt-2 mb-1">Entidades responsables</h6>
+                                <p class="text-muted-2 body-sm mb-0">{{ politica.entidades_responsables }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% if politica.indicadores %}
+                        <div class="col-md-6">
+                            <div class="bg-surface-2 rounded-xl p-3">
+                                <i class="bi bi-bar-chart text-info"></i>
+                                <h6 class="fw-bold mt-2 mb-1">Indicadores</h6>
+                                <p class="text-muted-2 body-sm mb-0">{{ politica.indicadores }}</p>
+                            </div>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if politica.cronologia %}
+                    <div class="mt-4">
+                        <h3 class="heading-md mb-2"><i class="bi bi-clock-history text-blue me-2"></i>Cronología</h3>
+                        <div class="d-flex flex-column gap-2">
+                            {% for evento in politica.cronologia.split(';') %}
+                            <div class="d-flex align-items-start gap-2">
+                                <div style="width: 10px; height: 10px; border-radius: 50%; background: var(--blue); margin-top: 6px;"></div>
+                                <span class="text-muted-2">{{ evento.strip() }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if politica.normatividad %}
+                    <div class="mt-4">
+                        <h3 class="heading-md mb-2"><i class="bi bi-bookmark-check text-blue me-2"></i>Normatividad</h3>
+                        <div class="d-flex flex-column gap-2">
+                            {% for norma in politica.normatividad.split(';') %}
+                            <div class="d-flex align-items-start gap-2">
+                                <i class="bi bi-file-earmark-text text-muted-2 mt-1"></i>
+                                <span class="text-muted-2">{{ norma.strip() }}</span>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    {% if politica.ods_relacionados %}
+                    <div class="mt-4">
+                        <h3 class="heading-md mb-2"><i class="bi bi-globe2 text-blue me-2"></i>ODS relacionados</h3>
+                        <div class="d-flex flex-wrap gap-2">
+                            {% set ods_map = {
+                                '1': {'color': '#e5243b', 'nombre': 'Fin de la pobreza'},
+                                '2': {'color': '#dda63a', 'nombre': 'Hambre cero'},
+                                '3': {'color': '#4c9f38', 'nombre': 'Salud y bienestar'},
+                                '4': {'color': '#c5192d', 'nombre': 'Educación de calidad'},
+                                '5': {'color': '#ff3a21', 'nombre': 'Igualdad de género'},
+                                '6': {'color': '#26bde2', 'nombre': 'Agua limpia y saneamiento'},
+                                '7': {'color': '#fcc30b', 'nombre': 'Energía asequible'},
+                                '8': {'color': '#a21942', 'nombre': 'Trabajo decente'},
+                                '9': {'color': '#fd6925', 'nombre': 'Industria e innovación'},
+                                '10': {'color': '#dd1367', 'nombre': 'Reducción de desigualdades'},
+                                '11': {'color': '#fd9d24', 'nombre': 'Ciudades sostenibles'},
+                                '12': {'color': '#bf8b2e', 'nombre': 'Producción responsables'},
+                                '13': {'color': '#3f7e44', 'nombre': 'Acción por el clima'},
+                                '14': {'color': '#0a97d9', 'nombre': 'Vida submarina'},
+                                '15': {'color': '#56c02b', 'nombre': 'Vida de ecosistemas'},
+                                '16': {'color': '#00689d', 'nombre': 'Paz y justicia'},
+                                '17': {'color': '#19486a', 'nombre': 'Alianzas para lograr objetivos'},
+                            } %}
+                            {% for ods_id in politica.ods_relacionados.split(',') %}
+                            {% set ods_id = ods_id|trim %}
+                            {% if ods_id in ods_map %}
+                            <div class="d-flex align-items-center gap-1 px-3 py-1 rounded-pill" style="background: {{ ods_map[ods_id]['color'] }}; color: white; font-size: 0.75rem;">
+                                <span>ODS {{ ods_id }}</span>
+                            </div>
+                            {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div style="position: sticky; top: 100px;">
+                    <div class="card-elevated p-4 mb-3">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-question-circle me-2"></i>Haz una pregunta</h6>
+                        <p class="text-muted-2 body-sm mb-3">Consulta sobre esta política usando el motor de inteligencia SRIE.</p>
+                        <div class="mb-2">
+                            <textarea class="form-control" id="srieQuestion" rows="2" placeholder="Ej: ¿A quién beneficia esta política?" style="border-radius: 12px;"></textarea>
+                        </div>
+                        <button class="btn btn-gold w-100" onclick="preguntarSRIE({{ politica.id }})" style="border-radius: 12px;">
+                            <i class="bi bi-cpu me-2"></i>Preguntar a SRIE
+                        </button>
+                        <div id="srieAnswer" class="mt-3" style="display: none;">
+                            <div class="bg-surface-2 rounded-xl p-3">
+                                <small class="fw-bold text-blue"><i class="bi bi-cpu-fill me-1"></i>Respuesta SRIE</small>
+                                <p class="small mt-2 mb-0 text-muted-2" id="srieAnswerText"></p>
+                            </div>
+                        </div>
+                        <div id="srieLoading" class="text-center py-3" style="display: none;">
+                            <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                            <small class="text-muted-2">Analizando con SRIE...</small>
+                        </div>
+                    </div>
+
+                    <div class="card-elevated p-4 mb-3">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-info-circle me-2"></i>Información</h6>
+                        <div class="d-flex justify-content-between py-2 border-bottom border-light">
+                            <span class="text-muted-2 body-sm">Estado</span>
+                            <span class="fw-semibold body-sm">{{ politica.estado }}</span>
+                        </div>
+                        {% if politica.alcance %}
+                        <div class="d-flex justify-content-between py-2 border-bottom border-light">
+                            <span class="text-muted-2 body-sm">Alcance</span>
+                            <span class="fw-semibold body-sm">{{ politica.alcance }}</span>
+                        </div>
+                        {% endif %}
+                        {% if politica.sector %}
+                        <div class="d-flex justify-content-between py-2 border-bottom border-light">
+                            <span class="text-muted-2 body-sm">Sector</span>
+                            <span class="fw-semibold body-sm">{{ politica.sector.nombre }}</span>
+                        </div>
+                        {% endif %}
+                        {% if politica.presupuesto %}
+                        <div class="d-flex justify-content-between py-2">
+                            <span class="text-muted-2 body-sm">Presupuesto</span>
+                            <span class="fw-semibold body-sm">{{ politica.presupuesto }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    {% if politica.documentos %}
+                    <div class="card-elevated p-4">
+                        <h6 class="fw-bold mb-3"><i class="bi bi-paperclip me-2"></i>Documentos</h6>
+                        {% for doc in politica.documentos.split(';') %}
+                        <div class="d-flex align-items-center gap-2 py-2">
+                            <i class="bi bi-file-earmark-text text-muted-2"></i>
+                            <span class="text-muted-2 body-sm">{{ doc.strip() }}</span>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    async function preguntarSRIE(politicaId) {
+        const question = document.getElementById('srieQuestion').value.trim();
+        if (!question) {
+            showToast('Escribe una pregunta', 'Campo requerido', 'error');
+            return;
+        }
+
+        document.getElementById('srieLoading').style.display = 'block';
+        document.getElementById('srieAnswer').style.display = 'none';
+
+        try {
+            const response = await fetch('/api/v1/politicas/' + politicaId + '/preguntar', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pregunta: question })
+            });
+
+            const result = await response.json();
+
+            document.getElementById('srieLoading').style.display = 'none';
+            document.getElementById('srieAnswer').style.display = 'block';
+            document.getElementById('srieAnswerText').innerHTML = result.respuesta.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        } catch (e) {
+            document.getElementById('srieLoading').style.display = 'none';
+            showToast('Error al conectar con SRIE', 'Error', 'error');
+        }
+    }
+</script>
+{% endblock %}

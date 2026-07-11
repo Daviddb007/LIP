@@ -62,7 +62,19 @@
                         <a class="nav-link" href="{{ url_for('iniciativa.iniciativa') }}">La Iniciativa</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('biblioteca.lista') }}">Biblioteca</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('resultados.resultados') }}">Resultados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('asistente.pagina') }}"><i class="bi bi-cpu me-1"></i>SRIE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('analitica.pagina') }}">Analítica</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('nosotros.pagina') }}">Nosotros</a>
                     </li>
                     <li class="nav-item ms-lg-3 d-none d-lg-block">
                         <a class="btn btn-nav-outline btn-sm" href="{{ url_for('admin.login') }}">
@@ -115,8 +127,12 @@
                     <ul class="footer-links">
                         <li><a href="{{ url_for('home.index') }}"><i class="bi bi-chevron-right"></i> Inicio</a></li>
                         <li><a href="{{ url_for('iniciativa.iniciativa') }}"><i class="bi bi-chevron-right"></i> La iniciativa</a></li>
+                        <li><a href="{{ url_for('biblioteca.lista') }}"><i class="bi bi-chevron-right"></i> Biblioteca</a></li>
                         <li><a href="{{ url_for('resultados.resultados') }}"><i class="bi bi-chevron-right"></i> Resultados</a></li>
+                        <li><a href="{{ url_for('analitica.pagina') }}"><i class="bi bi-chevron-right"></i> Analítica</a></li>
+                        <li><a href="{{ url_for('asistente.pagina') }}"><i class="bi bi-chevron-right"></i> SRIE</a></li>
                         <li><a href="{{ url_for('participar.participar') }}"><i class="bi bi-chevron-right"></i> Participar</a></li>
+                        <li><a href="{{ url_for('nosotros.pagina') }}"><i class="bi bi-chevron-right"></i> Nosotros</a></li>
                     </ul>
                 </div>
                 <div class="col-lg-3 col-md-4">

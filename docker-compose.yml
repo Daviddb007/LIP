@@ -1,9 +1,9 @@
 services:
-  app:
+  app_v2:
     build:
       context: .
       dockerfile: Dockerfile
-    container_name: construyamos_app
+    container_name: construyamos_app_v2
     restart: always
     environment:
       - FLASK_CONFIG=production
@@ -26,6 +26,36 @@ services:
     volumes:
       - app_logs:/app/logs
 
+  app_v3:
+    build:
+      context: ./V3
+      dockerfile: Dockerfile
+    container_name: construyamos_app_v3
+    restart: always
+    environment:
+      - FLASK_CONFIG=production
+      - SECRET_KEY=${SECRET_KEY_V3}
+      - DATABASE_URL=postgresql://${DB_USER_V3}:${DB_PASSWORD_V3}@db_v3:5432/${DB_NAME_V3}
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASS=${ADMIN_PASS}
+      - ADMIN_API_TOKEN=${ADMIN_API_TOKEN}
+      - RATELIMIT_STORAGE_URI=redis://redis:6379/0
+      - CACHE_TYPE=RedisCache
+      - CACHE_REDIS_URL=redis://redis:6379/1
+      - PORT=8000
+      - LOG_LEVEL=info
+      - SCRIPT_NAME=
+      - PLAN_ACTIVO_ID=1
+    depends_on:
+      db_v3:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - construyamos_network
+    volumes:
+      - app_logs:/app/logs
+
   db:
     image: postgres:16-alpine
     container_name: construyamos_db
@@ -40,6 +70,25 @@ services:
       - construyamos_network
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${DB_USER} -d ${DB_NAME}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  db_v3:
+    image: postgres:16-alpine
+    container_name: construyamos_db_v3
+    restart: always
+    environment:
+      - POSTGRES_USER=${DB_USER_V3}
+      - POSTGRES_PASSWORD=${DB_PASSWORD_V3}
+      - POSTGRES_DB=${DB_NAME_V3}
+    volumes:
+      - postgres_data_v3:/var/lib/postgresql/data
+    networks:
+      - construyamos_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER_V3} -d ${DB_NAME_V3}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -71,13 +120,16 @@ services:
       - ./nginx/ssl:/etc/nginx/ssl:ro
       - ./nginx/certbot:/var/www/certbot:ro
       - ./app/static:/app/static:ro
+      - ./V3/app/static:/app/v3-static:ro
     depends_on:
-      - app
+      - app_v3
+      - app_v2
     networks:
       - construyamos_network
 
 volumes:
   postgres_data:
+  postgres_data_v3:
   redis_data:
   app_logs:
 

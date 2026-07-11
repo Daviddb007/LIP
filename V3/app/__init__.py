@@ -89,6 +89,15 @@ def _register_blueprints(app: Flask) -> None:
     from app.routes.resultados import resultados_bp
     from app.routes.admin import admin_bp
     from app.routes.health import health_bp
+    from app.routes.biblioteca import biblioteca_bp
+    from app.routes.asistente import asistente_bp
+    from app.routes.armonizacion import armonizacion_bp
+    from app.routes.laboratorio import laboratorio_bp
+    from app.routes.analitica import analitica_bp
+    from app.routes.integraciones import integraciones_bp
+    from app.routes.saas import saas_bp
+    from app.routes.nosotros import nosotros_bp
+    from app.routes.api_v1 import api_v1_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(participar_bp)
@@ -96,6 +105,20 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(resultados_bp)
     app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(health_bp)
+    app.register_blueprint(biblioteca_bp)
+    app.register_blueprint(asistente_bp)
+    app.register_blueprint(armonizacion_bp)
+    app.register_blueprint(laboratorio_bp)
+    app.register_blueprint(analitica_bp)
+    app.register_blueprint(integraciones_bp)
+    app.register_blueprint(saas_bp)
+    app.register_blueprint(nosotros_bp)
+    app.register_blueprint(api_v1_bp)
+
+    @app.route("/api/docs")
+    def api_docs():
+        from flask import render_template
+        return render_template("api_docs.html")
 
     # Exempt admin and health blueprints from default rate limiting
     limiter.exempt(admin_bp)

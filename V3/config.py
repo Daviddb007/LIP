@@ -38,6 +38,7 @@ class Config:
     # Admin
     ADMIN_USER: str = os.environ.get("ADMIN_USER", "admin")
     ADMIN_PASS: str = os.environ.get("ADMIN_PASS", "admin")
+    ADMIN_API_TOKEN: str = os.environ.get("ADMIN_API_TOKEN", "")
 
     # Rate limiting
     RATELIMIT_DEFAULT: str = "200 per day;50 per hour"

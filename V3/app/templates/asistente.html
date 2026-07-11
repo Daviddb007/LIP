@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}Asistente Público SRIE — Laboratorio de Inteligencia Pública{% endblock %}
+
+{% block content %}
+<section class="hero" style="padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8">
+                <div class="badge badge-primary mb-3">
+                    <i class="bi bi-cpu me-1"></i>
+                    Asistente Público SRIE · Especialista en Estado colombiano
+                </div>
+                <h1 class="display-lg text-white mb-3">Asistente Público SRIE</h1>
+                <p class="body-lg text-white-50" style="max-width: 500px;">
+                    Pregunta todo sobre el Estado colombiano. Respuestas basadas en información oficial.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8 col-xl-7">
+                <div class="card-elevated overflow-hidden">
+                    <div class="p-4" style="background: linear-gradient(135deg, var(--navy) 0%, #0f172a 100%);">
+                        <div class="d-flex align-items-center gap-3">
+                            <div style="width: 44px; height: 44px; border-radius: 50%; background: rgba(255,255,255,0.12); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; color: var(--gold);">
+                                <i class="bi bi-cpu-fill"></i>
+                            </div>
+                            <div>
+                                <h5 class="mb-0 fw-bold text-white">Asistente SRIE</h5>
+                                <small class="text-white-50">Especialista en Estado colombiano</small>
+                            </div>
+                            <div class="ms-auto">
+                                <span class="badge" style="background: rgba(255,255,255,0.12); color: var(--gold); font-size: 0.7rem;">
+                                    <i class="bi bi-shield-fill-check me-1"></i>Fuentes oficiales
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4" id="chatBody" style="min-height: 400px; max-height: 500px; overflow-y: auto; background: var(--surface);">
+                        <div class="d-flex gap-3 mb-4">
+                            <div style="width: 36px; height: 36px; border-radius: 50%; background: var(--blue-light); display: flex; align-items: center; justify-content: center; font-size: 1rem; color: var(--blue); flex-shrink: 0;">
+                                <i class="bi bi-cpu-fill"></i>
+                            </div>
+                            <div class="bg-surface-2 rounded-xl p-3" style="max-width: 85%;">
+                                <p class="mb-1 fw-semibold">¡Hola! Soy el Asistente Público SRIE.</p>
+                                <p class="mb-1 text-muted-2 body-sm">Soy un especialista en el Estado colombiano. Puedo responder preguntas como:</p>
+                                <ul class="mb-0 small text-muted-2">
+                                    <li>¿Qué hace un CONPES?</li>
+                                    <li>¿Cómo funciona el sistema de salud?</li>
+                                    <li>¿Qué políticas existen para jóvenes?</li>
+                                    <li>¿Qué dice el PND sobre vivienda?</li>
+                                    <li>¿Cómo puedo participar?</li>
+                                </ul>
+                                <p class="mt-2 mb-0 text-muted-2"><em>¿En qué puedo ayudarte?</em></p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="p-4 border-top border-light">
+                        <div id="chatInputContainer">
+                            <div class="input-group">
+                                <input type="text" class="form-control" id="chatInput"
+                                       placeholder="Escribe tu pregunta sobre el Estado colombiano..."
+                                       onkeydown="if(event.key==='Enter') enviarPregunta()">
+                                <button class="btn btn-gold" onclick="enviarPregunta()" id="btnEnviar">
+                                    <i class="bi bi-send-fill"></i>
+                                </button>
+                                <button class="btn btn-outline-secondary" onclick="mostrarSugerencias()" title="Preguntas sugeridas">
+                                    <i class="bi bi-lightbulb"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <div id="chatLoading" style="display: none;" class="d-flex align-items-center py-3">
+                            <div class="d-flex gap-1">
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--blue); animation: pulse 1s infinite;"></span>
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--blue); animation: pulse 1s infinite 0.2s;"></span>
+                                <span style="width: 8px; height: 8px; border-radius: 50%; background: var(--blue); animation: pulse 1s infinite 0.4s;"></span>
+                            </div>
+                            <small class="text-muted-2 ms-2">Consultando base de conocimiento...</small>
+                        </div>
+                        <div id="sugerenciasPanel" style="display: none;">
+                            <div class="d-flex justify-content-between align-items-center mt-3 mb-2">
+                                <small class="fw-bold text-muted-2">Preguntas sugeridas</small>
+                                <button class="btn btn-sm" onclick="cerrarSugerencias()"><i class="bi bi-x"></i></button>
+                            </div>
+                            <div class="d-flex flex-wrap gap-2">
+                                <button class="chip" onclick="usarSugerencia(this)">¿Qué es un CONPES?</button>
+                                <button class="chip" onclick="usarSugerencia(this)">¿Cómo se hace una ley en Colombia?</button>
+                                <button class="chip" onclick="usarSugerencia(this)">¿Qué políticas existen para jóvenes?</button>
+                                <button class="chip" onclick="usarSugerencia(this)">¿Cómo funciona el sistema de salud?</button>
+                                <button class="chip" onclick="usarSugerencia(this)">¿Qué dice el PND sobre vivienda?</button>
+                                <button class="chip" onclick="usarSugerencia(this)">¿Qué ministerios existen?</button>
+                                <button class="chip" onclick="usarSugerencia(this)">¿Cómo puedo participar en políticas públicas?</button>
+                                <button class="chip" onclick="usarSugerencia(this)">¿Qué hace la Corte Constitucional?</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<style>
+    @keyframes pulse { 0%, 100% { opacity: 0.4; } 50% { opacity: 1; } }
+</style>
+<script>
+    const chatBody = document.getElementById('chatBody');
+
+    function agregarMensaje(texto, tipo) {
+        const div = document.createElement('div');
+        div.className = 'd-flex gap-3 mb-4' + (tipo === 'user' ? ' flex-row-reverse' : '');
+
+        const avatar = document.createElement('div');
+        avatar.style.cssText = 'width: 36px; height: 36px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0;';
+        if (tipo === 'user') {
+            avatar.style.background = 'var(--gold-light)';
+            avatar.style.color = 'var(--navy)';
+            avatar.innerHTML = '<i class="bi bi-person-fill"></i>';
+        } else {
+            avatar.style.background = 'var(--blue-light)';
+            avatar.style.color = 'var(--blue)';
+            avatar.innerHTML = '<i class="bi bi-cpu-fill"></i>';
+        }
+
+        const bubble = document.createElement('div');
+        bubble.className = 'bg-surface-2 rounded-xl p-3';
+        bubble.style.maxWidth = '85%';
+        bubble.innerHTML = '<p class="mb-0 text-muted-2 body-sm">' + texto.replace(/\n/g, '<br>') + '</p>';
+
+        if (tipo === 'user') {
+            div.appendChild(bubble);
+            div.appendChild(avatar);
+        } else {
+            div.appendChild(avatar);
+            div.appendChild(bubble);
+        }
+
+        chatBody.appendChild(div);
+        chatBody.scrollTop = chatBody.scrollHeight;
+    }
+
+    async function enviarPregunta() {
+        const input = document.getElementById('chatInput');
+        const pregunta = input.value.trim();
+        if (!pregunta) return;
+
+        agregarMensaje(pregunta, 'user');
+        input.value = '';
+
+        document.getElementById('chatInputContainer').style.display = 'none';
+        document.getElementById('chatLoading').style.display = 'flex';
+
+        try {
+            const r = await fetch('/api/v1/asistente', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pregunta: pregunta })
+            });
+            const data = await r.json();
+            document.getElementById('chatLoading').style.display = 'none';
+            document.getElementById('chatInputContainer').style.display = 'block';
+            agregarMensaje(data.respuesta, 'assistant');
+        } catch (e) {
+            document.getElementById('chatLoading').style.display = 'none';
+            document.getElementById('chatInputContainer').style.display = 'block';
+            agregarMensaje('Lo siento, ocurrió un error al consultar. Intenta de nuevo.', 'assistant');
+        }
+    }
+
+    function mostrarSugerencias() {
+        const panel = document.getElementById('sugerenciasPanel');
+        panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+    }
+
+    function cerrarSugerencias() {
+        document.getElementById('sugerenciasPanel').style.display = 'none';
+    }
+
+    function usarSugerencia(btn) {
+        document.getElementById('chatInput').value = btn.textContent;
+        cerrarSugerencias();
+        enviarPregunta();
+    }
+</script>
+{% endblock %}
