@@ -12,7 +12,7 @@ from datetime import datetime
 
 from app import db
 from app.models.catalog import (
-    ProblemaCatalogo, Actor, Beneficiario,
+    ProblemaCatalogo, Subsector, Actor, Beneficiario,
     participacion_problemas, participacion_actores, participacion_beneficiarios,
 )
 from app.models.participacion import Participacion, ClasificacionSRIE
@@ -145,7 +145,6 @@ def _migrar_sectores(participacion: Participacion, sector_ids: list[int]) -> Non
     if not sector_ids:
         return
 
-    from app.models.plan import Subsector
     problemas = (
         ProblemaCatalogo.query
         .join(Subsector)
