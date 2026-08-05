@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+{% block title %}Política de Tratamiento de Datos — Laboratorio de Inteligencia Pública{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="badge badge-primary mb-3">Legal</div>
+                <h1 class="display-md mb-4">Política de Tratamiento de Datos Personales</h1>
+                <p class="text-muted-2 body-lg mb-4">Versión {{ consent_version }} · Vigente hasta {{ retention_until }}</p>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">1. Responsable del Tratamiento</h2>
+                    <p class="text-muted-2"><strong>Stonelytics</strong>, en calidad de responsable del tratamiento de datos personales, operador del Laboratorio de Inteligencia Pública (en adelante "la Plataforma"). Contacto: <a href="mailto:daviddb@stonelytics.tech">daviddb@stonelytics.tech</a>.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">2. Marco Normativo</h2>
+                    <p class="text-muted-2">Esta política se rige por la <strong>Ley 1581 de 2012</strong> (protección de datos personales), el <strong>Decreto 1377 de 2013</strong> (reglamentación), el <strong>Decreto 1074 de 2015</strong> y las circulares de la Superintendencia de Industria y Comercio (SIC). Adicionalmente, se enmarca en la <strong>Ley 1757 de 2015</strong> de participación ciudadana.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">3. Datos Recolectados</h2>
+                    <p class="text-muted-2">La Plataforma recolecta los siguientes datos personales de los ciudadanos que ejercen su derecho a participar:</p>
+                    <ul class="text-muted-2">
+                        <li><strong>Ubicación</strong>: departamento, municipio y zona (urbana/rural).</li>
+                        <li><strong>Datos demográficos</strong>: rango de edad y género (ambos opcionales).</li>
+                        <li><strong>Contenido de la participación</strong>: justificación y propuesta en texto libre.</li>
+                        <li><strong>Datos técnicos</strong>: dirección IP hasheada (no reversible).</li>
+                        <li><strong>Registro de consentimiento</strong>: fecha, hora y versión de la política aceptada.</li>
+                    </ul>
+                    <p class="text-muted-2 caption mt-2"><strong>Datos sensibles:</strong> El texto libre de la participación puede contener opiniones políticas, reconocidas como datos sensibles por el Artículo 5 de la Ley 1581. El tratamiento se limita estrictamente a la clasificación estratégica y generación de estadísticas agregadas.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">4. Finalidad del Tratamiento</h2>
+                    <p class="text-muted-2">Los datos se tratan exclusivamente para:</p>
+                    <ol class="text-muted-2">
+                        <li>Clasificar automáticamente las propuestas ciudadanas contra el marco estratégico activo (motor SRIE).</li>
+                        <li>Generar estadísticas agregadas y anónimas por territorio, problema y pilar estratégico.</li>
+                        <li>Publicar resultados en el dashboard público sin datos identificables.</li>
+                        <li>Exportar datos agregados para análisis independiente (formato CSV/JSON).</li>
+                        <li>Cumplir con obligaciones legales y atender solicitudes de derechos ARCO.</li>
+                    </ol>
+                    <p class="text-muted-2 caption">No se utilizan los datos para perfiles individuales, publicidad, ni cesión a terceros no autorizados.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">5. Autorización</h2>
+                    <p class="text-muted-2">El diligenciamiento del formulario de participación y la marcación del checkbox de autorización constituyen la autorización previa, expresa e informada del titular para el tratamiento de sus datos personales, de conformidad con el Artículo 9 de la Ley 1581 de 2012 y el Decreto 1377 de 2013.</p>
+                    <p class="text-muted-2">En caso de que el titular sea <strong>menor de edad</strong> (16-17 años), la autorización implica la declaración de contar con la autorización de su representante legal, conforme al Artículo 12 de la Ley 1581 de 2012.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">6. Transferencia Internacional de Datos</h2>
+                    <p class="text-muted-2">La infraestructura de la Plataforma puede estar alojada en servidores ubicados en <strong>Estados Unidos de América</strong>. Al aceptar esta política, el titular autoriza expresamente la transferencia internacional de sus datos personales, en los términos del Artículo 26 del Decreto 1377 de 2013. Stonelytics ha suscrito las cláusulas contractuales correspondientes con su proveedor de infraestructura cloud para garantizar niveles adecuados de protección.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">7. Derechos de los Titulares (ARCO)</h2>
+                    <p class="text-muted-2">El titular tiene derecho a <strong>Acceder, Rectificar, Cancelar (Suprimir) y Oponerse</strong> al tratamiento de sus datos personales. Para ejercer estos derechos, enviar solicitud a <a href="mailto:daviddb@stonelytics.tech">daviddb@stonelytics.tech</a> indicando:</p>
+                    <ul class="text-muted-2">
+                        <li>Nombre del derecho que desea ejercer.</li>
+                        <li>Medio de contacto para recibir respuesta.</li>
+                        <li>Código de comprobante de su participación (si aplica).</li>
+                    </ul>
+                    <p class="text-muted-2">La solicitud será respondida en un plazo máximo de <strong>15 días hábiles</strong> (Artículo 14 del Decreto 1377 de 2013). Para más información, visite nuestra <a href="{{ url_for('legal.derechos_titulares') }}">página de derechos ARCO</a>.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">8. Retención y Ciclo de Vida</h2>
+                    <p class="text-muted-2">Los datos se conservarán hasta el <strong>{{ retention_until }}</strong>, correspondiente al cierre del ciclo del Plan Nacional de Desarrollo 2027-2030. Transcurrido ese plazo, los datos serán anonimizados irreversiblemente (supresión de textos libres, hash de IP y datos demográficos), conservando únicamente agregados estadísticos no identificables.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">9. Medidas de Seguridad</h2>
+                    <p class="text-muted-2">La Plataforma implementa las siguientes medidas técnicas, jurídicas y organizativas para proteger los datos personales:</p>
+                    <ul class="text-muted-2">
+                        <li>Cifrado en tránsito mediante TLS 1.3 (HTTPS).</li>
+                        <li>Headers de seguridad (HSTS, X-Frame-Options, X-Content-Type-Options).</li>
+                        <li>Rate limiting para prevenir abusos.</li>
+                        <li>Registro de acceso con hash de IP (no almacenamos IPs en texto plano).</li>
+                        <li>Control de acceso al panel administrativo con autenticación de dos factores.</li>
+                        <li>Logging de auditoría de todas las operaciones sobre datos personales.</li>
+                    </ul>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">10. Gestión de Brechas</h2>
+                    <p class="text-muted-2">En caso de una violación de seguridad que comprometa datos personales, Stonelytics notificará a la Superintendencia de Industria y Comercio (SIC) y a los titulares afectados en un plazo máximo de <strong>72 horas</strong> desde su detección, conforme a la Circular Única de la SIC.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">11. Registro Nacional de Bases de Datos</h2>
+                    <p class="text-muted-2">La base de datos del Laboratorio de Inteligencia Pública se encuentra registrada ante el Registro Nacional de Bases de Datos (RNBD) de la Superintendencia de Industria y Comercio, de conformidad con el Título 5 de la Ley 1581 de 2012.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">12. Datos Informáticos (Cookies)</h2>
+                    <p class="text-muted-2">La Plataforma no utiliza cookies de seguimiento, publicidad ni análisis de terceros. Únicamente utiliza cookies técnicas necesarias para el funcionamiento de la sesión administrativa. Consulte nuestra <a href="{{ url_for('legal.cookies') }}">Política de Cookies</a>.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">13. Datos Históricos (Migración V2)</h2>
+                    <p class="text-muted-2">Las participaciones migradas desde la versión anterior de la plataforma (V2) no contaban con un registro de consentimiento individual. Estas participaciones han sido incorporadas con la versión de política <strong>"historico-v2"</strong> y están sujetas a los mismos plazos de retención y derechos ARCO. Si usted realizó una participación en la versión anterior y desea ejercer sus derechos, contáctenos.</p>
+                </div>
+
+                <div class="card-premium p-4">
+                    <h2 class="heading-md mb-3">14. Vigencia y Actualizaciones</h2>
+                    <p class="text-muted-2">Esta política entra en vigor a partir del <strong>1 de enero de 2026</strong>. Stonelytics se reserva el derecho de actualizarla. Las modificaciones sustanciales serán notificadas a través de la Plataforma y requerirán nueva autorización de los titulares.</p>
+                    <p class="text-muted-2 caption mt-3">Documento preparado para cumplimiento de la Ley 1581 de 2012, Decreto 1377 de 2013 y Ley 1712 de 2014. Este documento debe ser revisado por asesoría legal antes de su implementación definitiva.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

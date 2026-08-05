@@ -1,12 +1,18 @@
+"""Servicio de armonización entre participación ciudadana, políticas públicas y ODS.
+
+Construye una matriz de cobertura sectorial, identifica brechas (gaps),
+coincidencias y oportunidades, y mapea la relación con los 17 ODS.
+"""
 from __future__ import annotations
 
 from collections import defaultdict
 from typing import Any
 
 from app import db
+from app.models.catalog import Sector, Subsector, ProblemaCatalogo, participacion_problemas
 from app.models.participacion import Participacion
 from app.models.politica import Politica
-from app.models.sector import Sector
+from app.models.plan import Pilar
 from sqlalchemy import func
 
 ODS_INFO: dict[str, dict] = {
@@ -46,6 +52,7 @@ SECTOR_ODS_MAP: dict[str, list[str]] = {
 
 
 def generar_armonizacion() -> dict[str, Any]:
+    """Genera el reporte completo de armonización: matriz, ODS, gaps, coincidencias y oportunidades."""
     sectores = _stats_participacion_por_sector()
     politicas = _stats_politicas_por_sector()
     srie_pilares = _stats_srie_pilares()
@@ -79,17 +86,22 @@ def generar_armonizacion() -> dict[str, Any]:
 
 
 def _stats_participacion_por_sector() -> dict[str, int]:
+    """Cuenta participaciones únicas agrupadas por sector a través de la jerarquía problema → subsector → sector."""
     rows = (
-        db.session.query(Sector.nombre, func.count(Participacion.id))
-        .join(Participacion.sectores)
-        .group_by(Sector.nombre)
+        db.session.query(Sector.nombre, func.count(func.distinct(Participacion.id)))
+        .join(Subsector, Subsector.sector_id == Sector.id)
+        .join(ProblemaCatalogo, ProblemaCatalogo.subsector_id == Subsector.id)
+        .join(participacion_problemas, participacion_problemas.c.problema_id == ProblemaCatalogo.id)
+        .join(Participacion, Participacion.id == participacion_problemas.c.participacion_id)
+        .group_by(Sector.id, Sector.nombre)
         .all()
     )
     return {nombre: total for nombre, total in rows}
 
 
 def _stats_politicas_por_sector() -> dict[str, list[Politica]]:
-    result = defaultdict(list)
+    """Agrupa políticas activas por nombre de sector."""
+    result: dict[str, list[Politica]] = defaultdict(list)
     politicas = Politica.query.filter_by(activo=True).all()
     for p in politicas:
         if p.sector:
@@ -100,16 +112,14 @@ def _stats_politicas_por_sector() -> dict[str, list[Politica]]:
 
 
 def _stats_srie_pilares() -> list[dict]:
+    """Cuenta clasificaciones SRIE agrupadas por nombre del pilar."""
+    from app.models.participacion import ClasificacionSRIE
+
     rows = (
-        db.session.query(
-            Participacion.srie_pilar, func.count(Participacion.id)
-        )
-        .filter(
-            Participacion.srie_pilar.isnot(None),
-            Participacion.srie_pilar != '',
-        )
-        .group_by(Participacion.srie_pilar)
-        .order_by(func.count(Participacion.id).desc())
+        db.session.query(Pilar.nombre, func.count(ClasificacionSRIE.id))
+        .join(ClasificacionSRIE.pilar)
+        .group_by(Pilar.id, Pilar.nombre)
+        .order_by(func.count(ClasificacionSRIE.id).desc())
         .all()
     )
     return [{'nombre': nombre, 'total': total} for nombre, total in rows]
@@ -119,6 +129,7 @@ def _construir_matriz(
     sectores: dict[str, int],
     politicas: dict[str, list],
 ) -> list[dict]:
+    """Construye la matriz de cobertura sectorial combinando datos de participación y políticas."""
     todos_sectores = set(list(sectores.keys()) + list(politicas.keys()))
     sectores_ordenados = sorted(
         todos_sectores,
@@ -131,7 +142,7 @@ def _construir_matriz(
         (len(p) for p in politicas.values()), default=1
     )
 
-    matriz = []
+    matriz: list[dict] = []
     for nombre in sectores_ordenados:
         participaciones = sectores.get(nombre, 0)
         politicas_sector = politicas.get(nombre, [])
@@ -168,6 +179,7 @@ def _construir_matriz(
 
 
 def _calcular_nivel(valor: int, maximo: int) -> str:
+    """Clasifica un valor como alto/medio/bajo según su proporción del máximo."""
     if maximo == 0:
         return 'bajo'
     proporcion = valor / maximo
@@ -179,6 +191,7 @@ def _calcular_nivel(valor: int, maximo: int) -> str:
 
 
 def _analizar_ods(politicas: dict[str, list]) -> list[dict]:
+    """Analiza qué ODS están cubiertos por las políticas activas."""
     ods_counts: dict[str, int] = defaultdict(int)
     for sector_nombre, politicas_sector in politicas.items():
         for p in politicas_sector:
@@ -212,6 +225,7 @@ def _analizar_ods(politicas: dict[str, list]) -> list[dict]:
 
 
 def _identificar_gaps(matriz: list[dict]) -> list[dict]:
+    """Identifica sectores con participación ciudadana pero sin política pública (brechas)."""
     return [
         {
             'sector': m['sector'],
@@ -226,6 +240,7 @@ def _identificar_gaps(matriz: list[dict]) -> list[dict]:
 
 
 def _identificar_coincidencias(matriz: list[dict]) -> list[dict]:
+    """Identifica sectores donde hay alineación entre participación y políticas."""
     return [
         {
             'sector': m['sector'],
@@ -243,7 +258,8 @@ def _identificar_oportunidades(
     matriz: list[dict],
     politicas: dict[str, list],
 ) -> list[dict]:
-    oportunidades = []
+    """Identifica sectores con políticas existentes que podrían beneficiarse de más participación."""
+    oportunidades: list[dict] = []
     for m in matriz:
         if m['estado'] == 'potencial':
             politicas_sector = politicas.get(m['sector'], [])

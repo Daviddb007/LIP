@@ -1,50 +1,72 @@
+"""Jerarquía de errores API y handlers registrados en la app factory.
+
+Todos los errores heredan de APIError, que a su vez hereda de Flask HTTPException.
+Los handlers se registran con app.register_error_handler() en _register_error_handlers().
+"""
 from __future__ import annotations
 
-from flask import Flask, jsonify, request
-from flask_limiter.errors import RateLimitExceeded
+from flask import Flask, jsonify
 
 
 class APIError(Exception):
-    """Base API error with HTTP status code."""
+    """Excepción base para errores de API."""
 
     status_code: int = 500
+    message: str = "Error interno del servidor"
 
-    def __init__(self, message: str, status_code: int | None = None) -> None:
-        super().__init__(message)
-        self.message = message
-        if status_code is not None:
-            self.status_code = status_code
+    def __init__(self, message: str | None = None, status_code: int | None = None):
+        self.message = message or self.__class__.message
+        self.status_code = status_code or self.__class__.status_code
+        super().__init__(self.message)
 
-    def to_dict(self) -> dict[str, str]:
-        return {'error': self.message}
+    def to_dict(self) -> dict:
+        return {"error": self.message}
 
 
 class ValidationError(APIError):
-    """Request data failed validation."""
+    """Datos de entrada inválidos."""
 
     status_code = 400
+    message = "Datos de entrada inválidos"
 
 
 class NotFoundError(APIError):
-    """Requested resource does not exist."""
+    """Recurso no encontrado."""
 
     status_code = 404
+    message = "Recurso no encontrado"
 
 
 class RateLimitError(APIError):
-    """Too many requests."""
+    """Demasiadas solicitudes."""
 
     status_code = 429
+    message = "Demasiadas solicitudes. Intenta de nuevo en un minuto."
 
 
 class DatabaseError(APIError):
-    """Database operation failed."""
+    """Error al interactuar con la base de datos."""
 
     status_code = 500
+    message = "Error al procesar la solicitud"
+
+
+class UnauthorizedError(APIError):
+    """No autenticado."""
+
+    status_code = 401
+    message = "No autenticado"
+
+
+class ForbiddenError(APIError):
+    """No autorizado."""
+
+    status_code = 403
+    message = "No autorizado"
 
 
 def register_error_handlers(app: Flask) -> None:
-    """Register centralized error handlers on the application."""
+    """Registra handlers para errores personalizados y nativos de Flask."""
 
     @app.errorhandler(APIError)
     def handle_api_error(error: APIError):
@@ -52,26 +74,26 @@ def register_error_handlers(app: Flask) -> None:
         response.status_code = error.status_code
         return response
 
-    @app.errorhandler(RateLimitExceeded)
-    def handle_rate_limit_exceeded(error: RateLimitExceeded):
-        return jsonify({
-            'error': 'Demasiadas solicitudes. Intenta de nuevo en un minuto.'
-        }), 429
-
     @app.errorhandler(404)
     def handle_not_found(error):
-        return jsonify({'error': 'Recurso no encontrado'}), 404
+        return jsonify({"error": "Recurso no encontrado"}), 404
 
     @app.errorhandler(405)
     def handle_method_not_allowed(error):
-        return jsonify({'error': 'Método no permitido'}), 405
+        return jsonify({"error": "Método no permitido"}), 405
+
+    @app.errorhandler(429)
+    def handle_rate_limit(error):
+        return jsonify({"error": "Demasiadas solicitudes. Intenta de nuevo en un minuto."}), 429
 
     @app.errorhandler(500)
     def handle_internal_error(error):
-        app.logger.error(f'Server error: {error}')
-        return jsonify({'error': 'Error interno del servidor'}), 500
+        return jsonify({"error": "Error interno del servidor"}), 500
 
     @app.errorhandler(Exception)
-    def handle_unexpected_exception(error: Exception):
-        app.logger.exception('Unhandled exception occurred')
-        return jsonify({'error': 'Ocurrió un error inesperado'}), 500
+    def handle_unexpected_error(error):
+        from flask_limiter.errors import RateLimitExceeded
+        if isinstance(error, RateLimitExceeded):
+            return jsonify({"error": "Demasiadas solicitudes. Intenta de nuevo en un minuto."}), 429
+        app.logger.exception("Error inesperado: %s", error)
+        return jsonify({"error": "Ocurrió un error inesperado"}), 500

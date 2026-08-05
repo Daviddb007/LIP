@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Transparencia — Laboratorio de Inteligencia Pública{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="badge badge-primary mb-3">Ley 1712 de 2014</div>
+                <h1 class="display-md mb-4">Transparencia y Acceso a la Información</h1>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">Metodología</h2>
+                    <p class="text-muted-2">El Laboratorio de Inteligencia Pública utiliza el motor SRIE (Sistema de Reconocimiento e Inteligencia Estratégica) para clasificar automáticamente las propuestas ciudadanas contra el marco estratégico del Plan Nacional de Desarrollo vigente. La clasificación se basa en coincidencia de palabras clave, sin intervención humana directa.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">Diccionario de Datos</h2>
+                    <div class="table-responsive">
+                        <table class="table table-dark table-striped">
+                            <thead><tr><th>Campo</th><th>Tipo</th><th>Descripción</th><th>¿Público?</th></tr></thead>
+                            <tbody>
+                                <tr><td>departamento</td><td>String</td><td>Departamento de Colombia donde reside el participante</td><td>Sí (agregado)</td></tr>
+                                <tr><td>municipio</td><td>String</td><td>Municipio de residencia</td><td>Sí (agregado)</td></tr>
+                                <tr><td>zona</td><td>String</td><td>Urbana o rural</td><td>Sí (agregado)</td></tr>
+                                <tr><td>propuesta</td><td>Text</td><td>Texto libre de la propuesta ciudadana</td><td>Sí (individual)</td></tr>
+                                <tr><td>justificacion</td><td>Text</td><td>Texto libre de la justificación</td><td>Sí (individual)</td></tr>
+                                <tr><td>rango_edad</td><td>String</td><td>Rango etario (16-18, 19-25, etc.)</td><td>Sí (agregado)</td></tr>
+                                <tr><td>genero</td><td>String</td><td>Género autopercibido</td><td>Sí (agregado)</td></tr>
+                                <tr><td>ip_hash</td><td>String</td><td>Hash SHA-256 de la dirección IP</td><td>No (solo admin)</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-muted-2 caption">Los datos agregados excluyen campos identificables. Las exportaciones públicas no incluyen ip_hash.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">Modalidades de Participación</h2>
+                    <ul class="text-muted-2">
+                        <li><strong>Participación directa</strong>: formulario web en 5 pasos (público, sin autenticación).</li>
+                        <li><strong>API pública</strong>: integración con sistemas externos mediante API REST autenticada.</li>
+                    </ul>
+                </div>
+
+                <div class="card-premium p-4">
+                    <h2 class="heading-md mb-3">Código Fuente</h2>
+                    <p class="text-muted-2">El código fuente de la Plataforma está disponible para auditoría independiente. Contactar a <a href="mailto:daviddb@stonelytics.tech">daviddb@stonelytics.tech</a> para acceder al repositorio.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

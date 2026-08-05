@@ -1,110 +1,509 @@
 {% extends "base.html" %}
 
-{% block title %}Participar - Laboratorio de Inteligencia Pública{% endblock %}
+{% block title %}Participar — Laboratorio de Inteligencia Pública{% endblock %}
 
 {% block content %}
-<input type="hidden" id="apiProblemasUrl" value="/api/problemas/">
-<input type="hidden" id="apiEnviarUrl" value="{{ url_for('participar.api_enviar') }}">
-<input type="hidden" id="apiClasificarUrl" value="{{ url_for('participar.api_clasificar') }}">
-<input type="hidden" id="apiConfirmacionUrl" value="{{ url_for('participar.confirmacion') }}">
-<div class="flag-accent"></div>
+<!-- Hero -->
+<section class="hero" style="padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <div class="badge badge-primary mb-3">Participación Ciudadana</div>
+                <h1 class="display-lg text-white mb-3">Tu voz construye el futuro</h1>
+                <p class="body-lg text-white-50" style="max-width: 540px; margin: 0 auto;">
+                    5 pasos, menos de 5 minutos. Una conversación guiada que transforma tu opinión en evidencia para Colombia.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
 
-<section class="conversation-section">
+<!-- Formulario -->
+<section class="section">
     <div class="container">
         <div class="row justify-content-center">
-            <div class="col-lg-8 col-xl-7">
-                <div class="conversation-card">
-                    <div class="conversation-header">
-                        <div class="conversation-avatar">
-                            <i class="bi bi-chat-dots-fill"></i>
-                        </div>
-                        <div>
-                            <h5 class="mb-0 fw-bold">Laboratorio de Inteligencia Pública</h5>
-                            <small class="text-white-50">Conversación ciudadana · Anónimo</small>
-                        </div>
-                        <div class="ms-auto">
-                            <span class="conversation-badge">
-                                <i class="bi bi-shield-lock-fill me-1"></i>Seguro
-                            </span>
-                        </div>
-                    </div>
-                    
-                    <div class="conversation-body" id="conversacionBody">
-                        <div class="message-bubble assistant-bubble animate-in">
-                            <div class="message-avatar"><i class="bi bi-chat-dots-fill"></i></div>
-                            <div class="message-content">
-                                <p class="mb-1">¡Hola! Soy el asistente del <strong>Laboratorio de Inteligencia Pública</strong>, el Ecosistema Nacional de Inteligencia Pública.</p>
-                                <p class="mb-1">Te voy a hacer algunas preguntas para entender tu visión y convertir tus ideas en evidencia para la toma de decisiones. No necesitas registrarte y toda tu participación es anónima.</p>
-                                <p class="mb-0">¿Empezamos?</p>
-                                <div class="message-actions mt-2">
-                                    <button class="btn btn-sm btn-primary" onclick="iniciarConversacion()">
-                                        <i class="bi bi-play-fill me-1"></i>¡Sí, empecemos!
-                                    </button>
-                                </div>
-                            </div>
+            <div class="col-lg-8">
+                <!-- Step Indicators -->
+                <div class="d-flex justify-content-between align-items-center mb-4 px-2">
+                    <div class="step-indicator active">1</div>
+                    <div class="step-line"></div>
+                    <div class="step-indicator">2</div>
+                    <div class="step-line"></div>
+                    <div class="step-indicator">3</div>
+                    <div class="step-line"></div>
+                    <div class="step-indicator">4</div>
+                    <div class="step-line"></div>
+                    <div class="step-indicator">5</div>
+                </div>
+
+                <!-- Progress Bar -->
+                <div class="progress-premium mb-4">
+                    <div class="bar" id="progressBar" style="width: 20%;"></div>
+                </div>
+
+                <!-- Form Card -->
+                <div class="form-card">
+                    <div class="form-card-header">
+                        <div class="d-flex justify-content-between" style="font-size: 0.8125rem; color: var(--text-4);">
+                            <span id="stepLabel">Paso 1 de 5 · Temas</span>
+                            <span id="stepCount">1/5</span>
                         </div>
                     </div>
 
-                    <div class="conversation-footer" id="conversacionFooter" style="display: none;">
-                        <div id="inputContainer" class="input-container">
-                            <div id="inputOptions"></div>
-                            <div id="inputText" style="display: none;">
-                                <div class="input-group">
-                                    <textarea class="form-control" id="txtInput" rows="1" placeholder="Escribe tu respuesta aquí..." maxlength="500"></textarea>
-                                    <button class="btn btn-primary" id="btnSendText" onclick="enviarTexto()">
-                                        <i class="bi bi-send-fill"></i>
-                                    </button>
+                    <div class="form-card-body">
+                        <!-- Step 1: Temas (Sector → Subsector → Problema, hasta 3) -->
+                        <div id="step1" class="form-step">
+                            <div class="heading-lg mb-1">¿Qué temas te importan?</div>
+                            <p class="text-muted-2 body-sm mb-3">Selecciona un sector, luego un subsector y hasta 3 problemas.</p>
+
+                            <div class="form-field mb-3">
+                                <label class="form-label">Sector</label>
+                                <select class="form-select" id="sectorSelect">
+                                    <option value="">Selecciona un sector</option>
+                                </select>
+                            </div>
+
+                            <div class="form-field mb-3" id="subsectorField" style="display:none;">
+                                <label class="form-label">Subsector</label>
+                                <select class="form-select" id="subsectorSelect">
+                                    <option value="">Selecciona un subsector</option>
+                                </select>
+                            </div>
+
+                            <div class="form-field" id="problemaField" style="display:none;">
+                                <label class="form-label">Problemas (selecciona hasta 3)</label>
+                                <div id="problemaGrid" class="row g-2"></div>
+                            </div>
+
+                            <div id="selectedProblemas" class="mt-3" style="display:none;">
+                                <div class="caption text-muted-2 mb-1">Seleccionados:</div>
+                                <div id="selectedChips" class="d-flex flex-wrap gap-1"></div>
+                            </div>
+                        </div>
+
+                        <!-- Step 2: Contexto -->
+                        <div id="step2" class="form-step" style="display: none;">
+                            <div class="heading-lg mb-1">Cuéntanos más</div>
+                            <p class="text-muted-2 body-sm mb-4">¿Por qué es importante y qué propones?</p>
+
+                            <div class="form-field mb-3">
+                                <label class="form-label">¿Por qué es prioritario?</label>
+                                <textarea class="form-control" id="justificacion" maxlength="500" rows="4" placeholder="En mi barrio la inseguridad ha aumentado porque..."></textarea>
+                                <div class="text-end caption mt-1"><span id="justCount">0</span>/500</div>
+                            </div>
+
+                            <div class="form-field mb-3">
+                                <label class="form-label">¿Qué solución propones?</label>
+                                <textarea class="form-control" id="propuesta" maxlength="500" rows="4" placeholder="Más pie de fuerza y cámaras en los parques del barrio..."></textarea>
+                                <div class="text-end caption mt-1"><span id="propCount">0</span>/500</div>
+                            </div>
+
+                            <div class="row g-3">
+                                <div class="col-sm-6">
+                                    <label class="form-label">Rango de edad</label>
+                                    <select class="form-select" id="rangoEdad">
+                                        <option value="">No especificar</option>
+                                        <option value="16-18">16-18</option>
+                                        <option value="19-25">19-25</option>
+                                        <option value="26-35">26-35</option>
+                                        <option value="36-45">36-45</option>
+                                        <option value="46-55">46-55</option>
+                                        <option value="56-65">56-65</option>
+                                        <option value="66+">66+</option>
+                                    </select>
                                 </div>
-                                <div class="d-flex justify-content-between mt-1 px-1">
-                                    <small class="text-muted char-hint"><i class="bi bi-lightbulb me-1"></i>Sé específico y claro</small>
-                                    <small><span id="charCountFooter" class="fw-bold">0</span>/500</small>
+                                <div class="col-sm-6">
+                                    <label class="form-label">Género</label>
+                                    <select class="form-select" id="genero">
+                                        <option value="">No especificar</option>
+                                        <option value="Masculino">Masculino</option>
+                                        <option value="Femenino">Femenino</option>
+                                        <option value="Otro">Otro</option>
+                                        <option value="Prefiero no decir">Prefiero no decir</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>
-                        <div id="loadingIndicator" class="loading-indicator" style="display: none;">
-                            <div class="typing-dots">
-                                <span></span><span></span><span></span>
-                            </div>
-                            <small class="text-muted ms-2">Analizando tu respuesta...</small>
+
+                        <!-- Step 3: Gobernanza -->
+                        <div id="step3" class="form-step" style="display: none;">
+                            <div class="heading-lg mb-1">¿Quién debería involucrarse?</div>
+                            <p class="text-muted-2 body-sm mb-3">Selecciona actores (hasta 3) y beneficiarios (hasta 5).</p>
+
+                            <label class="form-label">Actores que deberían liderarlo (1-3)</label>
+                            <div id="actorGrid" class="d-flex flex-wrap gap-2 mb-4"></div>
+
+                            <label class="form-label">Beneficiarios principales (1-5)</label>
+                            <div id="beneficiarioGrid" class="d-flex flex-wrap gap-2"></div>
                         </div>
+
+                        <!-- Step 4: Ubicación -->
+                        <div id="step4" class="form-step" style="display: none;">
+                            <div class="heading-lg mb-1">¿Dónde vives?</div>
+                            <p class="text-muted-2 body-sm mb-4">Tu ubicación ayuda a mostrar qué le importa a cada región de Colombia.</p>
+
+                            <div class="form-field mb-3">
+                                <label class="form-label">Departamento</label>
+                                <select class="form-select" id="departamento">
+                                    <option value="">Selecciona tu departamento</option>
+                                    <option>Amazonas</option><option>Antioquia</option><option>Arauca</option><option>Atlántico</option>
+                                    <option>Bogotá D.C.</option><option>Bolívar</option><option>Boyacá</option><option>Caldas</option>
+                                    <option>Caquetá</option><option>Casanare</option><option>Cauca</option><option>Cesar</option>
+                                    <option>Chocó</option><option>Córdoba</option><option>Cundinamarca</option><option>Guainía</option>
+                                    <option>Guaviare</option><option>Huila</option><option>La Guajira</option><option>Magdalena</option>
+                                    <option>Meta</option><option>Nariño</option><option>Norte de Santander</option><option>Putumayo</option>
+                                    <option>Quindío</option><option>Risaralda</option><option>San Andrés y Providencia</option>
+                                    <option>Santander</option><option>Sucre</option><option>Tolima</option><option>Valle del Cauca</option>
+                                    <option>Vaupés</option><option>Vichada</option>
+                                </select>
+                            </div>
+
+                            <div class="form-field mb-3">
+                                <label class="form-label">Municipio</label>
+                                <input type="text" class="form-control" id="municipio" placeholder="Nombre de tu municipio">
+                            </div>
+
+                            <div class="form-field mb-4">
+                                <label class="form-label">Zona</label>
+                                <div class="d-flex gap-2">
+                                    <button type="button" class="chip flex-grow-1 justify-content-center zona-btn" data-val="urbana">Urbana</button>
+                                    <button type="button" class="chip flex-grow-1 justify-content-center zona-btn" data-val="rural">Rural</button>
+                                </div>
+                            </div>
+
+                            <!-- Consentimiento (Ley 1581 de 2012) -->
+                            <div class="form-field">
+                                <div class="d-flex align-items-start gap-3 p-3 rounded-lg" style="background: var(--surface-2);">
+                                    <input type="checkbox" id="consentimiento" class="mt-1" style="width: 18px; height: 18px; flex-shrink: 0;">
+                                    <label for="consentimiento" class="body-sm text-muted-2" style="cursor: pointer;">
+                                        Autorizo el tratamiento de mis datos personales de acuerdo con la
+                                        <a href="{{ url_for('legal.tratamiento_datos') }}" target="_blank" class="text-gold">Política de Tratamiento de Datos</a>
+                                        del Laboratorio de Inteligencia Pública. En caso de ser menor de 18 años, declaro contar con la autorización de mi representante legal.
+                                        <span class="d-block mt-1 caption">(Ley 1581 de 2012, Decreto 1377 de 2013)</span>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Step 5: Resultado SRIE -->
+                        <div id="step5" class="form-step" style="display: none;">
+                            <div class="d-flex align-items-center gap-3 mb-4">
+                                <div style="width: 48px; height: 48px; border-radius: 50%; background: var(--success-light); display: flex; align-items: center; justify-content: center;">
+                                    <i class="bi bi-check-lg" style="font-size: 1.5rem; color: var(--success);"></i>
+                                </div>
+                                <div>
+                                    <div class="heading-lg">Tu propuesta quedó registrada</div>
+                                    <div class="body-sm text-muted-2">Esto es lo que encontró el motor de clasificación</div>
+                                </div>
+                            </div>
+
+                            <div id="resultadoContainer"></div>
+                        </div>
+                    </div>
+
+                    <div class="form-card-footer">
+                        <button type="button" class="btn btn-secondary" id="btnBack" style="visibility: hidden;">
+                            <i class="bi bi-arrow-left me-2"></i>Atrás
+                        </button>
+                        <button type="button" class="btn btn-primary" id="btnNext">
+                            Siguiente <i class="bi bi-arrow-right ms-2"></i>
+                        </button>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-<div id="srieResultModal" class="modal fade" tabindex="-1" aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
-        <div class="modal-content border-0 shadow-lg" style="border-radius: 24px;">
-            <div class="modal-header border-0 pt-4 px-4" style="background: linear-gradient(135deg, #071a40 0%, #0f2f75 100%); color: white; border-radius: 24px 24px 0 0;">
-                <div>
-                    <h5 class="fw-bold mb-1"><i class="bi bi-cpu-fill me-2"></i>Clasificación SRIE</h5>
-                    <small class="text-white-50">Tu participación fue analizada por el motor de inteligencia estratégica</small>
-                </div>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body p-4">
-                <div id="srieResultContent">
-                    <div class="text-center py-4">
-                        <div class="spinner-border text-primary" role="status"></div>
-                        <p class="mt-2 text-muted">Generando clasificación...</p>
-                    </div>
-                </div>
-            </div>
-            <div class="modal-footer border-0 px-4 pb-4 justify-content-center">
-                <a href="{{ url_for('participar.confirmacion') }}" class="btn btn-primary btn-lg px-5" style="border-radius: 16px;">
-                    <i class="bi bi-check-circle me-2"></i>Ver detalle completo
-                </a>
-                <button class="btn btn-outline-secondary btn-lg px-4 ms-2" style="border-radius: 16px;" data-bs-dismiss="modal">
-                    Cerrar
-                </button>
-            </div>
-        </div>
-    </div>
-</div>
 {% endblock %}
 
 {% block scripts %}
-<script src="{{ url_for('static', filename='js/participar.js') }}"></script>
+<script>
+(function() {
+    var API = '/api';
+    var state = {
+        step: 1,
+        sectores: [],
+        sectorActual: null,
+        subsectorActual: null,
+        problemasIds: [],
+        problemasNombres: [],
+        actorIds: [],
+        beneficiarioIds: [],
+        zona: null
+    };
+
+    // ---- Load catalogs ----
+    fetch(API + '/catalogo/sectores').then(function(r){ return r.json(); }).then(function(data) {
+        state.sectores = data;
+        var sel = document.getElementById('sectorSelect');
+        data.forEach(function(s) {
+            var opt = document.createElement('option');
+            opt.value = s.id;
+            opt.textContent = s.nombre;
+            sel.appendChild(opt);
+        });
+    });
+
+    fetch(API + '/catalogo/actores').then(function(r){ return r.json(); }).then(function(data) {
+        var grid = document.getElementById('actorGrid');
+        data.forEach(function(a) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'chip';
+            b.textContent = a.nombre;
+            b.setAttribute('data-id', a.id);
+            b.onclick = function() {
+                var idx = state.actorIds.indexOf(a.id);
+                if (idx >= 0) { state.actorIds.splice(idx, 1); b.classList.remove('active'); }
+                else if (state.actorIds.length < 3) { state.actorIds.push(a.id); b.classList.add('active'); }
+            };
+            grid.appendChild(b);
+        });
+    });
+
+    fetch(API + '/catalogo/beneficiarios').then(function(r){ return r.json(); }).then(function(data) {
+        var grid = document.getElementById('beneficiarioGrid');
+        data.forEach(function(ben) {
+            var b = document.createElement('button');
+            b.type = 'button';
+            b.className = 'chip';
+            b.textContent = ben.nombre;
+            b.setAttribute('data-id', ben.id);
+            b.onclick = function() {
+                var idx = state.beneficiarioIds.indexOf(ben.id);
+                if (idx >= 0) { state.beneficiarioIds.splice(idx, 1); b.classList.remove('active'); }
+                else if (state.beneficiarioIds.length < 5) { state.beneficiarioIds.push(ben.id); b.classList.add('active'); }
+            };
+            grid.appendChild(b);
+        });
+    });
+
+    // ---- Sector → Subsector cascade ----
+    document.getElementById('sectorSelect').onchange = function() {
+        var sid = parseInt(this.value);
+        state.sectorActual = state.sectores.find(function(s){ return s.id === sid; }) || null;
+        var subSel = document.getElementById('subsectorSelect');
+        subSel.innerHTML = '<option value="">Selecciona un subsector</option>';
+        document.getElementById('subsectorField').style.display = state.sectorActual ? 'block' : 'none';
+        document.getElementById('problemaField').style.display = 'none';
+        if (state.sectorActual) {
+            state.sectorActual.subsectores.forEach(function(sub) {
+                var opt = document.createElement('option');
+                opt.value = sub.id;
+                opt.textContent = sub.nombre;
+                subSel.appendChild(opt);
+            });
+        }
+    };
+
+    document.getElementById('subsectorSelect').onchange = function() {
+        var subid = parseInt(this.value);
+        state.subsectorActual = (state.sectorActual ? state.sectorActual.subsectores : []).find(function(s){ return s.id === subid; }) || null;
+        var grid = document.getElementById('problemaGrid');
+        grid.innerHTML = '';
+        document.getElementById('problemaField').style.display = state.subsectorActual ? 'block' : 'none';
+        if (state.subsectorActual) {
+            state.subsectorActual.problemas.forEach(function(p) {
+                var col = document.createElement('div');
+                col.className = 'col-md-6 col-lg-4';
+                var btn = document.createElement('button');
+                btn.type = 'button';
+                btn.className = 'selection-card w-100';
+                var isSelected = state.problemasIds.indexOf(p.id) >= 0;
+                if (isSelected) btn.classList.add('active');
+                btn.innerHTML = '<div class="icon"><i class="bi bi-' + (p.icono || 'exclamation-circle') + '"></i></div><span>' + p.nombre + '</span>';
+                btn.onclick = function() {
+                    var idx = state.problemasIds.indexOf(p.id);
+                    if (idx >= 0) {
+                        state.problemasIds.splice(idx, 1);
+                        state.problemasNombres.splice(idx, 1);
+                        btn.classList.remove('active');
+                    } else if (state.problemasIds.length < 3) {
+                        state.problemasIds.push(p.id);
+                        state.problemasNombres.push(p.nombre);
+                        btn.classList.add('active');
+                    }
+                    updateSelectedChips();
+                };
+                col.appendChild(btn);
+                grid.appendChild(col);
+            });
+        }
+        updateSelectedChips();
+    };
+
+    function updateSelectedChips() {
+        var container = document.getElementById('selectedProblemas');
+        var chips = document.getElementById('selectedChips');
+        chips.innerHTML = '';
+        if (state.problemasIds.length > 0) {
+            container.style.display = 'block';
+            state.problemasNombres.forEach(function(name, i) {
+                var chip = document.createElement('span');
+                chip.className = 'chip active';
+                chip.textContent = name + ' ×';
+                chip.style.cursor = 'pointer';
+                chip.onclick = function() {
+                    state.problemasIds.splice(i, 1);
+                    state.problemasNombres.splice(i, 1);
+                    updateSelectedChips();
+                    // Also deselect in grid
+                    document.querySelectorAll('#problemaGrid .selection-card').forEach(function(c) { c.classList.remove('active'); });
+                    state.problemasIds.forEach(function(id) {
+                        // Find and re-activate
+                    });
+                };
+                chips.appendChild(chip);
+            });
+        } else {
+            container.style.display = 'none';
+        }
+    }
+
+    // ---- Zone buttons ----
+    document.querySelectorAll('.zona-btn').forEach(function(btn) {
+        btn.onclick = function() {
+            state.zona = btn.getAttribute('data-val');
+            document.querySelectorAll('.zona-btn').forEach(function(b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+        };
+    });
+
+    // ---- Char counters ----
+    var justArea = document.getElementById('justificacion');
+    justArea.addEventListener('input', function() { document.getElementById('justCount').textContent = justArea.value.length; });
+    var propArea = document.getElementById('propuesta');
+    propArea.addEventListener('input', function() { document.getElementById('propCount').textContent = propArea.value.length; });
+
+    // ---- Step navigation ----
+    var labels = ['', 'Paso 1 de 5 · Temas', 'Paso 2 de 5 · Contexto', 'Paso 3 de 5 · Gobernanza', 'Paso 4 de 5 · Ubicación', 'Resultado'];
+
+    function showStep(n) {
+        document.querySelectorAll('.form-step').forEach(function(s) { s.style.display = 'none'; });
+        document.getElementById('step' + n).style.display = 'block';
+        var pct = Math.min(n, 5) / 5 * 100;
+        document.getElementById('progressBar').style.width = pct + '%';
+        document.getElementById('stepLabel').textContent = labels[n] || 'Resultado';
+        document.getElementById('stepCount').textContent = n <= 5 ? n + '/5' : '';
+        document.getElementById('btnBack').style.visibility = n === 1 ? 'hidden' : 'visible';
+        document.querySelectorAll('.step-indicator').forEach(function(el, i) {
+            el.classList.remove('active', 'completed');
+            if (i + 1 < n) el.classList.add('completed');
+            else if (i + 1 === n) el.classList.add('active');
+        });
+        document.querySelectorAll('.step-line').forEach(function(el, i) {
+            el.classList.remove('active', 'completed');
+            if (i + 1 < n) el.classList.add('completed');
+        });
+        var nextBtn = document.getElementById('btnNext');
+        if (n === 4) {
+            nextBtn.innerHTML = 'Enviar participación <i class="bi bi-send ms-2"></i>';
+        } else if (n === 5) {
+            nextBtn.style.display = 'none';
+            document.getElementById('btnBack').style.display = 'none';
+        } else {
+            nextBtn.innerHTML = 'Siguiente <i class="bi bi-arrow-right ms-2"></i>';
+            nextBtn.style.display = 'inline-block';
+            document.getElementById('btnBack').style.display = 'inline-block';
+        }
+    }
+
+    document.getElementById('btnBack').onclick = function() {
+        if (state.step > 1) { state.step--; showStep(state.step); }
+    };
+
+    document.getElementById('btnNext').onclick = function() {
+        if (state.step === 4) {
+            submitParticipacion();
+            return;
+        }
+        if (state.step < 5) { state.step++; showStep(state.step); }
+    };
+
+    var CONSENT_VERSION = '2026-01';
+
+    function submitParticipacion() {
+        var dept = document.getElementById('departamento').value;
+        var muni = document.getElementById('municipio').value.trim();
+        var just = document.getElementById('justificacion').value.trim();
+        var prop = document.getElementById('propuesta').value.trim();
+        var consent = document.getElementById('consentimiento').checked;
+
+        // Validation
+        if (!state.problemasIds.length) { alert('Selecciona al menos un problema'); state.step = 1; showStep(1); return; }
+        if (!just) { alert('La justificación es requerida'); state.step = 2; showStep(2); return; }
+        if (!prop) { alert('La propuesta es requerida'); state.step = 2; showStep(2); return; }
+        if (!state.actorIds.length) { alert('Selecciona al menos un actor'); state.step = 3; showStep(3); return; }
+        if (!state.beneficiarioIds.length) { alert('Selecciona al menos un beneficiario'); state.step = 3; showStep(3); return; }
+        if (!dept) { alert('El departamento es requerido'); state.step = 4; showStep(4); return; }
+        if (!muni) { alert('El municipio es requerido'); state.step = 4; showStep(4); return; }
+        if (!state.zona) { alert('Selecciona una zona'); state.step = 4; showStep(4); return; }
+        if (!consent) { alert('Debe autorizar el tratamiento de sus datos personales (Ley 1581 de 2012)'); return; }
+
+        var payload = {
+            departamento: dept,
+            municipio: muni,
+            zona: state.zona,
+            problema_ids: state.problemasIds,
+            justificacion: just,
+            propuesta: prop,
+            rango_edad: document.getElementById('rangoEdad').value || null,
+            genero: document.getElementById('genero').value || null,
+            actor_ids: state.actorIds,
+            beneficiario_ids: state.beneficiarioIds,
+            consentimiento_aceptado: true,
+            consentimiento_version: CONSENT_VERSION
+        };
+
+        var btn = document.getElementById('btnNext');
+        btn.disabled = true;
+        btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Enviando...';
+
+        fetch(API + '/enviar', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        }).then(function(r) { return r.json(); }).then(function(data) {
+            btn.disabled = false;
+            if (data.success) {
+                renderResult(data);
+                state.step = 5;
+                showStep(5);
+                if (typeof launchConfetti === 'function') launchConfetti();
+            } else {
+                alert(data.error || 'Error al enviar');
+                btn.innerHTML = 'Enviar participación <i class="bi bi-send ms-2"></i>';
+            }
+        }).catch(function(err) {
+            btn.disabled = false;
+            alert('Error de conexión');
+            btn.innerHTML = 'Enviar participación <i class="bi bi-send ms-2"></i>';
+        });
+    }
+
+    function renderResult(data) {
+        var container = document.getElementById('resultadoContainer');
+        container.innerHTML = '';
+        var clasifs = data.clasificaciones || [];
+        clasifs.forEach(function(c, i) {
+            var pct = Math.round(c.confianza * 100);
+            var card = document.createElement('div');
+            card.className = 'bg-surface-2 rounded-xl p-4 mb-3';
+            card.innerHTML =
+                '<div class="d-flex justify-content-between align-items-start mb-2">' +
+                    '<div>' +
+                        '<div class="caption text-muted-2 mb-1">' + (i === 0 ? 'Clasificación principal' : 'Clasificación #' + (i+1)) + '</div>' +
+                        '<div class="heading-lg">' + (c.pilar ? c.pilar.nombre : 'Sin clasificar') + '</div>' +
+                    '</div>' +
+                    '<span class="badge badge-blue">' + pct + '%</span>' +
+                '</div>' +
+                '<div class="progress-premium mb-2"><div class="bar" style="width:' + pct + '%"></div></div>' +
+                '<div class="caption text-muted-2">' + (c.explicacion || '') + '</div>';
+            container.appendChild(card);
+        });
+    }
+
+    showStep(1);
+})();
+</script>
 {% endblock %}

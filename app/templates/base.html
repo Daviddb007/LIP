@@ -4,172 +4,279 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="language" content="Spanish">
-    <meta name="description" content="Laboratorio de Inteligencia Pública — Ecosistema Nacional de Inteligencia Pública. Participa, aprende y consulta cómo se construyen las decisiones públicas en Colombia.">
+    <meta name="description" content="{% block meta_description %}Participa en la co-construcción del Plan Nacional de Desarrollo 2027-2030. Registra las problemáticas de tu región y define las prioridades de Colombia.{% endblock %}">
     <meta name="robots" content="index, follow">
     <meta name="author" content="Stonelytics">
+
+    <!-- Open Graph -->
     <meta property="og:type" content="website">
-    <meta property="og:title" content="Laboratorio de Inteligencia Pública | Ecosistema de Inteligencia Pública">
-    <meta property="og:description" content="El primer ecosistema colombiano que conecta ciudadanía, conocimiento, evidencia y toma de decisiones.">
-    <meta property="og:image" content="https://inteligenciapublica.stonelytics.tech/static/img/favicon.webp">
+    <meta property="og:title" content="{% block og_title %}Laboratorio de Inteligencia Pública — Inteligencia Participativa{% endblock %}">
+    <meta property="og:description" content="Sistema Nacional de Inteligencia Participativa para el Plan Nacional de Desarrollo 2027-2030.">
+    <meta property="og:image" content="{{ url_for('static', filename='img/og-image.png', _external=True) }}">
+
+    <!-- Twitter -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="Laboratorio de Inteligencia Pública | Ecosistema de Inteligencia Pública">
-    <meta name="twitter:description" content="El primer ecosistema colombiano que conecta ciudadanía, conocimiento, evidencia y toma de decisiones.">
-    <title>{% block title %}Laboratorio de Inteligencia Pública | Ecosistema de Inteligencia Pública{% endblock %}</title>
+    <meta name="twitter:title" content="{% block tw_title %}Laboratorio de Inteligencia Pública{% endblock %}">
+    <meta name="twitter:description" content="Sistema Nacional de Inteligencia Participativa.">
+
+    <title>{% block title %}Laboratorio de Inteligencia Pública — Inteligencia Participativa{% endblock %}</title>
+
     <link rel="icon" type="image/webp" href="{{ url_for('static', filename='img/favicon.webp') }}">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-9ndCyUaIbzAi2FUVXJi0CjmCapSmO7SnpJef0486qhLnuZ2cdeRhO02iuK6FUUVM" crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/map.css') }}" rel="stylesheet">
+    {% block styles %}{% endblock %}
 </head>
 <body>
+    <!-- Flag Accent -->
+    {% block flag %}<div class="flag-accent"></div>{% endblock %}
 
-<div class="flag-accent"></div>
-
-<nav class="navbar navbar-expand-lg navbar-dark navbar-premium fixed-top">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="{{ url_for('home.index') }}">
-            <span style="font-size:1.3rem;">🇨🇴</span>
-            <span>Laboratorio de <span>Inteligencia Pública</span></span>
-        </a>
-        <div class="d-flex align-items-center">
-            <a href="{{ url_for('participar.participar') }}" class="btn btn-nav-cta d-lg-none me-3 btn-sm">
-                <i class="bi bi-arrow-right-circle"></i>
+    <!-- Navbar Premium -->
+    {% block nav %}
+    <nav class="navbar navbar-expand-lg navbar-dark navbar-premium fixed-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="{{ url_for('home.index') }}">
+                <span class="me-2" style="font-size: 1.5rem;">🇨🇴</span>
+                <span>Construyamos<span>Colombia</span></span>
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav ms-auto align-items-center">
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('home.index') }}">Inicio</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('iniciativa.iniciativa') }}">Conocimiento</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('biblioteca.lista') }}">Biblioteca</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('resultados.resultados') }}">Observatorio</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('asistente.pagina') }}"><i class="bi bi-cpu me-1"></i>SRIE</a></li>
-                <li class="nav-item"><a class="nav-link" href="{{ url_for('nosotros.pagina') }}">Nosotros</a></li>
-                <li class="nav-item ms-xl-2 d-none d-lg-block">
-                    <a class="btn btn-outline btn-sm py-1 px-2" href="{{ url_for('admin.login') }}" style="border-color:rgba(255,255,255,0.3);color:#fff;font-size:0.8rem;">
-                        <i class="bi bi-speedometer2 me-1"></i>Dashboard
-                    </a>
-                </li>
-                <li class="nav-item ms-xl-1 d-none d-lg-block">
-                    <a class="btn btn-nav-cta btn-sm py-1 px-3" href="{{ url_for('participar.participar') }}" style="font-size:0.8rem;">
-                        <i class="bi bi-arrow-right-circle me-1"></i>Participar
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </div>
-</nav>
 
-<div class="toast-container" id="toastContainer">
-    <div id="appToast" class="toast-premium" style="display:none;">
-        <i class="bi bi-info-circle-fill text-primary" id="toastIcon"></i>
-        <div>
-            <div class="fw-bold" id="toastTitle">Notificación</div>
-            <div class="body-sm text-muted-2" id="toastMessage"></div>
-        </div>
-    </div>
-</div>
+            <div class="d-flex align-items-center">
+                <a href="{{ url_for('participar.participar') }}" class="btn btn-nav-cta d-lg-none me-3 btn-sm">
+                    <i class="bi bi-arrow-right-circle"></i>
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
 
-<main>
-    {% block content %}{% endblock %}
-</main>
-
-<footer class="footer">
-    <div class="container">
-        <div class="row g-5">
-            <div class="col-lg-4">
-                <div class="footer-brand">Laboratorio de<span>Inteligencia Pública</span></div>
-                <p class="text-white-50 mb-4">Ecosistema Nacional de Inteligencia Pública. Conectamos ciudadanía, conocimiento, evidencia y toma de decisiones para fortalecer la formulación de políticas públicas en Colombia.</p>
-                <p class="text-white-50">Desarrollado por <strong class="text-gold">StoneLytics</strong></p>
-            </div>
-            <div class="col-lg-2 col-md-4">
-                <h6 class="footer-heading">Ecosistema</h6>
-                <ul class="footer-links">
-                    <li><a href="{{ url_for('home.index') }}"><i class="bi bi-chevron-right"></i> Inicio</a></li>
-                    <li><a href="{{ url_for('iniciativa.iniciativa') }}"><i class="bi bi-chevron-right"></i> Conocimiento</a></li>
-                    <li><a href="{{ url_for('resultados.resultados') }}"><i class="bi bi-chevron-right"></i> Observatorio</a></li>
-                    <li><a href="{{ url_for('participar.participar') }}"><i class="bi bi-chevron-right"></i> Participar</a></li>
-                </ul>
-            </div>
-            <div class="col-lg-3 col-md-4">
-                <h6 class="footer-heading">StoneLytics</h6>
-                <div class="footer-contact"><i class="bi bi-envelope-fill"></i> <a href="mailto:info@stonelytics.tech">info@stonelytics.tech</a></div>
-                <div class="footer-contact"><i class="bi bi-globe"></i> <a href="#">www.stonelytics.tech</a></div>
-            </div>
-            <div class="col-lg-3 col-md-4">
-                <h6 class="footer-heading">Políticas</h6>
-                <ul class="footer-links">
-                    <li><a href="#"><i class="bi bi-shield-check"></i> Tratamiento de datos</a></li>
-                    <li><a href="#"><i class="bi bi-eye"></i> Transparencia</a></li>
-                    <li><a href="#"><i class="bi bi-question-circle"></i> Preguntas frecuentes</a></li>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home.index') }}">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('iniciativa.iniciativa') }}">La Iniciativa</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('biblioteca.lista') }}">Biblioteca</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('resultados.resultados') }}">Resultados</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('asistente.pagina') }}"><i class="bi bi-cpu me-1"></i>SRIE</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('analitica.pagina') }}">Analítica</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('nosotros.pagina') }}">Nosotros</a>
+                    </li>
+                    <li class="nav-item ms-lg-3 d-none d-lg-block">
+                        <a class="btn btn-nav-outline btn-sm" href="{{ url_for('admin.login') }}">
+                            <i class="bi bi-speedometer2 me-1"></i>Dashboard
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-2 d-none d-lg-block">
+                        <a class="btn btn-nav-cta" href="{{ url_for('participar.participar') }}">
+                            <i class="bi bi-arrow-right-circle me-2"></i>Participar
+                        </a>
+                    </li>
                 </ul>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p class="text-white-50 mb-0">&copy; 2026 Laboratorio de Inteligencia Pública. Powered by <strong class="text-gold">Stonelytics</strong>.</p>
-            <div class="d-flex gap-4">
-                <a href="#" class="text-white-50 text-decoration-none small">Términos</a>
-                <a href="#" class="text-white-50 text-decoration-none small">Privacidad</a>
-                <a href="#" class="text-white-50 text-decoration-none small">Cookies</a>
+    </nav>
+    {% endblock %}
+
+    <!-- Toast Container -->
+    <div class="toast-container" id="toastContainer">
+        <div id="appToast" class="toast-premium" style="display: none;">
+            <i class="bi bi-info-circle-fill text-primary" id="toastIcon"></i>
+            <div>
+                <div class="fw-bold" id="toastTitle">Notificación</div>
+                <div class="body-sm text-muted-2" id="toastMessage"></div>
             </div>
         </div>
     </div>
-</footer>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
-<script>
-document.body.classList.add('js-ready');
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
 
-window.addEventListener('scroll',function(){
-    var n=document.querySelector('.navbar-premium');
-    if(n){window.scrollY>50?n.classList.add('scrolled'):n.classList.remove('scrolled');}
-});
+    <!-- Footer Premium -->
+    {% block footer %}
+    <footer class="footer">
+        <div class="container">
+            <div class="row g-5">
+                <div class="col-lg-4">
+                    <div class="footer-brand">Construyamos<span>Colombia</span></div>
+                    <p class="text-white-50 mb-4">
+                        Sistema Nacional de Inteligencia Participativa para la construcción del Plan Nacional de Desarrollo 2027-2030.
+                    </p>
+                    <p class="text-white-50">
+                        Una iniciativa de <strong class="text-gold">Stonelytics</strong>
+                    </p>
+                </div>
+                <div class="col-lg-2 col-md-4">
+                    <h6 class="footer-heading">Navegación</h6>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('home.index') }}"><i class="bi bi-chevron-right"></i> Inicio</a></li>
+                        <li><a href="{{ url_for('iniciativa.iniciativa') }}"><i class="bi bi-chevron-right"></i> La iniciativa</a></li>
+                        <li><a href="{{ url_for('biblioteca.lista') }}"><i class="bi bi-chevron-right"></i> Biblioteca</a></li>
+                        <li><a href="{{ url_for('resultados.resultados') }}"><i class="bi bi-chevron-right"></i> Resultados</a></li>
+                        <li><a href="{{ url_for('analitica.pagina') }}"><i class="bi bi-chevron-right"></i> Analítica</a></li>
+                        <li><a href="{{ url_for('asistente.pagina') }}"><i class="bi bi-chevron-right"></i> SRIE</a></li>
+                        <li><a href="{{ url_for('participar.participar') }}"><i class="bi bi-chevron-right"></i> Participar</a></li>
+                        <li><a href="{{ url_for('nosotros.pagina') }}"><i class="bi bi-chevron-right"></i> Nosotros</a></li>
+                    </ul>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                    <h6 class="footer-heading">Contacto</h6>
+                    <div class="footer-contact">
+                        <i class="bi bi-envelope-fill"></i>
+                        <a href="mailto:daviddb@stonelytics.tech">daviddb@stonelytics.tech</a>
+                    </div>
+                    <div class="footer-contact">
+                        <i class="bi bi-globe"></i>
+                        <a href="#">www.stonelytics.tech</a>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-4">
+                    <h6 class="footer-heading">Políticas</h6>
+                    <ul class="footer-links">
+                        <li><a href="{{ url_for('legal.tratamiento_datos') }}"><i class="bi bi-shield-check"></i> Tratamiento de datos</a></li>
+                        <li><a href="{{ url_for('legal.transparencia') }}"><i class="bi bi-eye"></i> Transparencia</a></li>
+                        <li><a href="{{ url_for('legal.derechos_titulares') }}"><i class="bi bi-person-check"></i> Derechos ARCO</a></li>
+                        <li><a href="{{ url_for('legal.privacidad') }}"><i class="bi bi-lock"></i> Privacidad</a></li>
+                    </ul>
+                </div>
+            </div>
 
-function showToast(msg,tit,typ){
-    tit=tit||'Notificación';typ=typ||'info';
-    var t=document.getElementById('appToast'),ti=document.getElementById('toastTitle'),tm=document.getElementById('toastMessage'),ic=document.getElementById('toastIcon');
-    ti.textContent=tit;tm.textContent=msg;
-    t.className='toast-premium '+typ;
-    if(typ==='success')ic.className='bi bi-check-circle-fill text-success';
-    else if(typ==='error')ic.className='bi bi-exclamation-circle-fill text-danger';
-    else ic.className='bi bi-info-circle-fill text-primary';
-    t.style.display='flex';
-    setTimeout(function(){t.style.display='none';},4000);
-}
+            <div class="footer-bottom">
+                <p class="text-white-50 mb-0">
+                    &copy; 2026 Laboratorio de Inteligencia Pública. Powered by <strong class="text-gold">Stonelytics</strong>.
+                </p>
+                <div class="d-flex gap-4">
+                    <a href="{{ url_for('legal.terminos') }}" class="text-white-50 text-decoration-none small">Términos</a>
+                    <a href="{{ url_for('legal.privacidad') }}" class="text-white-50 text-decoration-none small">Privacidad</a>
+                    <a href="{{ url_for('legal.cookies') }}" class="text-white-50 text-decoration-none small">Cookies</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    {% endblock %}
 
-function animateCounter(el,target,dur){
-    dur=dur||2000;var s=0,inc=target/(dur/16);
-    var timer=setInterval(function(){
-        s+=inc;
-        if(s>=target){el.textContent=target.toLocaleString();clearInterval(timer);}
-        else{el.textContent=Math.floor(s).toLocaleString();}
-    },16);
-}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Progressive enhancement: mark body as JS-ready for animations
+        document.body.classList.add('js-ready');
 
-var opt={threshold:0.1,rootMargin:'0px 0px -50px 0px'};
-var aos=new IntersectionObserver(function(entries){
-    entries.forEach(function(e){if(e.isIntersecting){e.target.classList.add('visible');aos.unobserve(e.target);}});
-},opt);
-document.querySelectorAll('.animate-on-scroll').forEach(function(el){aos.observe(el);});
+        // Navbar scroll effect
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar-premium');
+            if (navbar) {
+                if (window.scrollY > 50) {
+                    navbar.classList.add('scrolled');
+                } else {
+                    navbar.classList.remove('scrolled');
+                }
+            }
+        });
 
-function launchConfetti(){
-    var c=document.createElement('div');c.className='confetti-container';document.body.appendChild(c);
-    var colors=['#0C1B33','#C41E3A','#D4A843','#2F5FA8','#10B981'];
-    for(var i=0;i<100;i++){
-        var cf=document.createElement('div');cf.className='confetti';
-        cf.style.left=Math.random()*100+'vw';
-        cf.style.backgroundColor=colors[Math.floor(Math.random()*colors.length)];
-        cf.style.animationDelay=Math.random()*2+'s';cf.style.animationDuration=(Math.random()*2+2)+'s';
-        if(Math.random()>.5)cf.style.borderRadius='50%';
-        c.appendChild(cf);
-    }
-    setTimeout(function(){c.remove();},5000);
-}
-</script>
-{% block scripts %}{% endblock %}
+        // Toast notification
+        function showToast(message, title = 'Notificación', type = 'info') {
+            const toast = document.getElementById('appToast');
+            const toastTitle = document.getElementById('toastTitle');
+            const toastMessage = document.getElementById('toastMessage');
+            const toastIcon = document.getElementById('toastIcon');
+
+            toastTitle.textContent = title;
+            toastMessage.textContent = message;
+
+            toast.className = 'toast-premium ' + type;
+
+            if (type === 'success') {
+                toastIcon.className = 'bi bi-check-circle-fill text-success';
+            } else if (type === 'error') {
+                toastIcon.className = 'bi bi-exclamation-circle-fill text-danger';
+            } else {
+                toastIcon.className = 'bi bi-info-circle-fill text-primary';
+            }
+
+            toast.style.display = 'flex';
+
+            setTimeout(function() {
+                toast.style.display = 'none';
+            }, 4000);
+        }
+
+        // Counter animation
+        function animateCounter(element, target, duration = 2000) {
+            let start = 0;
+            const increment = target / (duration / 16);
+            const timer = setInterval(function() {
+                start += increment;
+                if (start >= target) {
+                    element.textContent = target.toLocaleString();
+                    clearInterval(timer);
+                } else {
+                    element.textContent = Math.floor(start).toLocaleString();
+                }
+            }, 16);
+        }
+
+        // Intersection Observer for scroll animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const animateOnScroll = new IntersectionObserver(function(entries) {
+            entries.forEach(function(entry) {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    animateOnScroll.unobserve(entry.target);
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(function(el) {
+            animateOnScroll.observe(el);
+        });
+
+        // Confetti animation
+        function launchConfetti() {
+            const container = document.createElement('div');
+            container.className = 'confetti-container';
+            document.body.appendChild(container);
+
+            const colors = ['#0C1B33', '#C41E3A', '#D4A843', '#2F5FA8', '#10B981'];
+
+            for (let i = 0; i < 100; i++) {
+                const confetti = document.createElement('div');
+                confetti.className = 'confetti';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.animationDelay = Math.random() * 2 + 's';
+                confetti.style.animationDuration = (Math.random() * 2 + 2) + 's';
+
+                if (Math.random() > 0.5) {
+                    confetti.style.borderRadius = '50%';
+                }
+
+                container.appendChild(confetti);
+            }
+
+            setTimeout(function() {
+                container.remove();
+            }, 5000);
+        }
+    </script>
+    {% block scripts %}{% endblock %}
 </body>
 </html>

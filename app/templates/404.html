@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Página no encontrada — Laboratorio de Inteligencia Pública{% endblock %}
+{% block content %}
+<section class="hero" style="padding: var(--space-3xl) 0;">
+    <div class="container text-center">
+        <div style="font-size: 6rem; margin-bottom: var(--space-lg); opacity: 0.3;">404</div>
+        <h1 class="display-lg text-white mb-3">Página no encontrada</h1>
+        <p class="body-lg text-white-50 mb-4" style="max-width: 500px; margin: 0 auto;">
+            La página que buscas no existe o fue movida.
+        </p>
+        <a href="{{ url_for('home.index') }}" class="btn btn-gold btn-lg">
+            <i class="bi bi-house me-2"></i>Volver al inicio
+        </a>
+    </div>
+</section>
+{% endblock %}

@@ -1,3 +1,8 @@
+"""Servicio de integración para el ecosistema de socios y webhooks.
+
+Maneja el envío de eventos a webhooks registrados y expone el catálogo
+de socios del ecosistema de inteligencia pública.
+"""
 from __future__ import annotations
 
 import json
@@ -8,13 +13,14 @@ from urllib import request as http_request
 from urllib.error import URLError
 
 from app import db
-from app.models.integracion import Webhook
+from app.models.webhook import Webhook
 
 logger = logging.getLogger(__name__)
 
 
 def dispatch(evento: str, datos: dict) -> list[dict]:
-    resultados = []
+    """Despacha un evento a todos los webhooks activos para ese tipo de evento."""
+    resultados: list[dict] = []
     webhooks = Webhook.activos_por_evento(evento)
 
     for wh in webhooks:
@@ -28,6 +34,7 @@ def dispatch(evento: str, datos: dict) -> list[dict]:
 
 
 def _enviar(webhook: Webhook, evento: str, datos: dict) -> dict:
+    """Envía un payload JSON al webhook destino con cabecera de evento."""
     payload = json.dumps({
         'evento': evento,
         'timestamp': datetime.now(timezone.utc).isoformat(),

@@ -1,172 +1,213 @@
+"""Servicio de estadísticas generales y dashboard para el panel de administración.
+
+Proporciona consultas agregadas sobre participaciones, sectores, problemas,
+departamentos, tendencias temporales, propuestas recientes y clasificaciones SRIE.
+"""
 from __future__ import annotations
 
+from datetime import datetime, timedelta, timezone
 from typing import Any
 
 from app import cache, db
-from app.models.participacion import Participacion
+from app.models.catalog import (
+    Sector,
+    Subsector,
+    ProblemaCatalogo,
+    participacion_problemas,
+)
+from app.models.participacion import Participacion, ClasificacionSRIE
+from app.models.plan import Pilar
 from app.models.politica import Politica
-from app.models.sector import Sector
+from app.services.db_helpers import date_trunc
 from sqlalchemy import func
 
 
-def get_estadisticas_generales() -> dict[str, Any]:
-    data = cache.get('estadisticas_generales')
-    if data is not None:
-        return data
-    data = {
-        'total_participaciones': Participacion.query.count(),
-        'total_departamentos': _count_distinct_departamentos(),
-        'total_sectores': Sector.query.filter_by(activo=True).count(),
+def get_estadisticas_generales() -> dict[str, int]:
+    """Retorna estadísticas generales (totales) con caché de 1 hora.
+
+    Returns:
+        dict con total_participaciones, total_departamentos, total_sectores.
+    """
+    cached = cache.get("estadisticas_generales")
+    if cached is not None:
+        return cached
+
+    total_participaciones = db.session.query(func.count(Participacion.id)).scalar() or 0
+    total_departamentos = (
+        db.session.query(func.count(func.distinct(Participacion.departamento)))
+        .filter(
+            Participacion.departamento.isnot(None),
+            Participacion.departamento != "",
+        )
+        .scalar()
+        or 0
+    )
+    total_sectores = (
+        db.session.query(func.count(Sector.id)).filter(Sector.activo.is_(True)).scalar()
+        or 0
+    )
+
+    result: dict[str, int] = {
+        "total_participaciones": total_participaciones,
+        "total_departamentos": total_departamentos,
+        "total_sectores": total_sectores,
     }
-    cache.set('estadisticas_generales', data, timeout=3600)
-    return data
+
+    cache.set("estadisticas_generales", result, timeout=3600)
+    return result
 
 
 def get_estadisticas_completas() -> dict[str, Any]:
+    """Retorna el conjunto completo de estadísticas para el dashboard.
+
+    Incluye totales, distribución por sector/problema/departamento,
+    tendencia diaria (30 días), propuestas recientes y clasificaciones SRIE.
+
+    Returns:
+        dict con todos los bloques de estadísticas.
+    """
+    total_participaciones = db.session.query(func.count(Participacion.id)).scalar() or 0
+    total_departamentos = (
+        db.session.query(func.count(func.distinct(Participacion.departamento)))
+        .filter(
+            Participacion.departamento.isnot(None),
+            Participacion.departamento != "",
+        )
+        .scalar()
+        or 0
+    )
+    total_politicas = (
+        db.session.query(func.count(Politica.id))
+        .filter(Politica.activo.is_(True))
+        .scalar()
+        or 0
+    )
+
+    # Stats por sector (M:N: Participacion -> participacion_problemas -> ProblemaCatalogo -> Subsector -> Sector)
+    sectores = _get_sectores_stats()
+
+    # Stats por problema (via participacion_problemas)
+    problemas = _get_problemas_stats()
+
+    # Stats por departamento
+    departamentos = _get_departamentos_stats()
+
+    # Tendencia diaria (últimos 30 días)
+    tendencia = _get_tendencia_diaria()
+
+    # Últimas 5 propuestas (con resumen ligero)
+    propuestas_recientes = _get_propuestas_recientes()
+
+    # SRIE stats por pilar
+    srie_pilares = _get_srie_pilares_stats()
+
+    # srie_urgencia y srie_impacto no están disponibles en V3
+    srie_urgencia: list[dict[str, Any]] = []
+    srie_impacto: list[dict[str, Any]] = []
+
     return {
-        'total_participaciones': Participacion.query.count(),
-        'total_departamentos': _count_distinct_departamentos(),
-        'total_politicas': Politica.query.filter_by(activo=True).count(),
-        'sectores': _stats_por_sector(),
-        'problemas': _stats_por_problema(),
-        'departamentos': _stats_por_departamento(),
-        'tendencia': _tendencia_diaria(),
-        'propuestas_recientes': _propuestas_recientes(),
-        'srie_pilares': _stats_srie_pilares(),
-        'srie_urgencia': _stats_srie_urgencia(),
-        'srie_impacto': _stats_srie_impacto(),
+        "total_participaciones": total_participaciones,
+        "total_departamentos": total_departamentos,
+        "total_politicas": total_politicas,
+        "sectores": sectores,
+        "problemas": problemas,
+        "departamentos": departamentos,
+        "tendencia": tendencia,
+        "propuestas_recientes": propuestas_recientes,
+        "srie_pilares": srie_pilares,
+        "srie_urgencia": srie_urgencia,
+        "srie_impacto": srie_impacto,
     }
 
 
-def _count_distinct_departamentos() -> int:
-    return db.session.query(
-        func.count(db.distinct(Participacion.departamento))
-    ).scalar()
-
-
-def _stats_por_sector() -> list[dict]:
+def _get_sectores_stats() -> list[dict[str, Any]]:
+    """Distribución de participaciones agrupadas por sector a través de la cadena M:N."""
     rows = (
         db.session.query(Sector.nombre, func.count(Participacion.id))
-        .join(Participacion.sectores)
+        .join(
+            participacion_problemas,
+            Participacion.id == participacion_problemas.c.participacion_id,
+        )
+        .join(
+            ProblemaCatalogo,
+            participacion_problemas.c.problema_id == ProblemaCatalogo.id,
+        )
+        .join(Subsector)
+        .join(Sector)
         .group_by(Sector.nombre)
         .order_by(func.count(Participacion.id).desc())
         .all()
     )
-    return [{'nombre': nombre, 'total': total} for nombre, total in rows]
+    return [{"nombre": nombre, "total": total} for nombre, total in rows]
 
 
-def _stats_por_problema() -> list[dict]:
+def _get_problemas_stats() -> list[dict[str, Any]]:
+    """Distribución de participaciones agrupadas por problema del catálogo."""
     rows = (
         db.session.query(
-            Participacion.problema_principal, func.count(Participacion.id)
+            ProblemaCatalogo.nombre, func.count(Participacion.id)
         )
-        .filter(
-            Participacion.problema_principal.isnot(None),
-            Participacion.problema_principal != '',
+        .join(
+            participacion_problemas,
+            Participacion.id == participacion_problemas.c.participacion_id,
         )
-        .group_by(Participacion.problema_principal)
+        .join(
+            ProblemaCatalogo,
+            participacion_problemas.c.problema_id == ProblemaCatalogo.id,
+        )
+        .group_by(ProblemaCatalogo.nombre)
         .order_by(func.count(Participacion.id).desc())
-        .limit(10)
         .all()
     )
-    return [{'nombre': nombre, 'total': total} for nombre, total in rows]
+    return [{"nombre": nombre, "total": total} for nombre, total in rows]
 
 
-def _stats_por_departamento() -> list[dict]:
+def _get_departamentos_stats() -> list[dict[str, Any]]:
+    """Distribución de participaciones agrupadas por departamento."""
     rows = (
         db.session.query(
             Participacion.departamento, func.count(Participacion.id)
         )
         .filter(
             Participacion.departamento.isnot(None),
-            Participacion.departamento != '',
+            Participacion.departamento != "",
         )
         .group_by(Participacion.departamento)
         .order_by(func.count(Participacion.id).desc())
         .all()
     )
-    return [{'nombre': nombre, 'total': total} for nombre, total in rows]
+    return [{"nombre": nombre, "total": total} for nombre, total in rows]
 
 
-def _tendencia_diaria() -> list[dict]:
+def _get_tendencia_diaria() -> list[dict[str, Any]]:
+    """Tendencia diaria de participaciones en los últimos 30 días."""
+    fecha_limite = datetime.now(timezone.utc).replace(tzinfo=None) - timedelta(days=30)
+    date_col = date_trunc("day", Participacion.created_at)
     rows = (
-        db.session.query(
-            func.date(Participacion.created_at), func.count(Participacion.id)
-        )
-        .group_by(func.date(Participacion.created_at))
-        .order_by(func.date(Participacion.created_at))
-        .limit(30)
+        db.session.query(date_col, func.count(Participacion.id))
+        .filter(Participacion.created_at >= fecha_limite)
+        .group_by(date_col)
+        .order_by(date_col)
         .all()
     )
-    return [{'fecha': str(fecha), 'total': total} for fecha, total in rows]
+    return [{"fecha": str(fecha)[:10], "total": total} for fecha, total in rows]
 
 
-def _propuestas_recientes() -> list[dict]:
+def _get_propuestas_recientes() -> list[dict[str, Any]]:
+    """Últimas 5 participaciones con datos para vista previa."""
     participaciones = (
-        Participacion.query
-        .order_by(Participacion.created_at.desc())
-        .limit(5)
-        .all()
+        Participacion.query.order_by(Participacion.created_at.desc()).limit(5).all()
     )
     return [p.to_recent_dict() for p in participaciones]
 
 
-def _stats_srie_pilares() -> list[dict]:
+def _get_srie_pilares_stats() -> list[dict[str, Any]]:
+    """Distribución de clasificaciones SRIE agrupadas por pilar."""
     rows = (
-        db.session.query(
-            Participacion.srie_pilar, func.count(Participacion.id)
-        )
-        .filter(
-            Participacion.srie_pilar.isnot(None),
-            Participacion.srie_pilar != '',
-        )
-        .group_by(Participacion.srie_pilar)
-        .order_by(func.count(Participacion.id).desc())
+        db.session.query(Pilar.nombre, func.count(ClasificacionSRIE.id))
+        .join(Pilar, ClasificacionSRIE.pilar_id == Pilar.id)
+        .group_by(Pilar.nombre)
+        .order_by(func.count(ClasificacionSRIE.id).desc())
         .all()
     )
-    return [{'nombre': nombre, 'total': total} for nombre, total in rows]
-
-
-def _stats_srie_urgencia() -> list[dict]:
-    orden = {
-        'Crítica': 1,
-        'Alta': 2,
-        'Moderada': 3,
-        'Baja': 4,
-    }
-    rows = (
-        db.session.query(
-            Participacion.srie_urgencia, func.count(Participacion.id)
-        )
-        .filter(
-            Participacion.srie_urgencia.isnot(None),
-            Participacion.srie_urgencia != '',
-        )
-        .group_by(Participacion.srie_urgencia)
-        .all()
-    )
-    result = [{'nombre': nombre, 'total': total} for nombre, total in rows]
-    result.sort(key=lambda x: orden.get(x['nombre'], 99))
-    return result
-
-
-def _stats_srie_impacto() -> list[dict]:
-    orden = {
-        'Nacional': 1,
-        'Regional': 2,
-        'Local': 3,
-    }
-    rows = (
-        db.session.query(
-            Participacion.srie_impacto, func.count(Participacion.id)
-        )
-        .filter(
-            Participacion.srie_impacto.isnot(None),
-            Participacion.srie_impacto != '',
-        )
-        .group_by(Participacion.srie_impacto)
-        .all()
-    )
-    result = [{'nombre': nombre, 'total': total} for nombre, total in rows]
-    result.sort(key=lambda x: orden.get(x['nombre'], 99))
-    return result
+    return [{"nombre": nombre, "total": total} for nombre, total in rows]

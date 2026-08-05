@@ -1,17 +1,20 @@
 {% extends "base.html" %}
 
-{% block title %}Motor de Armonización Estratégica - Laboratorio de Inteligencia Pública{% endblock %}
+{% block title %}Motor de Armonización Estratégica — Laboratorio de Inteligencia Pública{% endblock %}
 
 {% block content %}
-<section class="page-header bg-primary text-white" style="background: linear-gradient(135deg, var(--colombian-navy) 0%, #0f172a 100%);">
+<section class="hero" style="padding: var(--space-3xl) 0;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <h1 class="display-5 fw-bold mb-2">Motor de Armonización Estratégica</h1>
-                <p class="lead mb-0 opacity-90">Compara automáticamente participación ciudadana, políticas públicas y ODS para identificar coincidencias, vacíos y oportunidades</p>
+                <div class="badge badge-primary mb-3">Motor de Armonización Estratégica</div>
+                <h1 class="display-lg text-white mb-3">Motor de Armonización Estratégica</h1>
+                <p class="body-lg text-white-50" style="max-width: 600px;">
+                    Compara automáticamente participación ciudadana, políticas públicas y ODS para identificar coincidencias, vacíos y oportunidades
+                </p>
             </div>
             <div class="col-lg-4 text-lg-end mt-3 mt-lg-0">
-                <span class="badge bg-light text-dark px-3 py-2" id="resumenPoliticas">
+                <span class="badge" style="background: rgba(255,255,255,0.12); color: var(--gold);">
                     <i class="bi bi-cpu me-1"></i>SRIE · Tiempo real
                 </span>
             </div>
@@ -19,83 +22,81 @@
     </div>
 </section>
 
-<section class="py-5">
+<section class="section" style="padding-top: 0;">
     <div class="container">
-        <div id="resumenCards" class="row g-4 mb-5">
+        <div id="resumenCards" class="row g-3 mb-5">
             <div class="col-md-3">
-                <div class="stat-card text-center py-3 px-3">
-                    <div class="text-muted small fw-bold text-uppercase">Participaciones</div>
-                    <div class="fw-bold display-6" id="totalPart">-</div>
+                <div class="card-elevated p-3 text-center">
+                    <small class="text-muted-2 text-uppercase fw-bold">Participaciones</small>
+                    <div class="display-sm fw-bold text-blue" id="totalPart">-</div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card text-center py-3 px-3">
-                    <div class="text-muted small fw-bold text-uppercase">Políticas</div>
-                    <div class="fw-bold display-6" id="totalPol">-</div>
+                <div class="card-elevated p-3 text-center">
+                    <small class="text-muted-2 text-uppercase fw-bold">Políticas</small>
+                    <div class="display-sm fw-bold" id="totalPol" style="color: var(--gold);">-</div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card text-center py-3 px-3" style="border-left: 4px solid #ef4444;">
-                    <div class="text-muted small fw-bold text-uppercase">Vacíos</div>
-                    <div class="fw-bold display-6 text-danger" id="totalGaps">-</div>
+                <div class="card-elevated p-3 text-center" style="border-left: 4px solid #ef4444;">
+                    <small class="text-muted-2 text-uppercase fw-bold">Vacíos</small>
+                    <div class="display-sm fw-bold text-danger" id="totalGaps">-</div>
                 </div>
             </div>
             <div class="col-md-3">
-                <div class="stat-card text-center py-3 px-3" style="border-left: 4px solid #10b981;">
-                    <div class="text-muted small fw-bold text-uppercase">Coincidencias</div>
-                    <div class="fw-bold display-6 text-success" id="totalCoin">-</div>
+                <div class="card-elevated p-3 text-center" style="border-left: 4px solid #10b981;">
+                    <small class="text-muted-2 text-uppercase fw-bold">Coincidencias</small>
+                    <div class="display-sm fw-bold text-success" id="totalCoin">-</div>
                 </div>
             </div>
         </div>
 
         <div class="section-header mb-4">
-            <span class="section-badge"><i class="bi bi-grid-3x3-gap-fill"></i> Matriz de Armonización</span>
-            <h2 class="section-title">Participación Ciudadana vs Políticas Públicas</h2>
+            <div class="overline"><i class="bi bi-grid-3x3-gap-fill me-1"></i> Matriz de Armonización</div>
+            <h2 class="display-md">Participación Ciudadana vs Políticas Públicas</h2>
         </div>
 
-        <div class="card border-0 shadow-sm mb-5">
-            <div class="card-body p-0">
-                <div class="table-responsive">
-                    <table class="table table-harmonization mb-0">
-                        <thead>
-                            <tr>
-                                <th>Sector</th>
-                                <th class="text-center">Participación <small>ciudadana</small></th>
-                                <th class="text-center">Políticas <small>existentes</small></th>
-                                <th class="text-center">Prioridad</th>
-                                <th class="text-center">Cobertura</th>
-                                <th class="text-center">Estado</th>
-                                <th class="text-center">ODS</th>
-                            </tr>
-                        </thead>
-                        <tbody id="matrizBody">
-                            <tr><td colspan="7" class="text-center py-5"><span class="spinner-border spinner-border-sm me-2"></span>Cargando matriz...</td></tr>
-                        </tbody>
-                    </table>
-                </div>
+        <div class="card-elevated p-0 mb-5 overflow-hidden">
+            <div style="overflow-x: auto;">
+                <table class="table table-harmonization mb-0">
+                    <thead>
+                        <tr>
+                            <th>Sector</th>
+                            <th class="text-center">Participación <small>ciudadana</small></th>
+                            <th class="text-center">Políticas <small>existentes</small></th>
+                            <th class="text-center">Prioridad</th>
+                            <th class="text-center">Cobertura</th>
+                            <th class="text-center">Estado</th>
+                            <th class="text-center">ODS</th>
+                        </tr>
+                    </thead>
+                    <tbody id="matrizBody">
+                        <tr><td colspan="7" class="text-center py-5"><span class="spinner-border spinner-border-sm me-2"></span>Cargando matriz...</td></tr>
+                    </tbody>
+                </table>
             </div>
         </div>
 
         <div class="row g-4">
             <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 py-3">
-                        <h5 class="mb-0 fw-bold text-danger"><i class="bi bi-exclamation-triangle-fill me-2"></i>Vacíos detectados</h5>
-                        <small class="text-muted">Sectores con alta prioridad ciudadana sin políticas públicas</small>
+                <div class="card-elevated h-100">
+                    <div class="p-4">
+                        <h5 class="fw-bold text-danger mb-1"><i class="bi bi-exclamation-triangle-fill me-2"></i>Vacíos detectados</h5>
+                        <small class="text-muted-2">Sectores con alta prioridad ciudadana sin políticas públicas</small>
                     </div>
-                    <div class="card-body" id="gapsContainer">
-                        <p class="text-muted text-center py-4"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
+                    <div class="p-4 pt-0" id="gapsContainer">
+                        <p class="text-muted-2 text-center py-4"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 py-3">
-                        <h5 class="mb-0 fw-bold text-success"><i class="bi bi-check-circle-fill me-2"></i>Coincidencias estratégicas</h5>
-                        <small class="text-muted">Sectores donde la ciudadanía y las políticas públicas están alineadas</small>
+                <div class="card-elevated h-100">
+                    <div class="p-4">
+                        <h5 class="fw-bold text-success mb-1"><i class="bi bi-check-circle-fill me-2"></i>Coincidencias estratégicas</h5>
+                        <small class="text-muted-2">Sectores donde la ciudadanía y las políticas públicas están alineadas</small>
                     </div>
-                    <div class="card-body" id="coincidenciasContainer">
-                        <p class="text-muted text-center py-4"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
+                    <div class="p-4 pt-0" id="coincidenciasContainer">
+                        <p class="text-muted-2 text-center py-4"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
                     </div>
                 </div>
             </div>
@@ -103,24 +104,24 @@
 
         <div class="row g-4 mt-2">
             <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 py-3">
-                        <h5 class="mb-0 fw-bold text-primary"><i class="bi bi-lightbulb-fill me-2"></i>Oportunidades</h5>
-                        <small class="text-muted">Políticas existentes que podrían fortalecerse con más participación</small>
+                <div class="card-elevated h-100">
+                    <div class="p-4">
+                        <h5 class="fw-bold text-blue mb-1"><i class="bi bi-lightbulb-fill me-2"></i>Oportunidades</h5>
+                        <small class="text-muted-2">Políticas existentes que podrían fortalecerse con más participación</small>
                     </div>
-                    <div class="card-body" id="oportunidadesContainer">
-                        <p class="text-muted text-center py-4"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
+                    <div class="p-4 pt-0" id="oportunidadesContainer">
+                        <p class="text-muted-2 text-center py-4"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
                     </div>
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 py-3">
-                        <h5 class="mb-0 fw-bold"><i class="bi bi-globe2 me-2 text-info"></i>Cobertura ODS</h5>
-                        <small class="text-muted">Objetivos de Desarrollo Sostenible cubiertos por políticas</small>
+                <div class="card-elevated h-100">
+                    <div class="p-4">
+                        <h5 class="fw-bold mb-1"><i class="bi bi-globe2 me-2 text-info"></i>Cobertura ODS</h5>
+                        <small class="text-muted-2">Objetivos de Desarrollo Sostenible cubiertos por políticas</small>
                     </div>
-                    <div class="card-body" id="odsContainer">
-                        <p class="text-muted text-center py-4"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
+                    <div class="p-4 pt-0" id="odsContainer">
+                        <p class="text-muted-2 text-center py-4"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</p>
                     </div>
                 </div>
             </div>
@@ -129,10 +130,40 @@
 </section>
 {% endblock %}
 
+{% block styles %}
+<style>
+    .table-harmonization th {
+        background: var(--surface-2);
+        font-size: 0.8rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        padding: 1rem;
+        border-bottom: 2px solid var(--border);
+    }
+    .table-harmonization td {
+        padding: 1rem;
+        vertical-align: middle;
+        font-size: 0.9rem;
+    }
+    .table-harmonization tr:hover td {
+        background: var(--surface);
+    }
+    .ods-dot {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+        margin: 0 2px;
+        border: 1px solid var(--border);
+    }
+</style>
+{% endblock %}
+
 {% block scripts %}
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    fetch('/api/armonizacion')
+    fetch('/api/v1/armonizacion')
         .then(r => r.json())
         .then(d => renderArmonizacion(d))
         .catch(e => console.error('Error:', e));
@@ -160,19 +191,19 @@ function renderMatriz(matriz) {
         const coberturaBadge = m.nivel_cobertura === 'alto' ? 'bg-success' : m.nivel_cobertura === 'medio' ? 'bg-primary' : 'bg-secondary';
         const estadoColor = m.estado === 'vacio' ? '#fee2e2' : m.estado === 'armonico' ? '#d1fae5' : m.estado === 'potencial' ? '#dbeafe' : '#f1f5f9';
         const estadoIcon = m.estado === 'vacio' ? 'bi-x-circle-fill text-danger' : m.estado === 'armonico' ? 'bi-check-circle-fill text-success' : m.estado === 'potencial' ? 'bi-lightbulb-fill text-primary' : 'bi-dash-circle text-muted';
-        const odsHtml = m.ods_relacionados.map(o => `<span class="ods-dot" title="ODS ${o}"></span>`).join('');
+        const odsHtml = (m.ods_relacionados || []).map(o => '<span class="ods-dot" title="ODS ' + o + '" style="background: var(--blue);"></span>').join('');
 
-        html += `<tr>
-            <td class="fw-semibold">${m.sector}</td>
-            <td class="text-center fw-bold">${m.participaciones}</td>
-            <td class="text-center fw-bold">${m.politicas}</td>
-            <td class="text-center"><span class="badge ${prioridadBadge}">${m.nivel_prioridad}</span></td>
-            <td class="text-center"><span class="badge ${coberturaBadge}">${m.nivel_cobertura}</span></td>
-            <td class="text-center" style="background: ${estadoColor};">
-                <i class="bi ${estadoIcon} me-1"></i>${m.label}
-            </td>
-            <td class="text-center">${odsHtml || '<span class="text-muted">-</span>'}</td>
-        </tr>`;
+        html += '<tr>' +
+            '<td class="fw-semibold">' + m.sector + '</td>' +
+            '<td class="text-center fw-bold">' + m.participaciones + '</td>' +
+            '<td class="text-center fw-bold">' + m.politicas + '</td>' +
+            '<td class="text-center"><span class="badge ' + prioridadBadge + '">' + m.nivel_prioridad + '</span></td>' +
+            '<td class="text-center"><span class="badge ' + coberturaBadge + '">' + m.nivel_cobertura + '</span></td>' +
+            '<td class="text-center" style="background: ' + estadoColor + ';">' +
+                '<i class="bi ' + estadoIcon + ' me-1"></i>' + m.label +
+            '</td>' +
+            '<td class="text-center">' + (odsHtml || '<span class="text-muted-2">-</span>') + '</td>' +
+        '</tr>';
     });
     tbody.innerHTML = html;
 }
@@ -180,20 +211,20 @@ function renderMatriz(matriz) {
 function renderGaps(gaps) {
     const container = document.getElementById('gapsContainer');
     if (!gaps.length) {
-        container.innerHTML = '<p class="text-muted text-center py-4"><i class="bi bi-check-circle text-success me-2"></i>No se detectaron vacíos. Todos los sectores priorizados tienen políticas públicas asociadas.</p>';
+        container.innerHTML = '<p class="text-muted-2 text-center py-4"><i class="bi bi-check-circle text-success me-2"></i>No se detectaron vacíos. Todos los sectores priorizados tienen políticas públicas asociadas.</p>';
         return;
     }
     let html = '';
     gaps.forEach(g => {
-        const odsHtml = g.ods_recomendados.map(o => `<span class="ods-dot" title="ODS ${o}"></span>`).join('');
-        html += `<div class="gap-card mb-3 p-3" style="background: #fef2f2; border-radius: 12px; border: 1px solid #fecaca;">
-            <div class="d-flex justify-content-between align-items-start">
-                <h6 class="fw-bold mb-1 text-danger">${g.sector}</h6>
-                <span class="badge bg-danger">${g.participaciones} participaciones</span>
-            </div>
-            <p class="small text-secondary mb-2">${g.mensaje}</p>
-            ${odsHtml ? `<div class="mt-2"><small class="text-muted">ODS recomendados: </small>${odsHtml}</div>` : ''}
-        </div>`;
+        const odsHtml = (g.ods_recomendados || []).map(o => '<span class="ods-dot" title="ODS ' + o + '" style="background: var(--blue);"></span>').join('');
+        html += '<div class="p-3 mb-3" style="background: #fef2f2; border-radius: 12px; border: 1px solid #fecaca;">' +
+            '<div class="d-flex justify-content-between align-items-start">' +
+                '<h6 class="fw-bold mb-1 text-danger">' + g.sector + '</h6>' +
+                '<span class="badge bg-danger">' + g.participaciones + ' participaciones</span>' +
+            '</div>' +
+            '<p class="small text-secondary mb-2">' + g.mensaje + '</p>' +
+            (odsHtml ? '<div class="mt-2"><small class="text-muted-2">ODS recomendados: </small>' + odsHtml + '</div>' : '') +
+        '</div>';
     });
     container.innerHTML = html;
 }
@@ -201,19 +232,19 @@ function renderGaps(gaps) {
 function renderCoincidencias(coincidencias) {
     const container = document.getElementById('coincidenciasContainer');
     if (!coincidencias.length) {
-        container.innerHTML = '<p class="text-muted text-center py-4">No hay coincidencias registradas.</p>';
+        container.innerHTML = '<p class="text-muted-2 text-center py-4">No hay coincidencias registradas.</p>';
         return;
     }
     let html = '';
     coincidencias.forEach(c => {
-        html += `<div class="coin-card mb-3 p-3" style="background: #f0fdf4; border-radius: 12px; border: 1px solid #bbf7d0;">
-            <div class="d-flex justify-content-between align-items-start">
-                <h6 class="fw-bold mb-1 text-success">${c.sector}</h6>
-                <span class="badge bg-success">${c.politicas} políticas</span>
-            </div>
-            <p class="small text-secondary mb-2">${c.mensaje}</p>
-            <small class="text-muted">Cobertura: <strong>${c.nivel_cobertura}</strong></small>
-        </div>`;
+        html += '<div class="p-3 mb-3" style="background: #f0fdf4; border-radius: 12px; border: 1px solid #bbf7d0;">' +
+            '<div class="d-flex justify-content-between align-items-start">' +
+                '<h6 class="fw-bold mb-1 text-success">' + c.sector + '</h6>' +
+                '<span class="badge bg-success">' + c.politicas + ' políticas</span>' +
+            '</div>' +
+            '<p class="small text-secondary mb-2">' + c.mensaje + '</p>' +
+            '<small class="text-muted-2">Cobertura: <strong>' + c.nivel_cobertura + '</strong></small>' +
+        '</div>';
     });
     container.innerHTML = html;
 }
@@ -221,19 +252,19 @@ function renderCoincidencias(coincidencias) {
 function renderOportunidades(oportunidades) {
     const container = document.getElementById('oportunidadesContainer');
     if (!oportunidades.length) {
-        container.innerHTML = '<p class="text-muted text-center py-4">No hay oportunidades identificadas actualmente.</p>';
+        container.innerHTML = '<p class="text-muted-2 text-center py-4">No hay oportunidades identificadas actualmente.</p>';
         return;
     }
     let html = '';
     oportunidades.forEach(o => {
-        html += `<div class="op-card mb-3 p-3" style="background: #eff6ff; border-radius: 12px; border: 1px solid #bfdbfe;">
-            <div class="d-flex justify-content-between align-items-start">
-                <h6 class="fw-bold mb-1 text-primary">${o.sector}</h6>
-                <span class="badge bg-primary">${o.total_politicas} políticas</span>
-            </div>
-            <p class="small text-secondary mb-2">${o.mensaje}</p>
-            ${o.politicas.length ? `<small class="text-muted">Políticas: <strong>${o.politicas.join(', ')}</strong></small>` : ''}
-        </div>`;
+        html += '<div class="p-3 mb-3" style="background: #eff6ff; border-radius: 12px; border: 1px solid #bfdbfe;">' +
+            '<div class="d-flex justify-content-between align-items-start">' +
+                '<h6 class="fw-bold mb-1 text-primary">' + o.sector + '</h6>' +
+                '<span class="badge bg-primary">' + o.total_politicas + ' políticas</span>' +
+            '</div>' +
+            '<p class="small text-secondary mb-2">' + o.mensaje + '</p>' +
+            (o.politicas && o.politicas.length ? '<small class="text-muted-2">Políticas: <strong>' + o.politicas.join(', ') + '</strong></small>' : '') +
+        '</div>';
     });
     container.innerHTML = html;
 }
@@ -242,45 +273,18 @@ function renderODS(odsList) {
     const container = document.getElementById('odsContainer');
     let html = '<div class="row g-2">';
     odsList.forEach(o => {
-        html += `<div class="col-md-6">
-            <div class="d-flex align-items-center gap-2 p-2" style="border-radius: 8px; border-left: 4px solid ${o.color};">
-                <span class="fw-bold" style="color: ${o.color};">${o.id}</span>
-                <div class="flex-grow-1">
-                    <small class="fw-medium d-block">${o.nombre}</small>
-                    <small class="text-muted">${o.politicas_relacionadas} política(s)</small>
-                </div>
-            </div>
-        </div>`;
+        html += '<div class="col-md-6">' +
+            '<div class="d-flex align-items-center gap-2 p-2" style="border-radius: 8px; border-left: 4px solid ' + o.color + ';">' +
+                '<span class="fw-bold" style="color: ' + o.color + ';">' + o.id + '</span>' +
+                '<div class="flex-grow-1">' +
+                    '<small class="fw-medium d-block">' + o.nombre + '</small>' +
+                    '<small class="text-muted-2">' + o.politicas_relacionadas + ' política(s)</small>' +
+                '</div>' +
+            '</div>' +
+        '</div>';
     });
     html += '</div>';
     container.innerHTML = html;
 }
 </script>
-<style>
-.table-harmonization th {
-    background: #f8fafc;
-    font-size: 0.8rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    padding: 1rem;
-    border-bottom: 2px solid #e2e8f0;
-}
-.table-harmonization td {
-    padding: 1rem;
-    vertical-align: middle;
-    font-size: 0.9rem;
-}
-.table-harmonization tr:hover td {
-    background: #f8fafc;
-}
-.ods-dot {
-    display: inline-block;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin: 0 2px;
-    border: 1px solid #cbd5e1;
-}
-</style>
 {% endblock %}

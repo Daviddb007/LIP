@@ -1,7 +1,14 @@
+"""Servicio del asistente virtual con base de conocimiento sobre el Estado colombiano.
+
+Implementa un motor de búsqueda por palabras clave y solapamiento de términos
+para responder preguntas sobre entidades, instrumentos y políticas públicas.
+"""
 from __future__ import annotations
 
 import re
 import unicodedata
+
+from app.errors import NotFoundError
 
 CONOCIMIENTO: list[dict] = [
     {
@@ -132,7 +139,7 @@ CONOCIMIENTO: list[dict] = [
     },
     {
         'categoria': 'general',
-        'palabras_clave': ['construyamos colombia', 'ecosistema', 'inteligencia pública', 'srie'],
+        'palabras_clave': ['asistente', 'quién eres', 'qué puedes hacer', 'ayuda'],
         'preguntas': ['asistente', 'quién eres', 'qué puedes hacer', 'ayuda'],
         'respuesta': 'Soy el Asistente Público SRIE, un especialista en el Estado colombiano desarrollado por StoneLytics como parte del Ecosistema Nacional de Inteligencia Pública "Laboratorio de Inteligencia Pública". Puedo responder preguntas sobre: cómo funciona el Estado colombiano, qué son las políticas públicas, qué entidades existen, cómo participar, qué instrumentos de planeación hay (PND, CONPES, leyes), y las políticas públicas en sectores como educación, salud, vivienda, ambiente y seguridad. Toda mi información proviene de fuentes oficiales y está verificada.',
     },
@@ -140,6 +147,7 @@ CONOCIMIENTO: list[dict] = [
 
 
 def normalizar(texto: str) -> str:
+    """Normaliza un texto: minúsculas, sin tildes ni caracteres especiales."""
     texto = texto.lower().strip()
     texto = unicodedata.normalize('NFKD', texto)
     texto = texto.encode('ascii', 'ignore').decode('ascii')
@@ -147,10 +155,11 @@ def normalizar(texto: str) -> str:
 
 
 def responder(pregunta: str) -> dict:
+    """Busca la mejor respuesta en la base de conocimiento usando palabras clave y solapamiento."""
     pregunta_norm = normalizar(pregunta)
 
     mejor_puntaje = 0
-    mejor_respuesta = None
+    mejor_respuesta: dict | None = None
 
     for item in CONOCIMIENTO:
         puntaje = 0

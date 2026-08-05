@@ -1,210 +1,124 @@
 {% extends "base.html" %}
+{% from "macros/map.html" import colombia_map %}
 
-{% block title %}Observatorio Nacional - Laboratorio de Inteligencia Pública{% endblock %}
+{% block title %}Resultados — Laboratorio de Inteligencia Pública{% endblock %}
 
 {% block content %}
-<input type="hidden" id="apiEstadisticasUrl" value="{{ url_for('resultados.api_estadisticas') }}">
-
-<section class="hero-section" style="min-height: 40vh; padding: 120px 0 60px;">
+<!-- Hero -->
+<section class="hero" style="padding: var(--space-3xl) 0;">
     <div class="container">
-        <div class="row align-items-center">
+        <div class="row justify-content-center text-center">
             <div class="col-lg-8">
-                <span class="hero-badge mb-3">
-                    <i class="bi bi-graph-up"></i>
-                    Observatorio Nacional · Tiempo real
-                </span>
-                <h1 class="hero-title" style="font-size: 3rem;">Observatorio Nacional</h1>
-                <p class="hero-subtitle" style="max-width: 600px;">
-                    Visualiza la inteligencia pública de Colombia: participación ciudadana, clasificación SRIE, 
-                    tendencias territoriales y evidencia para la toma de decisiones.
+                <div class="badge badge-white mb-3">Resultados Públicos</div>
+                <h1 class="display-lg text-white mb-3">Lo que Colombia está diciendo</h1>
+                <p class="body-lg text-white-50" style="max-width: 540px; margin: 0 auto;">
+                    Datos abiertos y transparentes. Cada voz cuenta.
                 </p>
             </div>
         </div>
     </div>
 </section>
 
-<section class="py-5" style="margin-top: -60px;">
+<!-- Stats -->
+<section class="section" style="padding-top: 0;">
     <div class="container">
-        <div class="row g-4">
-            <div class="col-md-6 col-lg-3">
-                <div class="stat-modern">
-                    <div class="stat-icon-wrapper primary">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <div class="stat-value" id="totalParticipaciones">-</div>
-                    <div class="stat-label">Participaciones</div>
-                    <span class="stat-trend up"><i class="bi bi-arrow-up"></i> En vivo</span>
+        <div class="row g-3 mb-4">
+            <div class="col-sm-6 col-lg-3">
+                <div class="card-elevated p-3 text-center">
+                    <div class="display-sm fw-bold text-blue" id="statTotal">0</div>
+                    <div class="caption text-muted-2">Participaciones</div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="stat-modern">
-                    <div class="stat-icon-wrapper success">
-                        <i class="bi bi-collection-fill"></i>
-                    </div>
-                    <div class="stat-value" id="totalPoliticas">-</div>
-                    <div class="stat-label">Políticas públicas</div>
-                    <span class="stat-trend neutral"><i class="bi bi-check-circle"></i> Biblioteca</span>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card-elevated p-3 text-center">
+                    <div class="display-sm fw-bold text-green" id="statMunicipios">0</div>
+                    <div class="caption text-muted-2">Municipios</div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="stat-modern">
-                    <div class="stat-icon-wrapper warning">
-                        <i class="bi bi-geo-alt-fill"></i>
-                    </div>
-                    <div class="stat-value" id="totalDepartamentos">-</div>
-                    <div class="stat-label">Departamentos</div>
-                    <span class="stat-trend neutral"><i class="bi bi-check-circle"></i> Cobertura</span>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card-elevated p-3 text-center">
+                    <div class="display-sm fw-bold text-purple" id="statPilares">0</div>
+                    <div class="caption text-muted-2">Pilares cubiertos</div>
                 </div>
             </div>
-            <div class="col-md-6 col-lg-3">
-                <div class="stat-modern">
-                    <div class="stat-icon-wrapper info">
-                        <i class="bi bi-tags-fill"></i>
-                    </div>
-                    <div class="stat-value" id="totalSectores">-</div>
-                    <div class="stat-label">Sectores priorizados</div>
-                    <span class="stat-trend neutral"><i class="bi bi-check-circle"></i> Activos</span>
+            <div class="col-sm-6 col-lg-3">
+                <div class="card-elevated p-3 text-center">
+                    <div class="display-sm fw-bold text-warning" id="statProblemas">0</div>
+                    <div class="caption text-muted-2">Problemas</div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
 
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="section-header mb-5">
-            <span class="section-badge"><i class="bi bi-cpu-fill"></i> Inteligencia SRIE</span>
-            <h2 class="section-title">Clasificación estratégica</h2>
-            <p class="section-subtitle">Distribución de la participación ciudadana según el análisis del motor SRIE</p>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-lg-4">
-                <div class="card-premium h-100">
-                    <div class="d-flex align-items-center gap-2 mb-4">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--blue-light); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                            <i class="bi bi-diagram-3"></i>
-                        </div>
-                        <h5 class="mb-0 fw-bold">Pilares estratégicos</h5>
-                    </div>
-                    <canvas id="chartSriePilares" height="280"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card-premium h-100">
-                    <div class="d-flex align-items-center gap-2 mb-4">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--warning-light); color: var(--warning); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                            <i class="bi bi-exclamation-triangle"></i>
-                        </div>
-                        <h5 class="mb-0 fw-bold">Nivel de urgencia</h5>
-                    </div>
-                    <canvas id="chartSrieUrgencia" height="280"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card-premium h-100">
-                    <div class="d-flex align-items-center gap-2 mb-4">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--success-light); color: var(--success); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                            <i class="bi bi-globe"></i>
-                        </div>
-                        <h5 class="mb-0 fw-bold">Alcance de impacto</h5>
-                    </div>
-                    <canvas id="chartSrieImpacto" height="280"></canvas>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="py-5">
-    <div class="container">
-        <div class="section-header mb-5">
-            <span class="section-badge"><i class="bi bi-bar-chart"></i> Analítica</span>
-            <h2 class="section-title">Análisis de participación</h2>
-            <p class="section-subtitle">Explora las tendencias, sectores priorizados y distribución territorial</p>
-        </div>
-
-        <div class="row g-4">
-            <div class="col-lg-8">
-                <div class="card-premium h-100">
-                    <div class="d-flex align-items-center gap-2 mb-4">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--blue-light); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                            <i class="bi bi-bar-chart-fill"></i>
-                        </div>
-                        <h5 class="mb-0 fw-bold">Sectores priorizados</h5>
-                    </div>
-                    <canvas id="chartSectores" height="300"></canvas>
-                </div>
-            </div>
-            <div class="col-lg-4">
-                <div class="card-premium h-100">
-                    <div class="d-flex align-items-center gap-2 mb-4">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--warning-light); color: var(--warning); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                            <i class="bi bi-geo-alt"></i>
-                        </div>
-                        <h5 class="mb-0 fw-bold">Ranking departamental</h5>
-                    </div>
-                    <div id="listaDepartamentos" style="max-height: 360px; overflow-y: auto;">
-                        <p class="text-muted text-center py-4">
-                            <span class="spinner-border spinner-border-sm me-2"></span>Cargando...
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="py-5 bg-light">
-    <div class="container">
-        <div class="row g-4">
+        <!-- Charts Row -->
+        <div class="row g-3 mb-4">
             <div class="col-lg-6">
-                <div class="card-premium h-100">
-                    <div class="d-flex align-items-center gap-2 mb-4">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--danger-light); color: var(--danger); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                            <i class="bi bi-exclamation-triangle"></i>
-                        </div>
-                        <h5 class="mb-0 fw-bold">Problemas más mencionados</h5>
-                    </div>
-                    <canvas id="chartProblemas" height="280"></canvas>
+                <div class="card-elevated p-4">
+                    <h3 class="heading-sm text-dark mb-3">Participaciones por departamento</h3>
+                    <canvas id="chartDepartamentos" height="260"></canvas>
                 </div>
             </div>
             <div class="col-lg-6">
-                <div class="card-premium h-100">
-                    <div class="d-flex align-items-center gap-2 mb-4">
-                        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--info-light); color: var(--info); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                            <i class="bi bi-clock-history"></i>
-                        </div>
-                        <h5 class="mb-0 fw-bold">Tendencia de participación</h5>
-                    </div>
-                    <canvas id="chartTendencia" height="280"></canvas>
+                <div class="card-elevated p-4">
+                    <h3 class="heading-sm text-dark mb-3">Problemas más mencionados</h3>
+                    <canvas id="chartProblemas" height="260"></canvas>
                 </div>
             </div>
         </div>
-    </div>
-</section>
 
-<section class="py-5">
-    <div class="container">
-        <div class="section-header mb-5">
-            <span class="section-badge"><i class="bi bi-chat-quote"></i> Voces ciudadanas</span>
-            <h2 class="section-title">Propuestas recientes</h2>
-            <p class="section-subtitle">Las últimas participaciones de ciudadanos de todo el país</p>
-        </div>
-
-        <div class="card-premium p-4">
-            <div id="listaPropuestas">
-                <p class="text-muted text-center py-4">
-                    <span class="spinner-border spinner-border-sm me-2"></span>Cargando propuestas...
-                </p>
+        <!-- Map + Pilares -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-6">
+                <div class="card-elevated p-4" style="min-height: 400px;">
+                    <h3 class="heading-sm text-dark mb-3">Mapa de participación</h3>
+                    <div id="mapContainer">{{ colombia_map() }}</div>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-elevated p-4" style="min-height: 400px;">
+                    <h3 class="heading-sm text-dark mb-3">Pilares más activos</h3>
+                    <canvas id="chartPilares" height="300"></canvas>
+                </div>
             </div>
         </div>
 
-        <div class="text-center mt-5">
-            <p class="text-muted mb-3">¿Ya participaste? Tus ideas también pueden hacer parte de esta inteligencia colectiva.</p>
-            <a href="{{ url_for('participar.participar') }}" class="btn btn-hero-primary">
-                <i class="bi bi-arrow-right-circle me-2"></i>Participar ahora
-            </a>
+        <!-- Actores y Beneficiarios -->
+        <div class="row g-3 mb-4">
+            <div class="col-lg-6">
+                <div class="card-elevated p-4">
+                    <h3 class="heading-sm text-dark mb-3">Actores más mencionados</h3>
+                    <canvas id="chartActores" height="200"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-elevated p-4">
+                    <h3 class="heading-sm text-dark mb-3">Beneficiarios más mencionados</h3>
+                    <canvas id="chartBeneficiarios" height="200"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Table -->
+        <div class="card-elevated p-4">
+            <h3 class="heading-sm text-dark mb-3">Participaciones recientes</h3>
+            <div style="overflow-x: auto;">
+                <table class="table-premium w-100">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Departamento</th>
+                            <th>Problemas</th>
+                            <th>Pilar</th>
+                            <th>Propuesta</th>
+                            <th>Fecha</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaParticipaciones">
+                        <tr>
+                            <td colspan="6" class="text-center text-muted-2 py-4">Cargando datos...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </section>
@@ -212,5 +126,119 @@
 
 {% block scripts %}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-<script src="{{ url_for('static', filename='js/resultados.js') }}"></script>
+<script>
+(function() {
+    var stats = {{ stats|tojson }};
+
+    function animateCount(el, target) {
+        var current = 0;
+        var step = Math.max(1, Math.floor(target / 40));
+        var timer = setInterval(function() {
+            current += step;
+            if (current >= target) { current = target; clearInterval(timer); }
+            el.textContent = current.toLocaleString();
+        }, 30);
+    }
+    animateCount(document.getElementById('statTotal'), stats.total);
+    animateCount(document.getElementById('statMunicipios'), stats.municipios);
+    animateCount(document.getElementById('statPilares'), stats.pilares);
+    animateCount(document.getElementById('statProblemas'), stats.problemas);
+
+    var colors = ['#3B82F6','#10B981','#8B5CF6','#F59E0B','#EF4444','#06B6D4','#EC4899','#14B8A6'];
+    var API = '/api';
+
+    fetch(API + '/estadisticas').then(function(r){ return r.json(); }).then(function(data) {
+        if (data.departamentos && data.departamentos.length) {
+            var mapData = {};
+            data.departamentos.forEach(function(d) { mapData[d.nombre] = d.total; });
+            window.__mapData = mapData;
+
+            // Initialize map after data is set
+            var mapScript = document.createElement('script');
+            mapScript.src = '{{ url_for("static", filename="js/map.js") }}';
+            document.body.appendChild(mapScript);
+            new Chart(document.getElementById('chartDepartamentos'), {
+                type: 'bar',
+                data: {
+                    labels: data.departamentos.map(function(d){ return d.nombre; }),
+                    datasets: [{ label: 'Participaciones', data: data.departamentos.map(function(d){ return d.total; }),
+                        backgroundColor: colors[0], borderRadius: 6 }]
+                },
+                options: { responsive: true, plugins: { legend: { display: false } },
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
+        }
+
+        if (data.problemas && data.problemas.length) {
+            new Chart(document.getElementById('chartProblemas'), {
+                type: 'doughnut',
+                data: {
+                    labels: data.problemas.map(function(p){ return p.nombre; }),
+                    datasets: [{ data: data.problemas.map(function(p){ return p.total; }),
+                        backgroundColor: colors, borderWidth: 0 }]
+                },
+                options: { responsive: true, plugins: { legend: { position: 'bottom', labels: { padding: 12 } } } }
+            });
+        }
+
+        if (data.pilares && data.pilares.length) {
+            new Chart(document.getElementById('chartPilares'), {
+                type: 'bar',
+                data: {
+                    labels: data.pilares.map(function(p){ return p.nombre.replace('El Milagro de ','').substring(0,30); }),
+                    datasets: [{ label: 'Clasificaciones', data: data.pilares.map(function(p){ return p.total; }),
+                        backgroundColor: colors[2], borderRadius: 6 }]
+                },
+                options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
+        }
+
+        if (data.actores && data.actores.length) {
+            new Chart(document.getElementById('chartActores'), {
+                type: 'bar',
+                data: {
+                    labels: data.actores.map(function(a){ return a.nombre; }),
+                    datasets: [{ label: 'Menciones', data: data.actores.map(function(a){ return a.total; }),
+                        backgroundColor: colors[1], borderRadius: 6 }]
+                },
+                options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
+        }
+
+        if (data.beneficiarios && data.beneficiarios.length) {
+            new Chart(document.getElementById('chartBeneficiarios'), {
+                type: 'bar',
+                data: {
+                    labels: data.beneficiarios.map(function(b){ return b.nombre; }),
+                    datasets: [{ label: 'Menciones', data: data.beneficiarios.map(function(b){ return b.total; }),
+                        backgroundColor: colors[3], borderRadius: 6 }]
+                },
+                options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } },
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+            });
+        }
+    });
+
+    fetch(API + '/participaciones').then(function(r){ return r.json(); }).then(function(data) {
+        var tbody = document.getElementById('tablaParticipaciones');
+        if (!data.participaciones || !data.participaciones.length) {
+            tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted-2 py-4">Sin participaciones aún</td></tr>';
+            return;
+        }
+        tbody.innerHTML = data.participaciones.map(function(p) {
+            var probs = (p.problemas || []).join(', ') || '—';
+            return '<tr>' +
+                '<td><span class="badge badge-blue">' + p.id + '</span></td>' +
+                '<td class="caption">' + (p.departamento || '—') + '</td>' +
+                '<td class="caption">' + probs + '</td>' +
+                '<td class="caption">' + (p.pilar || '—') + '</td>' +
+                '<td class="caption">' + (p.propuesta || '—').substring(0,80) + '</td>' +
+                '<td class="caption">' + (p.created_at ? new Date(p.created_at).toLocaleDateString('es-CO') : '—') + '</td>' +
+                '</tr>';
+        }).join('');
+    });
+})();
+</script>
 {% endblock %}

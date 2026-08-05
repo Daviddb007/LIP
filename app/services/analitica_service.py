@@ -1,3 +1,8 @@
+"""Servicio de analítica para generar visualizaciones y reportes de participación.
+
+Incluye generación de nubes de palabras, clusters semánticos, tendencias
+mensuales, análisis territorial y predicciones de participación.
+"""
 from __future__ import annotations
 
 import re
@@ -5,12 +10,13 @@ from collections import Counter, defaultdict
 from typing import Any
 
 from app import db
+from app.models.catalog import Sector, Subsector, ProblemaCatalogo, participacion_problemas
 from app.models.participacion import Participacion
-from app.models.sector import Sector
 from app.models.politica import Politica
+from app.services.db_helpers import date_trunc
 from sqlalchemy import func
 
-STOP_WORDS = {
+STOP_WORDS: set[str] = {
     'de', 'la', 'que', 'el', 'en', 'y', 'a', 'los', 'del', 'se', 'las', 'por', 'un',
     'para', 'con', 'no', 'una', 'su', 'al', 'lo', 'como', 'más', 'pero', 'sus', 'le',
     'ya', 'este', 'entre', 'porque', 'este', 'esta', 'estos', 'estas', 'ese', 'esa',
@@ -20,8 +26,55 @@ STOP_WORDS = {
     'entre', 'mediante', 'excepto', 'incluso', 'además', 'ambos', 'ambas',
 }
 
+CLUSTER_KEYWORDS: dict[str, list[str]] = {
+    'Infraestructura': [
+        'vía', 'carretera', 'puente', 'acueducto', 'alcantarillado', 'energía',
+        'agua', 'transporte', 'movilidad', 'vivienda', 'infraestructura',
+    ],
+    'Educación': [
+        'educación', 'escuela', 'colegio', 'universidad', 'estudiante', 'docente',
+        'joven', 'jóvenes', 'beca', 'formación', 'matrícula', 'aprendizaje',
+    ],
+    'Salud': [
+        'salud', 'hospital', 'médico', 'medicamento', 'eps', 'enfermedad',
+        'bienestar', 'salud mental', 'discapacidad', 'adulto mayor',
+    ],
+    'Empleo': [
+        'empleo', 'trabajo', 'desempleo', 'empresa', 'emprendimiento', 'economía',
+        'salario', 'ingreso', 'industria', 'comercio', 'turismo',
+    ],
+    'Seguridad': [
+        'seguridad', 'violencia', 'delincuencia', 'policía', 'inseguridad',
+        'crimen', 'conflicto', 'paz', 'protección',
+    ],
+    'Ambiente': [
+        'ambiente', 'ambiental', 'cambio climático', 'contaminación', 'reciclaje',
+        'bosque', 'reforestación', 'residuos', 'agua', 'energía renovable',
+    ],
+}
+
+DEPARTAMENTOS_COL: list[str] = [
+    'Amazonas', 'Antioquia', 'Arauca', 'Atlántico', 'Bolívar', 'Boyacá',
+    'Caldas', 'Caquetá', 'Casanare', 'Cauca', 'Cesar', 'Chocó',
+    'Córdoba', 'Cundinamarca', 'Guainía', 'Guaviare', 'Huila',
+    'La Guajira', 'Magdalena', 'Meta', 'Nariño', 'Norte de Santander',
+    'Putumayo', 'Quindío', 'Risaralda', 'Santander', 'Sucre', 'Tolima',
+    'Valle del Cauca', 'Vaupés', 'Vichada', 'Bogotá D.C.',
+]
+
+REGIONES: dict[str, list[str]] = {
+    'Caribe': ['Atlántico', 'Bolívar', 'Cesar', 'Córdoba', 'La Guajira', 'Magdalena', 'Sucre'],
+    'Pacífico': ['Cauca', 'Chocó', 'Nariño', 'Valle del Cauca'],
+    'Andina': ['Antioquia', 'Boyacá', 'Caldas', 'Cundinamarca', 'Huila', 'Norte de Santander',
+               'Quindío', 'Risaralda', 'Santander', 'Tolima'],
+    'Orinoquía': ['Arauca', 'Casanare', 'Meta', 'Vichada'],
+    'Amazonía': ['Amazonas', 'Caquetá', 'Guainía', 'Guaviare', 'Putumayo', 'Vaupés'],
+    'Bogotá': ['Bogotá D.C.'],
+}
+
 
 def obtener_analitica() -> dict[str, Any]:
+    """Genera el reporte completo de analítica con todos los componentes."""
     palabras = _extraer_palabras()
     clusters = _generar_clusters()
     tendencias = _tendencia_mensual()
@@ -46,10 +99,11 @@ def obtener_analitica() -> dict[str, Any]:
 
 
 def _extraer_palabras() -> list[dict]:
+    """Extrae tokens de las propuestas, filtra stopwords y cuenta frecuencias para la nube de palabras."""
     propuestas = Participacion.query.with_entities(Participacion.propuesta).all()
     textos = [p[0] for p in propuestas if p[0]]
 
-    palabras = []
+    palabras: list[str] = []
     for texto in textos:
         texto_limpio = re.sub(r'[^\w\sáéíóúñÁÉÍÓÚÑ]', ' ', texto.lower())
         tokens = texto_limpio.split()
@@ -63,42 +117,13 @@ def _extraer_palabras() -> list[dict]:
     ]
 
 
-CLUSTER_KEYWORDS: dict[str, list[str]] = {
-    'Infraestructura y servicios': [
-        'vía', 'carretera', 'puente', 'acueducto', 'alcantarillado', 'energía',
-        'agua', 'transporte', 'movilidad', 'vivienda', 'infraestructura',
-    ],
-    'Educación y juventud': [
-        'educación', 'escuela', 'colegio', 'universidad', 'estudiante', 'docente',
-        'joven', 'jóvenes', 'beca', 'formación', 'matrícula', 'aprendizaje',
-    ],
-    'Salud y bienestar': [
-        'salud', 'hospital', 'médico', 'medicamento', 'eps', 'enfermedad',
-        'bienestar', 'salud mental', 'discapacidad', 'adulto mayor',
-    ],
-    'Empleo y economía': [
-        'empleo', 'trabajo', 'desempleo', 'empresa', 'emprendimiento', 'economía',
-        'salario', 'ingreso', 'industria', 'comercio', 'turismo',
-    ],
-    'Seguridad y convivencia': [
-        'seguridad', 'violencia', 'delincuencia', 'policía', 'inseguridad',
-        'crimen', 'conflicto', 'paz', 'protección',
-    ],
-    'Ambiente y sostenibilidad': [
-        'ambiente', 'ambiental', 'cambio climático', 'contaminación', 'reciclaje',
-        'bosque', 'reforestación', 'residuos', 'agua', 'energía renovable',
-    ],
-}
-
-
 def _generar_clusters() -> list[dict]:
-    propuestas = Participacion.query.with_entities(
-        Participacion.propuesta, Participacion.sector_prioritario_id
-    ).all()
+    """Agrupa propuestas en clusters semánticos según palabras clave."""
+    propuestas = Participacion.query.with_entities(Participacion.propuesta).all()
 
-    cluster_counts = defaultdict(lambda: {'participaciones': 0, 'palabras_encontradas': set()})
+    cluster_counts: dict[str, dict] = defaultdict(lambda: {'participaciones': 0, 'palabras_encontradas': set()})
 
-    for propuesta, sector_id in propuestas:
+    for (propuesta,) in propuestas:
         if not propuesta:
             continue
         texto = propuesta.lower()
@@ -126,50 +151,19 @@ def _generar_clusters() -> list[dict]:
 
 
 def _tendencia_mensual() -> list[dict]:
-    try:
-        rows = (
-            db.session.query(
-                func.to_char(Participacion.created_at, 'YYYY-MM'),
-                func.count(Participacion.id),
-            )
-            .group_by(func.to_char(Participacion.created_at, 'YYYY-MM'))
-            .order_by(func.to_char(Participacion.created_at, 'YYYY-MM'))
-            .all()
-        )
-    except Exception:
-        rows = (
-            db.session.query(
-                func.date_trunc('month', Participacion.created_at),
-                func.count(Participacion.id),
-            )
-            .group_by(func.date_trunc('month', Participacion.created_at))
-            .order_by(func.date_trunc('month', Participacion.created_at))
-            .all()
-        )
+    """Calcula la tendencia mensual de participaciones."""
+    date_col = date_trunc('month', Participacion.created_at)
+    rows = (
+        db.session.query(date_col, func.count(Participacion.id))
+        .group_by(date_col)
+        .order_by(date_col)
+        .all()
+    )
     return [{'mes': str(mes)[:7], 'participaciones': total} for mes, total in rows]
 
 
-DEPARTAMENTOS_COL: list[str] = [
-    'Amazonas', 'Antioquia', 'Arauca', 'Atlántico', 'Bolívar', 'Boyacá',
-    'Caldas', 'Caquetá', 'Casanare', 'Cauca', 'Cesar', 'Chocó',
-    'Córdoba', 'Cundinamarca', 'Guainía', 'Guaviare', 'Huila',
-    'La Guajira', 'Magdalena', 'Meta', 'Nariño', 'Norte de Santander',
-    'Putumayo', 'Quindío', 'Risaralda', 'Santander', 'Sucre', 'Tolima',
-    'Valle del Cauca', 'Vaupés', 'Vichada', 'Bogotá D.C.',
-]
-
-REGIONES: dict[str, list[str]] = {
-    'Caribe': ['Atlántico', 'Bolívar', 'Cesar', 'Córdoba', 'La Guajira', 'Magdalena', 'Sucre'],
-    'Pacífico': ['Cauca', 'Chocó', 'Nariño', 'Valle del Cauca'],
-    'Andina': ['Antioquia', 'Boyacá', 'Caldas', 'Cundinamarca', 'Huila', 'Norte de Santander',
-               'Quindío', 'Risaralda', 'Santander', 'Tolima'],
-    'Orinoquía': ['Arauca', 'Casanare', 'Meta', 'Vichada'],
-    'Amazonía': ['Amazonas', 'Caquetá', 'Guainía', 'Guaviare', 'Putumayo', 'Vaupés'],
-    'Bogotá': ['Bogotá D.C.'],
-}
-
-
 def _analisis_territorial() -> list[dict]:
+    """Agrupa participaciones por regiones naturales de Colombia."""
     rows = (
         db.session.query(
             Participacion.departamento, func.count(Participacion.id)
@@ -184,8 +178,8 @@ def _analisis_territorial() -> list[dict]:
     )
     depto_dict = dict(rows)
 
-    region_counts = defaultdict(int)
-    region_deptos = defaultdict(list)
+    region_counts: dict[str, int] = defaultdict(int)
+    region_deptos: dict[str, list[dict]] = defaultdict(list)
 
     for depto in DEPARTAMENTOS_COL:
         total = depto_dict.get(depto, 0)
@@ -196,7 +190,7 @@ def _analisis_territorial() -> list[dict]:
                     region_deptos[region].append({'nombre': depto, 'participaciones': total})
                 break
 
-    result = []
+    result: list[dict] = []
     for region, total in sorted(region_counts.items(), key=lambda x: x[1], reverse=True):
         result.append({
             'region': region,
@@ -208,15 +202,19 @@ def _analisis_territorial() -> list[dict]:
 
 
 def _comparativas_sector() -> dict[str, Any]:
+    """Genera comparativas entre sectores: líder, departamento líder, sectores sin política."""
     participaciones_por_sector = (
-        db.session.query(Sector.nombre, func.count(Participacion.id))
-        .join(Participacion.sectores)
-        .group_by(Sector.nombre)
-        .order_by(func.count(Participacion.id).desc())
+        db.session.query(Sector.nombre, func.count(func.distinct(Participacion.id)))
+        .join(Subsector, Subsector.sector_id == Sector.id)
+        .join(ProblemaCatalogo, ProblemaCatalogo.subsector_id == Subsector.id)
+        .join(participacion_problemas, participacion_problemas.c.problema_id == ProblemaCatalogo.id)
+        .join(Participacion, Participacion.id == participacion_problemas.c.participacion_id)
+        .group_by(Sector.id, Sector.nombre)
+        .order_by(func.count(func.distinct(Participacion.id)).desc())
         .all()
     )
 
-    politicas_por_sector = defaultdict(int)
+    politicas_por_sector: dict[str, int] = defaultdict(int)
     for p in Politica.query.filter_by(activo=True).all():
         if p.sector:
             politicas_por_sector[p.sector.nombre] += 1
@@ -257,6 +255,7 @@ def _comparativas_sector() -> dict[str, Any]:
 
 
 def _predicciones() -> dict[str, Any]:
+    """Predice la tendencia de participación usando regresión lineal simple."""
     tendencia = _tendencia_mensual()
     if not tendencia:
         return {'proyeccion_tendencia': 'creciente', 'estimado_proximo_mes': 0, 'confianza': 'baja'}

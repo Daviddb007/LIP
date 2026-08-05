@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}Política de Cookies — Laboratorio de Inteligencia Pública{% endblock %}
+{% block content %}
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="badge badge-primary mb-3">Legal</div>
+                <h1 class="display-md mb-4">Política de Cookies</h1>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">Uso de Cookies</h2>
+                    <p class="text-muted-2">El Laboratorio de Inteligencia Pública <strong>no utiliza cookies de seguimiento, publicidad ni análisis de terceros</strong>.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">Cookies Técnicas</h2>
+                    <p class="text-muted-2">La Plataforma utiliza exclusivamente cookies técnicas necesarias para:</p>
+                    <ul class="text-muted-2">
+                        <li>Mantener la sesión del panel administrativo (cookie de sesión: <code>construyamos_session</code>).</li>
+                        <li>Proteger contra falsificación de solicitudes (CSRF token).</li>
+                    </ul>
+                    <p class="text-muted-2 caption">Estas cookies no recolectan información personal ni rastrean la navegación del usuario. Se eliminan al cerrar el navegador.</p>
+                </div>
+
+                <div class="card-premium p-4 mb-4">
+                    <h2 class="heading-md mb-3">Servicios Externos</h2>
+                    <p class="text-muted-2">La Plataforma carga fuentes tipográficas desde Google Fonts y estilos desde BootstrapCDN. Estos servicios pueden establecer cookies propias. Consulte las políticas de privacidad de <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google</a> y <a href="https://www.jsdelivr.com/terms/privacy-policy-jsdelivr" target="_blank" rel="noopener">jsDelivr</a>.</p>
+                </div>
+
+                <div class="card-premium p-4">
+                    <h2 class="heading-md mb-3">Contacto</h2>
+                    <p class="text-muted-2">Para más información: <a href="mailto:daviddb@stonelytics.tech">daviddb@stonelytics.tech</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

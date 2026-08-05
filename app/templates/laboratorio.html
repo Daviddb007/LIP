@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 
-{% block title %}Laboratorio de Innovación Pública - Laboratorio de Inteligencia Pública{% endblock %}
+{% block title %}Laboratorio de Innovación Pública — Laboratorio de Inteligencia Pública{% endblock %}
 
 {% block content %}
-<section class="hero-section" style="min-height: 30vh; padding: 120px 0 60px;">
+<section class="hero" style="padding: var(--space-3xl) 0;">
     <div class="container">
         <div class="row align-items-center">
             <div class="col-lg-8">
-                <span class="hero-badge mb-3">
-                    <i class="bi bi-flask"></i>
+                <div class="badge badge-primary mb-3">
+                    <i class="bi bi-flask me-1"></i>
                     Laboratorio · Simulación
-                </span>
-                <h1 class="hero-title" style="font-size: 2.5rem;">Laboratorio de Innovación Pública</h1>
-                <p class="hero-subtitle" style="max-width: 600px;">
+                </div>
+                <h1 class="display-lg text-white mb-3">Laboratorio de Innovación Pública</h1>
+                <p class="body-lg text-white-50" style="max-width: 600px;">
                     Simula escenarios, ajusta variables y visualiza el impacto en las políticas públicas
                 </p>
             </div>
@@ -20,18 +20,18 @@
     </div>
 </section>
 
-<section class="section section-alt" style="margin-top: -60px;">
+<section class="section section-alt" style="padding-top: 0;">
     <div class="container">
         <div class="row g-4">
             <div class="col-lg-4">
-                <div class="card-premium">
+                <div class="card-elevated p-4">
                     <div class="d-flex align-items-center gap-2 mb-3">
                         <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--blue-light); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
                             <i class="bi bi-sliders"></i>
                         </div>
                         <h5 class="mb-0 fw-bold">Controles</h5>
                     </div>
-                    <small class="text-muted d-block mb-4">Ajusta los parámetros y simula el impacto</small>
+                    <small class="text-muted-2 d-block mb-4">Ajusta los parámetros y simula el impacto</small>
                     <div>
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Presupuesto adicional</label>
@@ -59,11 +59,11 @@
                         <div class="mb-4">
                             <label class="form-label fw-semibold">Nuevo sector (simular)</label>
                             <input type="text" class="form-control mb-2" id="inputNuevoSector" placeholder="Ej: Innovación social">
-                            <label class="form-label small text-muted">Participaciones esperadas</label>
+                            <label class="form-label small text-muted-2">Participaciones esperadas</label>
                             <input type="number" class="form-control" id="inputNuevasPart" value="0" min="0" oninput="actualizarSimulacion()">
                         </div>
 
-                        <button class="btn btn-primary w-100" onclick="resetearSimulacion()">
+                        <button class="btn btn-gold w-100" onclick="resetearSimulacion()">
                             <i class="bi bi-arrow-counterclockwise me-2"></i>Restablecer
                         </button>
                     </div>
@@ -73,66 +73,86 @@
             <div class="col-lg-8">
                 <div class="row g-3 mb-4">
                     <div class="col-md-4">
-                <div class="card-premium text-center p-4">
-                    <small class="text-muted text-uppercase fw-bold">Cambio total</small>
-                    <div class="fw-bold display-6" id="cambioTotal">0</div>
-                    <small class="text-muted">participaciones</small>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-premium text-center p-4">
-                    <small class="text-muted text-uppercase fw-bold">Sectores ganan</small>
-                    <div class="fw-bold display-6 text-success" id="ganadores">0</div>
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="card-premium text-center p-4">
-                    <small class="text-muted text-uppercase fw-bold">Índice armonía</small>
-                    <div class="fw-bold display-6" id="indiceArmonia" style="color: var(--blue);">0</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="card-premium mb-3">
-            <div class="d-flex align-items-center gap-2 mb-4">
-                <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--blue-light); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                    <i class="bi bi-bar-chart-fill"></i>
-                </div>
-                <h5 class="mb-0 fw-bold">Proyección por sector</h5>
-            </div>
-            <canvas id="chartSimulacion" height="300"></canvas>
-        </div>
-
-        <div class="card-premium">
-            <div class="d-flex align-items-center gap-2 mb-4">
-                <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--blue-light); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
-                    <i class="bi bi-list-ul"></i>
-                </div>
-                <h5 class="mb-0 fw-bold">Detalle de impacto</h5>
-            </div>
-                        <div class="table-responsive">
-                            <table class="table table-sm table-sim mb-0">
-                                <thead>
-                                    <tr>
-                                        <th>Sector</th>
-                                        <th class="text-center">Actual</th>
-                                        <th class="text-center">Proyectado</th>
-                                        <th class="text-center">Cambio</th>
-                                        <th class="text-center">Políticas</th>
-                                        <th>Presupuesto simulado</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="detalleBody">
-                                    <tr><td colspan="6" class="text-center py-3"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</td></tr>
-                                </tbody>
-                            </table>
+                        <div class="card-elevated text-center p-4">
+                            <small class="text-muted-2 text-uppercase fw-bold">Cambio total</small>
+                            <div class="fw-bold display-6" id="cambioTotal">0</div>
+                            <small class="text-muted-2">participaciones</small>
                         </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card-elevated text-center p-4">
+                            <small class="text-muted-2 text-uppercase fw-bold">Sectores ganan</small>
+                            <div class="fw-bold display-6 text-success" id="ganadores">0</div>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card-elevated text-center p-4">
+                            <small class="text-muted-2 text-uppercase fw-bold">Índice armonía</small>
+                            <div class="fw-bold display-6" id="indiceArmonia" style="color: var(--blue);">0</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-elevated p-4 mb-3">
+                    <div class="d-flex align-items-center gap-2 mb-4">
+                        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--blue-light); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                            <i class="bi bi-bar-chart-fill"></i>
+                        </div>
+                        <h5 class="mb-0 fw-bold">Proyección por sector</h5>
+                    </div>
+                    <canvas id="chartSimulacion" height="300"></canvas>
+                </div>
+
+                <div class="card-elevated p-4">
+                    <div class="d-flex align-items-center gap-2 mb-4">
+                        <div style="width: 36px; height: 36px; border-radius: 10px; background: var(--blue-light); color: var(--blue); display: flex; align-items: center; justify-content: center; font-size: 1.1rem;">
+                            <i class="bi bi-list-ul"></i>
+                        </div>
+                        <h5 class="mb-0 fw-bold">Detalle de impacto</h5>
+                    </div>
+                    <div style="overflow-x: auto;">
+                        <table class="table table-sm table-sim mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Sector</th>
+                                    <th class="text-center">Actual</th>
+                                    <th class="text-center">Proyectado</th>
+                                    <th class="text-center">Cambio</th>
+                                    <th class="text-center">Políticas</th>
+                                    <th>Presupuesto simulado</th>
+                                </tr>
+                            </thead>
+                            <tbody id="detalleBody">
+                                <tr><td colspan="6" class="text-center py-3"><span class="spinner-border spinner-border-sm me-2"></span>Cargando...</td></tr>
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
+{% endblock %}
+
+{% block styles %}
+<style>
+    .table-sim th {
+        background: var(--surface-2);
+        font-size: 0.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+        padding: 0.75rem 1rem;
+        border-bottom: 2px solid var(--border);
+    }
+    .table-sim td {
+        padding: 0.75rem 1rem;
+        font-size: 0.85rem;
+        vertical-align: middle;
+    }
+    .form-range::-webkit-slider-thumb { background: var(--blue); }
+    .form-range::-moz-range-thumb { background: var(--blue); }
+</style>
 {% endblock %}
 
 {% block scripts %}
@@ -142,7 +162,7 @@ let chartSim = null;
 let datosSectores = [];
 
 document.addEventListener('DOMContentLoaded', async function() {
-    const r = await fetch('/api/laboratorio/estado');
+    const r = await fetch('/api/v1/laboratorio/estado');
     const d = await r.json();
     datosSectores = d.sectores;
 
@@ -176,7 +196,7 @@ async function actualizarSimulacion() {
     };
 
     try {
-        const r = await fetch('/api/laboratorio/simular', {
+        const r = await fetch('/api/v1/laboratorio/simular', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(params)
@@ -243,16 +263,16 @@ function renderDetalle(sectores) {
     const tbody = document.getElementById('detalleBody');
     let html = '';
     sectores.forEach(s => {
-        const cambioColor = s.cambio_participacion > 0 ? 'text-success' : s.cambio_participacion < 0 ? 'text-danger' : 'text-muted';
+        const cambioColor = s.cambio_participacion > 0 ? 'text-success' : s.cambio_participacion < 0 ? 'text-danger' : 'text-muted-2';
         const cambioIcon = s.cambio_participacion > 0 ? 'bi-arrow-up' : s.cambio_participacion < 0 ? 'bi-arrow-down' : 'bi-dash';
-        html += `<tr>
-            <td class="fw-medium">${s.nombre}</td>
-            <td class="text-center fw-bold">${s.participaciones}</td>
-            <td class="text-center fw-bold">${s.participaciones_proyectadas}</td>
-            <td class="text-center fw-bold ${cambioColor}"><i class="bi ${cambioIcon} me-1"></i>${s.cambio_porcentual > 0 ? '+' : ''}${s.cambio_porcentual}%</td>
-            <td class="text-center">${s.politicas}</td>
-            <td>$${(s.presupuesto_simulado || 0).toLocaleString()}M</td>
-        </tr>`;
+        html += '<tr>' +
+            '<td class="fw-medium">' + s.nombre + '</td>' +
+            '<td class="text-center fw-bold">' + s.participaciones + '</td>' +
+            '<td class="text-center fw-bold">' + s.participaciones_proyectadas + '</td>' +
+            '<td class="text-center fw-bold ' + cambioColor + '"><i class="bi ' + cambioIcon + ' me-1"></i>' + (s.cambio_porcentual > 0 ? '+' : '') + s.cambio_porcentual + '%</td>' +
+            '<td class="text-center">' + s.politicas + '</td>' +
+            '<td>$' + (s.presupuesto_simulado || 0).toLocaleString() + 'M</td>' +
+        '</tr>';
     });
     tbody.innerHTML = html;
 }
@@ -266,26 +286,4 @@ function resetearSimulacion() {
     actualizarSimulacion();
 }
 </script>
-<style>
-.table-sim th {
-    background: #f8fafc;
-    font-size: 0.75rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.3px;
-    padding: 0.75rem 1rem;
-    border-bottom: 2px solid #e2e8f0;
-}
-.table-sim td {
-    padding: 0.75rem 1rem;
-    font-size: 0.85rem;
-    vertical-align: middle;
-}
-.form-range::-webkit-slider-thumb {
-    background: #2563eb;
-}
-.form-range::-moz-range-thumb {
-    background: #2563eb;
-}
-</style>
 {% endblock %}

@@ -1,20 +1,43 @@
+# Python
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
-.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
 venv/
-.env
-.env.production
-*.db
-*.sqlite3
-.idea/
+env/
+
+# IDE
 .vscode/
+.idea/
 *.swp
 *.swo
-app.log
+
+# Database
+*.db
+instance/
+
+# Environment
+.env
+.env.production
+
+# Logs
+*.log
 tunnel.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Testing
 .pytest_cache/
-*.pyc
-migrations/__pycache__/
-migrations/versions/__pycache__/
+htmlcov/
+.coverage
+coverage.xml
+
+# Project specific
+.holy/
+holy_runner.py
+*.BAK

@@ -1,53 +1,112 @@
+"""
+Validación y sanitización de inputs para participaciones v2.
+
+Valida los nuevos campos: problemas (M:N, 1-3), actores, beneficiarios.
+Sanitiza textos libres para prevenir XSS.
+"""
+from __future__ import annotations
+
+import bleach
+
 from app.errors import ValidationError
+from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario, Sector
+
+ALLOWED_TAGS: list[str] = []
+ALLOWED_ATTRIBUTES: dict = {}
+
 
 DEPARTAMENTOS_COL: list[str] = [
-    'Amazonas', 'Antioquia', 'Arauca', 'Atlántico', 'Bolívar', 'Boyacá',
-    'Caldas', 'Caquetá', 'Casanare', 'Cauca', 'Cesar', 'Chocó',
-    'Córdoba', 'Cundinamarca', 'Guainía', 'Guaviare', 'Huila',
-    'La Guajira', 'Magdalena', 'Meta', 'Nariño', 'Norte de Santander',
-    'Putumayo', 'Quindío', 'Risaralda', 'Santander', 'Sucre', 'Tolima',
-    'Valle del Cauca', 'Vaupés', 'Vichada', 'Bogotá D.C.',
+    "Amazonas", "Antioquia", "Arauca", "Atlántico", "Bogotá D.C.",
+    "Bolívar", "Boyacá", "Caldas", "Caquetá", "Casanare", "Cauca",
+    "Cesar", "Chocó", "Córdoba", "Cundinamarca", "Guainía", "Guaviare",
+    "Huila", "La Guajira", "Magdalena", "Meta", "Nariño",
+    "Norte de Santander", "Putumayo", "Quindío", "Risaralda",
+    "San Andrés y Providencia", "Santander", "Sucre", "Tolima",
+    "Valle del Cauca", "Vaupés", "Vichada",
 ]
 
 VALID_RANGOS_EDAD: list[str] = [
-    '16-18', '19-25', '26-35', '36-45', '46-55', '56-65', '66+',
+    "16-18", "19-25", "26-35", "36-45", "46-55", "56-65", "66+",
 ]
 
 VALID_GENEROS: list[str] = [
-    'Masculino', 'Femenino', 'Otro', 'Prefiero no decir',
+    "Masculino", "Femenino", "Otro", "Prefiero no decir",
 ]
 
-
-def validate_participacion(data: dict) -> None:
-    """Validate participation input data. Raises ValidationError on failure."""
-
-    _validate_sectores(data)
-    _validate_propuesta(data)
-    _validate_contexto(data)
-    _validate_actores(data)
-    _validate_beneficiarios(data)
-    _validate_optional_fields(data)
+VALID_ZONAS: list[str] = ["urbana", "rural"]
 
 
-def _validate_contexto(data: dict) -> None:
-    contexto = data.get('contexto_ciudadano', '')
-    if contexto and len(contexto) > 500:
-        raise ValidationError('El contexto debe tener máximo 500 caracteres')
+def sanitize_text(text: str) -> str:
+    """Sanitiza texto libre eliminando HTML y scripts."""
+    return bleach.clean(text, tags=ALLOWED_TAGS, attributes=ALLOWED_ATTRIBUTES).strip()
 
 
-def _validate_actores(data: dict) -> None:
-    actores = data.get('actores_responsables', '')
-    if actores and len(actores) > 300:
-        raise ValidationError('Los actores responsables deben tener máximo 300 caracteres')
+def validate_participacion(data: dict) -> dict:
+    """Valida y sanitiza datos de participación v2. Retorna datos sanitizados."""
+    _validate_ubicacion(data)
+    _validate_problemas(data)
+    _validate_textos(data)
+    _validate_gobernanza(data)
+
+    return {
+        "departamento": data["departamento"],
+        "municipio": sanitize_text(data["municipio"]),
+        "zona": data["zona"],
+        "problema_ids": data["problema_ids"],
+        "justificacion": sanitize_text(data["justificacion"]),
+        "propuesta": sanitize_text(data["propuesta"]),
+        "rango_edad": data.get("rango_edad"),
+        "genero": data.get("genero"),
+        "actor_ids": data.get("actor_ids", []),
+        "beneficiario_ids": data.get("beneficiario_ids", []),
+    }
 
 
-def _validate_beneficiarios(data: dict) -> None:
-    beneficiarios = data.get('beneficiarios', '')
-    if beneficiarios and len(beneficiarios) > 300:
-        raise ValidationError('Los beneficiarios deben tener máximo 300 caracteres')
+def validate_consentimiento(data: dict, version_vigente: str = "2026-01") -> dict:
+    """Valida la autorización de tratamiento de datos (Ley 1581 de 2012).
+
+    La autorización debe ser previa, expresa e informada. Si el titular declara
+    ser menor de edad, la aceptación implica la autorización del representante legal.
+    """
+    if data.get("consentimiento_aceptado") is not True:
+        raise ValidationError(
+            "Debe autorizar el tratamiento de sus datos personales de acuerdo con "
+            "la Política de Tratamiento de Datos (Ley 1581 de 2012)"
+        )
+
+    version = data.get("consentimiento_version", "")
+    if not version:
+        raise ValidationError("Falta la versión de la política de tratamiento de datos")
+
+    return {
+        "consentimiento_aceptado": True,
+        "consentimiento_version": version,
+        "consentimiento_version_vigente": version_vigente,
+    }
+
+
+def _validate_ubicacion(data: dict) -> None:
+    departamento = data.get("departamento", "")
+    if not departamento:
+        raise ValidationError("El departamento es requerido")
+    if departamento not in DEPARTAMENTOS_COL:
+        raise ValidationError("Departamento inválido")
+
+    municipio = data.get("municipio", "")
+    if not municipio or not municipio.strip():
+        raise ValidationError("El municipio es requerido")
+    if len(municipio) > 100:
+        raise ValidationError("El municipio debe tener máximo 100 caracteres")
+
+    zona = data.get("zona", "")
+    if not zona:
+        raise ValidationError("La zona es requerida")
+    if zona not in VALID_ZONAS:
+        raise ValidationError("Zona inválida (debe ser 'urbana' o 'rural')")
 
 
 def _validate_sectores(data: dict) -> None:
+    """Valida que se seleccionen 1-3 sectores (compatibilidad con V2)."""
     sectores_ids = data.get('sectores', [])
 
     if not sectores_ids or not isinstance(sectores_ids, list):
@@ -58,36 +117,68 @@ def _validate_sectores(data: dict) -> None:
         raise ValidationError('IDs de sector inválidos')
 
 
-def _validate_propuesta(data: dict) -> None:
-    tipo_propuesta = data.get('tipo_propuesta', 'unificada')
+def _validate_problemas(data: dict) -> None:
+    """Valida que se seleccionen 1-3 problemas del catálogo."""
+    problema_ids = data.get("problema_ids")
+    if not problema_ids or not isinstance(problema_ids, list):
+        raise ValidationError("Debe seleccionar al menos un problema")
 
-    if tipo_propuesta == 'por_sector':
-        propuestas = data.get('propuestas', [])
-        if not propuestas or not isinstance(propuestas, list):
-            raise ValidationError('Debe enviar propuestas por sector')
-        for p in propuestas:
-            texto = p.get('propuesta', '')
-            if not texto or not texto.strip():
-                raise ValidationError('Todas las propuestas por sector son requeridas')
-            if len(texto) > 500:
-                raise ValidationError('Cada propuesta debe tener máximo 500 caracteres')
-    else:
-        propuesta = data.get('propuesta', '')
-        if not propuesta or not propuesta.strip():
-            raise ValidationError('La propuesta es requerida')
-        if len(propuesta) > 500:
-            raise ValidationError('La propuesta debe tener máximo 500 caracteres')
+    if len(problema_ids) < 1:
+        raise ValidationError("Debe seleccionar al menos un problema")
+
+    if len(problema_ids) > 3:
+        raise ValidationError("Puede seleccionar máximo 3 problemas")
+
+    # Verificar que los IDs existan y estén activos
+    ids = [int(pid) for pid in problema_ids]
+    count = ProblemaCatalogo.query.filter(
+        ProblemaCatalogo.id.in_(ids),
+        ProblemaCatalogo.activo == True,
+    ).count()
+    if count != len(ids):
+        raise ValidationError("Uno o más problemas seleccionados no son válidos")
 
 
-def _validate_optional_fields(data: dict) -> None:
-    departamento = data.get('departamento', '')
-    if departamento and departamento not in DEPARTAMENTOS_COL:
-        raise ValidationError('Departamento inválido')
+def _validate_textos(data: dict) -> None:
+    justificacion = data.get("justificacion", "")
+    if not justificacion or not justificacion.strip():
+        raise ValidationError("La justificación es requerida")
+    if len(justificacion) > 500:
+        raise ValidationError("La justificación debe tener máximo 500 caracteres")
 
-    rango_edad = data.get('rango_edad', '')
-    if rango_edad and rango_edad not in VALID_RANGOS_EDAD:
-        raise ValidationError('Rango de edad inválido')
+    propuesta = data.get("propuesta", "")
+    if not propuesta or not propuesta.strip():
+        raise ValidationError("La propuesta es requerida")
+    if len(propuesta) > 500:
+        raise ValidationError("La propuesta debe tener máximo 500 caracteres")
 
-    genero = data.get('genero', '')
-    if genero and genero not in VALID_GENEROS:
-        raise ValidationError('Género inválido')
+
+def _validate_gobernanza(data: dict) -> None:
+    """Valida actores (1-3) y beneficiarios (1-5)."""
+    actor_ids = data.get("actor_ids", [])
+    if not actor_ids or not isinstance(actor_ids, list):
+        raise ValidationError("Debe seleccionar al menos un actor")
+
+    if len(actor_ids) > 3:
+        raise ValidationError("Puede seleccionar máximo 3 actores")
+
+    if actor_ids:
+        ids = [int(aid) for aid in actor_ids]
+        count = Actor.query.filter(Actor.id.in_(ids), Actor.activo == True).count()
+        if count != len(ids):
+            raise ValidationError("Uno o más actores seleccionados no son válidos")
+
+    beneficiario_ids = data.get("beneficiario_ids", [])
+    if not beneficiario_ids or not isinstance(beneficiario_ids, list):
+        raise ValidationError("Debe seleccionar al menos un beneficiario")
+
+    if len(beneficiario_ids) > 5:
+        raise ValidationError("Puede seleccionar máximo 5 beneficiarios")
+
+    if beneficiario_ids:
+        ids = [int(bid) for bid in beneficiario_ids]
+        count = Beneficiario.query.filter(
+            Beneficiario.id.in_(ids), Beneficiario.activo == True
+        ).count()
+        if count != len(ids):
+            raise ValidationError("Uno o más beneficiarios seleccionados no son válidos")

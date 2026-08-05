@@ -1,25 +1,28 @@
 {% extends "base.html" %}
 
-{% block title %}Ecosistema Abierto - Laboratorio de Inteligencia Pública{% endblock %}
+{% block title %}Ecosistema Abierto — Laboratorio de Inteligencia Pública{% endblock %}
 
 {% block content %}
-<section class="page-header bg-primary text-white" style="background: linear-gradient(135deg, var(--colombian-navy) 0%, #0f172a 100%);">
+<section class="hero" style="padding: var(--space-3xl) 0;">
     <div class="container">
-        <h1 class="display-5 fw-bold mb-2">Ecosistema Abierto</h1>
-        <p class="lead mb-0 opacity-90">Conecta tu organización con el Ecosistema Nacional de Inteligencia Pública</p>
+        <div class="badge badge-primary mb-3">Ecosistema Abierto</div>
+        <h1 class="display-lg text-white mb-3">Ecosistema Abierto</h1>
+        <p class="body-lg text-white-50" style="max-width: 600px;">
+            Conecta tu organización con el Ecosistema Nacional de Inteligencia Pública
+        </p>
     </div>
 </section>
 
-<section class="py-5">
+<section class="section">
     <div class="container">
-        <div class="section-header mb-5">
-            <span class="section-badge"><i class="bi bi-diagram-3"></i> Red de integración</span>
-            <h2 class="section-title">Organizaciones conectadas</h2>
-            <p class="section-subtitle">Ministerios, gobernaciones, alcaldías, universidades y centros de pensamiento</p>
+        <div class="section-header mb-5 animate-on-scroll">
+            <div class="overline"><i class="bi bi-diagram-3 me-1"></i> Red de integración</div>
+            <h2 class="display-md">Organizaciones conectadas</h2>
+            <p>Ministerios, gobernaciones, alcaldías, universidades y centros de pensamiento</p>
         </div>
 
         <div class="row g-4">
-            {% for partner in [
+            {% set partners = [
                 {'nombre': 'Ministerio TIC', 'sigla': 'Mintic', 'tipo': 'Ministerio', 'desc': 'Digitalización y gobierno digital.', 'icono': 'laptop', 'color': '#2563eb', 'estado': 'Disponible'},
                 {'nombre': 'DNP', 'sigla': 'DNP', 'tipo': 'Planeación', 'desc': 'Armonización con el Sistema Nacional de Planeación.', 'icono': 'diagram-3', 'color': '#7c3aed', 'estado': 'Disponible'},
                 {'nombre': 'Gobernación Antioquia', 'sigla': '', 'tipo': 'Gobernación', 'desc': 'Portal territorial de participación con SRIE.', 'icono': 'building', 'color': '#10b981', 'estado': 'Piloto'},
@@ -27,17 +30,18 @@
                 {'nombre': 'PNUD Colombia', 'sigla': 'PNUD', 'tipo': 'Cooperación', 'desc': 'Monitoreo de ODS con inteligencia pública.', 'icono': 'globe2', 'color': '#06b6d4', 'estado': 'Potencial'},
                 {'nombre': 'Alcaldía Medellín', 'sigla': '', 'tipo': 'Alcaldía', 'desc': 'Observatorio local de participación ciudadana.', 'icono': 'geo-alt', 'color': '#ec4899', 'estado': 'Piloto'},
             ] %}
-            <div class="col-md-6 col-lg-4">
-                <div class="partner-card">
-                    <div class="partner-top">
-                        <div class="partner-icon" style="background: {{ partner.color }}15; color: {{ partner.color }};">
+            {% for partner in partners %}
+            <div class="col-md-6 col-lg-4 animate-on-scroll">
+                <div class="card-premium h-100">
+                    <div class="d-flex justify-content-between align-items-start mb-3">
+                        <div style="width: 48px; height: 48px; border-radius: 14px; background: {{ partner.color }}15; color: {{ partner.color }}; display: flex; align-items: center; justify-content: center; font-size: 22px;">
                             <i class="bi bi-{{ partner.icono }}"></i>
                         </div>
-                        <span class="partner-status status-{{ partner.estado|lower }}">{{ partner.estado }}</span>
+                        <span class="badge {% if partner.estado == 'Disponible' %}bg-success{% elif partner.estado == 'Piloto' %}bg-primary{% else %}bg-warning text-dark{% endif %}" style="font-size: 0.65rem;">{{ partner.estado }}</span>
                     </div>
-                    <h5 class="fw-bold">{{ partner.nombre }}</h5>
-                    <p class="text-secondary small">{{ partner.desc }}</p>
-                    <span class="badge bg-light text-dark">{{ partner.tipo }}</span>
+                    <h5 class="fw-bold mb-2">{{ partner.nombre }}</h5>
+                    <p class="text-muted-2 body-sm mb-3">{{ partner.desc }}</p>
+                    <span class="badge" style="background: var(--surface-2); color: var(--text-2); font-size: 0.7rem;">{{ partner.tipo }}</span>
                 </div>
             </div>
             {% endfor %}
@@ -45,35 +49,41 @@
     </div>
 </section>
 
-<section class="py-5 bg-light">
+<section class="section section-alt">
     <div class="container">
-        <div class="section-header mb-5">
-            <span class="section-badge"><i class="bi bi-link-45deg"></i> Conectividad</span>
-            <h2 class="section-title">Formas de integración</h2>
+        <div class="section-header mb-5 animate-on-scroll">
+            <div class="overline"><i class="bi bi-link-45deg me-1"></i> Conectividad</div>
+            <h2 class="display-md">Formas de integración</h2>
         </div>
 
         <div class="row g-4">
-            <div class="col-md-4">
-                <div class="integration-type-card text-center p-4">
-                    <div class="type-icon" style="background: #dbeafe; color: #2563eb;"><i class="bi bi-code-slash"></i></div>
-                    <h5 class="fw-bold mt-3">API REST</h5>
-                    <p class="text-secondary small">Accede a todos los datos del ecosistema mediante nuestra API versionada con autenticación por tokens.</p>
-                    <a href="/api/docs" class="btn btn-outline-primary btn-sm">Ver documentación</a>
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card-premium text-center h-100">
+                    <div style="width: 60px; height: 60px; border-radius: 16px; background: #dbeafe; color: #2563eb; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto;">
+                        <i class="bi bi-code-slash"></i>
+                    </div>
+                    <h5 class="fw-bold mt-4 mb-2">API REST</h5>
+                    <p class="text-muted-2 body-sm mb-3">Accede a todos los datos del ecosistema mediante nuestra API versionada con autenticación por tokens.</p>
+                    <a href="{{ url_for('api_v1.api_root') }}" class="btn btn-outline-primary btn-sm">Ver documentación</a>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="integration-type-card text-center p-4">
-                    <div class="type-icon" style="background: #d1fae5; color: #059669;"><i class="bi bi-webhook"></i></div>
-                    <h5 class="fw-bold mt-3">Webhooks</h5>
-                    <p class="text-secondary small">Recibe notificaciones en tiempo real cuando ocurren eventos: nuevas participaciones, clasificaciones SRIE, alertas.</p>
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card-premium text-center h-100">
+                    <div style="width: 60px; height: 60px; border-radius: 16px; background: #d1fae5; color: #059669; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto;">
+                        <i class="bi bi-webhook"></i>
+                    </div>
+                    <h5 class="fw-bold mt-4 mb-2">Webhooks</h5>
+                    <p class="text-muted-2 body-sm mb-3">Recibe notificaciones en tiempo real cuando ocurren eventos: nuevas participaciones, clasificaciones SRIE, alertas.</p>
                     <button class="btn btn-outline-success btn-sm" onclick="mostrarWebhooks()">Configurar webhooks</button>
                 </div>
             </div>
-            <div class="col-md-4">
-                <div class="integration-type-card text-center p-4">
-                    <div class="type-icon" style="background: #fef3c7; color: #d97706;"><i class="bi bi-box-arrow-in-down"></i></div>
-                    <h5 class="fw-bold mt-3">Widgets Embebidos</h5>
-                    <p class="text-secondary small">Integra formularios de participación, mapas de calor y dashboards directamente en tu sitio web con un snippet.</p>
+            <div class="col-md-4 animate-on-scroll">
+                <div class="card-premium text-center h-100">
+                    <div style="width: 60px; height: 60px; border-radius: 16px; background: #fef3c7; color: #d97706; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto;">
+                        <i class="bi bi-box-arrow-in-down"></i>
+                    </div>
+                    <h5 class="fw-bold mt-4 mb-2">Widgets Embebidos</h5>
+                    <p class="text-muted-2 body-sm mb-3">Integra formularios de participación, mapas de calor y dashboards directamente en tu sitio web con un snippet.</p>
                     <span class="badge bg-warning text-dark">Próximamente</span>
                 </div>
             </div>
@@ -81,46 +91,46 @@
     </div>
 </section>
 
-<section class="py-5" id="webhooks-section" style="display: none;">
+<section class="section" id="webhooks-section" style="display: none;">
     <div class="container">
-        <div class="section-header mb-4">
-            <span class="section-badge"><i class="bi bi-webhook"></i> Tiempo real</span>
-            <h2 class="section-title">Webhooks</h2>
+        <div class="section-header mb-4 animate-on-scroll">
+            <div class="overline"><i class="bi bi-webhook me-1"></i> Tiempo real</div>
+            <h2 class="display-md">Webhooks</h2>
         </div>
-        <div class="card border-0 shadow-sm">
-            <div class="card-body p-4">
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Nombre</label>
-                    <input type="text" class="form-control" id="whNombre" placeholder="Mi integración">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">URL</label>
-                    <input type="url" class="form-control" id="whUrl" placeholder="https://miapp.com/webhook">
-                </div>
-                <div class="mb-3">
-                    <label class="form-label fw-bold">Evento</label>
-                    <select class="form-select" id="whEvento">
-                        <option value="participacion.nueva">Nueva participación</option>
-                        <option value="participacion.clasificada">Participación clasificada por SRIE</option>
-                        <option value="alerta.gap">Alerta de gap detectado</option>
-                    </select>
-                </div>
-                <button class="btn btn-primary" onclick="crearWebhook()"><i class="bi bi-plus-lg me-1"></i>Crear webhook</button>
-                <hr>
-                <h6 class="fw-bold">Webhooks activos</h6>
-                <div id="whList"><p class="text-muted small">No hay webhooks configurados.</p></div>
+        <div class="card-elevated p-4">
+            <div class="mb-3">
+                <label class="form-label fw-bold">Nombre</label>
+                <input type="text" class="form-control" id="whNombre" placeholder="Mi integración">
             </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">URL</label>
+                <input type="url" class="form-control" id="whUrl" placeholder="https://miapp.com/webhook">
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold">Evento</label>
+                <select class="form-select" id="whEvento">
+                    <option value="participacion.nueva">Nueva participación</option>
+                    <option value="participacion.clasificada">Participación clasificada por SRIE</option>
+                    <option value="alerta.gap">Alerta de gap detectado</option>
+                </select>
+            </div>
+            <button class="btn btn-gold" onclick="crearWebhook()"><i class="bi bi-plus-lg me-1"></i>Crear webhook</button>
+            <hr>
+            <h6 class="fw-bold">Webhooks activos</h6>
+            <div id="whList"><p class="text-muted-2 small">No hay webhooks configurados.</p></div>
         </div>
     </div>
 </section>
 
-<section class="py-5">
-    <div class="container text-center">
-        <h2 class="fw-bold">¿Quieres integrar tu organización?</h2>
-        <p class="text-muted mb-4">Completa el formulario y te contactaremos para iniciar la integración.</p>
-        <a href="mailto:info@stonelytics.tech" class="btn btn-hero-primary">
-            <i class="bi bi-envelope me-2"></i>Solicitar integración
-        </a>
+<section class="section section-dark text-center">
+    <div class="container">
+        <div class="animate-on-scroll">
+            <h2 class="display-md text-white mb-3">¿Quieres integrar tu organización?</h2>
+            <p class="text-white-50 body-lg mb-4">Completa el formulario y te contactaremos para iniciar la integración.</p>
+            <a href="mailto:daviddb@stonelytics.tech" class="btn btn-gold btn-lg">
+                <i class="bi bi-envelope me-2"></i>Solicitar integración
+            </a>
+        </div>
     </div>
 </section>
 {% endblock %}
@@ -135,32 +145,32 @@ function mostrarWebhooks() {
 
 async function cargarWebhooks() {
     try {
-        const r = await fetch('/api/webhooks');
+        const r = await fetch('/api/v1/webhooks');
         const whs = await r.json();
         const container = document.getElementById('whList');
         if (!whs.length) {
-            container.innerHTML = '<p class="text-muted small">No hay webhooks configurados.</p>';
+            container.innerHTML = '<p class="text-muted-2 small">No hay webhooks configurados.</p>';
             return;
         }
-        container.innerHTML = whs.map(w => `
-            <div class="d-flex justify-content-between align-items-center p-2 mb-1" style="background: #f8fafc; border-radius: 8px;">
-                <div><small class="fw-medium">${w.nombre}</small><br><small class="text-muted">${w.evento}</small></div>
-                <button class="btn btn-sm btn-outline-danger" onclick="eliminarWebhook(${w.id})"><i class="bi bi-trash"></i></button>
-            </div>
-        `).join('');
+        container.innerHTML = whs.map(w =>
+            '<div class="d-flex justify-content-between align-items-center p-2 mb-1" style="background: var(--surface-2); border-radius: 8px;">' +
+                '<div><small class="fw-medium">' + w.nombre + '</small><br><small class="text-muted-2">' + w.evento + '</small></div>' +
+                '<button class="btn btn-sm btn-outline-danger" onclick="eliminarWebhook(' + w.id + ')"><i class="bi bi-trash"></i></button>' +
+            '</div>'
+        ).join('');
     } catch(e) { console.error(e); }
 }
 
 async function crearWebhook() {
     const nombre = document.getElementById('whNombre').value.trim();
-    const url = document.getElementById('whUrl').value.trim();
+    const urlEl = document.getElementById('whUrl').value.trim();
     const evento = document.getElementById('whEvento').value;
-    if (!nombre || !url) { showToast('Completa todos los campos', 'Error', 'error'); return; }
+    if (!nombre || !urlEl) { showToast('Completa todos los campos', 'Error', 'error'); return; }
     try {
-        const r = await fetch('/api/webhooks', {
+        const r = await fetch('/api/v1/webhooks', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ nombre, url, evento })
+            body: JSON.stringify({ nombre: nombre, url: urlEl, evento: evento })
         });
         if (r.ok) {
             showToast('Webhook creado exitosamente', 'Éxito', 'success');
@@ -173,28 +183,8 @@ async function crearWebhook() {
 
 async function eliminarWebhook(id) {
     if (!confirm('¿Eliminar este webhook?')) return;
-    await fetch(`/api/webhooks/${id}`, { method: 'DELETE' });
+    await fetch('/api/v1/webhooks/' + id, { method: 'DELETE' });
     cargarWebhooks();
 }
 </script>
-<style>
-.partner-card {
-    background: white;
-    border-radius: 20px;
-    border: 1px solid var(--border);
-    padding: 1.5rem;
-    transition: all 0.3s ease;
-    height: 100%;
-}
-.partner-card:hover { box-shadow: var(--shadow-lg); transform: translateY(-4px); }
-.partner-top { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1rem; }
-.partner-icon { width: 48px; height: 48px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 22px; }
-.partner-status { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.3px; padding: 3px 12px; border-radius: 50px; }
-.status-disponible { background: #d1fae5; color: #059669; }
-.status-piloto { background: #dbeafe; color: #2563eb; }
-.status-potencial { background: #fef3c7; color: #d97706; }
-.integration-type-card { background: white; border-radius: 20px; border: 1px solid var(--border); height: 100%; transition: all 0.3s; }
-.integration-type-card:hover { box-shadow: var(--shadow-md); transform: translateY(-3px); }
-.type-icon { width: 60px; height: 60px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 26px; margin: 0 auto; }
-</style>
 {% endblock %}

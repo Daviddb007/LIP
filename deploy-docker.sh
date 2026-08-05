@@ -111,12 +111,8 @@ docker-compose up -d
 echo -e "\n${YELLOW}[7/7] Waiting for services to start...${NC}"
 sleep 10
 
-# Run migrations
-echo -e "\n${YELLOW}Running database migrations...${NC}"
-docker-compose exec app flask db upgrade
-
-# Seed database
-echo -e "${YELLOW}Seeding database...${NC}"
+# Initialize and seed database
+echo -e "\n${YELLOW}Initializing database...${NC}"
 docker-compose exec app flask seed
 
 # Final verification

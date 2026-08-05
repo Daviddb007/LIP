@@ -1,9 +1,10 @@
+"""Blueprint de la iniciativa."""
 from flask import Blueprint, render_template
 
-iniciativa_bp = Blueprint('iniciativa', __name__)
+iniciativa_bp = Blueprint("iniciativa", __name__)
 
 
-@iniciativa_bp.route('/iniciativa')
+@iniciativa_bp.route("/iniciativa")
 def iniciativa():
-    """Render the initiative information page."""
-    return render_template('iniciativa.html')
+    """Página sobre la iniciativa."""
+    return render_template("iniciativa.html")

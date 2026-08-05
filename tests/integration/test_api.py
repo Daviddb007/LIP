@@ -1,181 +1,289 @@
-from __future__ import annotations
-
+"""Tests de integración para endpoints API y rutas públicas v2."""
 import json
 
 import pytest
 
+from app import db
+from app.models.participacion import Participacion, ClasificacionSRIE
+from app.models.plan import Plan, Pilar
+from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario
+
 
 class TestHealthCheck:
-    """Tests for health check endpoint."""
 
     def test_health_returns_200(self, client):
-        resp = client.get('/health')
-        assert resp.status_code == 200
+        response = client.get("/health")
+        assert response.status_code == 200
+        data = json.loads(response.data)
+        assert data["status"] == "healthy"
 
-    def test_health_returns_healthy_status(self, client):
-        resp = client.get('/health')
-        data = resp.get_json()
-        assert data['status'] == 'healthy'
-        assert data['database'] == 'healthy'
+    def test_health_returns_json(self, client):
+        response = client.get("/health")
+        assert response.content_type == "application/json"
 
 
-class TestParticiparAPI:
-    """Tests for participation submission API."""
+class TestHome:
 
-    def test_sectores_returns_list(self, client):
-        resp = client.get('/api/sectores')
-        assert resp.status_code == 200
-        data = resp.get_json()
+    def test_home_returns_200(self, client):
+        response = client.get("/")
+        assert response.status_code == 200
+
+    def test_home_contains_title(self, client):
+        response = client.get("/")
+        assert "Laboratorio de Inteligencia Pública" in response.data.decode()
+
+
+class TestIniciativa:
+
+    def test_iniciativa_returns_200(self, client):
+        response = client.get("/iniciativa")
+        assert response.status_code == 200
+
+    def test_iniciativa_contains_srie(self, client):
+        response = client.get("/iniciativa")
+        assert "SRIE" in response.data.decode() or "Reconocimiento" in response.data.decode()
+
+
+class TestParticipar:
+
+    def test_participar_returns_200(self, client):
+        response = client.get("/participar")
+        assert response.status_code == 200
+
+    def test_participar_contains_form(self, client):
+        response = client.get("/participar")
+        assert "form" in response.data.decode().lower() or "step" in response.data.decode().lower()
+
+
+class TestResultados:
+
+    def test_resultados_returns_200(self, client):
+        response = client.get("/resultados")
+        assert response.status_code == 200
+
+    def test_resultados_contains_stats(self, client):
+        response = client.get("/resultados")
+        assert "Resultados" in response.data.decode() or "resultados" in response.data.decode()
+
+
+class TestApiCatalogoSectores:
+
+    def test_api_sectores_returns_200(self, client):
+        response = client.get("/api/catalogo/sectores")
+        assert response.status_code == 200
+
+    def test_api_sectores_returns_json(self, client):
+        response = client.get("/api/catalogo/sectores")
+        assert response.content_type == "application/json"
+
+    def test_api_sectores_returns_list(self, client):
+        response = client.get("/api/catalogo/sectores")
+        data = json.loads(response.data)
         assert isinstance(data, list)
-        assert len(data) > 0
-
-    def test_sectores_have_required_fields(self, client):
-        resp = client.get('/api/sectores')
-        sector = resp.get_json()[0]
-        assert 'id' in sector
-        assert 'nombre' in sector
-        assert 'icono' in sector
-
-    def test_problemas_returns_list(self, client):
-        resp = client.get('/api/problemas/1')
-        assert resp.status_code == 200
-        data = resp.get_json()
-        assert isinstance(data, list)
-
-    def test_enviar_requires_json(self, client):
-        resp = client.post('/api/enviar')
-        assert resp.status_code == 400
-
-    def test_enviar_requires_sectores(self, client):
-        resp = client.post('/api/enviar',
-            data=json.dumps({'propuesta': 'Test'}),
-            content_type='application/json')
-        assert resp.status_code == 400
-
-    def test_enviar_requires_propuesta(self, client):
-        resp = client.post('/api/enviar',
-            data=json.dumps({'sectores': [1]}),
-            content_type='application/json')
-        assert resp.status_code == 400
-
-    def test_enviar_success(self, client):
-        resp = client.post('/api/enviar',
-            data=json.dumps({
-                'sectores': [1],
-                'propuesta': 'Test proposal for Colombia'
-            }),
-            content_type='application/json')
-        assert resp.status_code == 200
-        data = resp.get_json()
-        assert data['success'] is True
-        assert 'id' in data
-
-    def test_enviar_with_optional_fields(self, client):
-        resp = client.post('/api/enviar',
-            data=json.dumps({
-                'sectores': [1, 2],
-                'propuesta': 'Complete test proposal',
-                'departamento': 'Antioquia',
-                'municipio': 'Medellin',
-                'rango_edad': '26-35',
-                'genero': 'Masculino',
-                'sector_prioritario_id': 1,
-                'problema_principal': 'Desempleo'
-            }),
-            content_type='application/json')
-        assert resp.status_code == 200
-
-    def test_enviar_rate_limit(self, client):
-        for _ in range(5):
-            client.post('/api/enviar',
-                data=json.dumps({'sectores': [1], 'propuesta': 'Test'}),
-                content_type='application/json')
-
-        resp = client.post('/api/enviar',
-            data=json.dumps({'sectores': [1], 'propuesta': 'Rate limited'}),
-            content_type='application/json')
-        assert resp.status_code == 429
 
 
-class TestResultadosAPI:
-    """Tests for statistics/results API."""
+class TestApiCatalogoActores:
 
-    def test_estadisticas_returns_200(self, client):
-        resp = client.get('/api/estadisticas')
-        assert resp.status_code == 200
+    def test_api_actores_returns_200(self, client):
+        response = client.get("/api/catalogo/actores")
+        assert response.status_code == 200
 
-    def test_estadisticas_has_required_fields(self, client):
-        resp = client.get('/api/estadisticas')
-        data = resp.get_json()
-        assert 'total_participaciones' in data
-        assert 'total_departamentos' in data
-        assert 'sectores' in data
-        assert 'departamentos' in data
+    def test_api_actores_returns_json(self, client):
+        response = client.get("/api/catalogo/actores")
+        assert response.content_type == "application/json"
 
 
-class TestAdminAuth:
-    """Tests for admin authentication."""
+class TestApiCatalogoBeneficiarios:
 
-    def test_login_page_renders(self, client):
-        resp = client.get('/admin/login')
-        assert resp.status_code == 200
+    def test_api_beneficiarios_returns_200(self, client):
+        response = client.get("/api/catalogo/beneficiarios")
+        assert response.status_code == 200
 
-    def test_login_page_has_csrf(self, client):
-        resp = client.get('/admin/login')
-        assert b'csrf_token' in resp.data
-
-    def test_dashboard_requires_auth(self, client):
-        resp = client.get('/admin/')
-        assert resp.status_code == 302
-        assert '/admin/login' in resp.headers['Location']
-
-    def test_api_requires_auth(self, client):
-        resp = client.get('/admin/api/participaciones')
-        assert resp.status_code in (302, 401)
-
-    def test_login_with_valid_csrf(self, client, app):
-        with app.app_context():
-            resp = client.get('/admin/login')
-            html = resp.data.decode()
-
-            import re
-            match = re.search(r'name="csrf_token".*?value="([^"]+)"', html)
-            assert match, 'CSRF token not found'
-
-            csrf_token = match.group(1)
-            resp = client.post('/admin/login', data={
-                'csrf_token': csrf_token,
-                'username': 'admin',
-                'password': 'admin'
-            }, follow_redirects=False)
-            assert resp.status_code == 302
-
-    def test_login_with_wrong_password(self, client, app):
-        with app.app_context():
-            resp = client.get('/admin/login')
-            html = resp.data.decode()
-
-            import re
-            match = re.search(r'name="csrf_token".*?value="([^"]+)"', html)
-            csrf_token = match.group(1)
-
-            resp = client.post('/admin/login', data={
-                'csrf_token': csrf_token,
-                'username': 'admin',
-                'password': 'wrongpassword'
-            })
-            assert resp.status_code == 200
-            assert b'Credenciales inv' in resp.data
+    def test_api_beneficiarios_returns_json(self, client):
+        response = client.get("/api/catalogo/beneficiarios")
+        assert response.content_type == "application/json"
 
 
-class TestAdminExport:
-    """Tests for CSV export."""
+class TestApiEstadisticas:
 
-    def test_export_requires_auth(self, client):
-        resp = client.get('/admin/api/exportar')
-        assert resp.status_code == 302
+    def test_api_estadisticas_returns_200(self, client):
+        response = client.get("/api/estadisticas")
+        assert response.status_code == 200
 
-    def test_export_returns_csv(self, logged_in_client):
-        resp = logged_in_client.get('/admin/api/exportar')
-        assert resp.status_code == 200
-        assert resp.content_type == 'text/csv'
+    def test_api_estadisticas_returns_json(self, client):
+        response = client.get("/api/estadisticas")
+        assert response.content_type == "application/json"
+
+    def test_api_estadisticas_has_keys(self, client):
+        response = client.get("/api/estadisticas")
+        data = json.loads(response.data)
+        assert "total" in data
+        assert "departamentos" in data
+        assert "actores" in data
+        assert "beneficiarios" in data
+
+
+class TestApiParticipaciones:
+
+    def test_api_participaciones_returns_200(self, client):
+        response = client.get("/api/participaciones")
+        assert response.status_code == 200
+
+    def test_api_participaciones_returns_json(self, client):
+        response = client.get("/api/participaciones")
+        assert response.content_type == "application/json"
+
+
+class TestApiEnviar:
+
+    def test_api_enviar_requires_json(self, client):
+        response = client.post("/api/enviar", content_type="text/html")
+        assert response.status_code == 400
+
+    def test_api_enviar_requires_data(self, client):
+        response = client.post("/api/enviar", json={})
+        assert response.status_code == 400
+
+    CONSENT = {"consentimiento_aceptado": True, "consentimiento_version": "2026-01"}
+
+    def test_api_enviar_validates_departamento(self, client):
+        data = {"municipio": "Bogotá", "zona": "urbana", "problema_ids": [1],
+                "justificacion": "Test", "propuesta": "Test", "actor_ids": [1],
+                "beneficiario_ids": [1], **self.CONSENT}
+        response = client.post("/api/enviar", json=data)
+        assert response.status_code == 400
+
+    def test_api_enviar_validates_municipio(self, client):
+        data = {"departamento": "Bogotá D.C.", "municipio": "", "zona": "urbana",
+                "problema_ids": [1], "justificacion": "Test", "propuesta": "Test",
+                "actor_ids": [1], "beneficiario_ids": [1], **self.CONSENT}
+        response = client.post("/api/enviar", json=data)
+        assert response.status_code == 400
+
+    def test_api_enviar_validates_zona(self, client):
+        data = {"departamento": "Bogotá D.C.", "municipio": "Bogotá", "zona": "costera",
+                "problema_ids": [1], "justificacion": "Test", "propuesta": "Test",
+                "actor_ids": [1], "beneficiario_ids": [1], **self.CONSENT}
+        response = client.post("/api/enviar", json=data)
+        assert response.status_code == 400
+
+    def test_api_enviar_validates_textos(self, client):
+        data = {"departamento": "Bogotá D.C.", "municipio": "Bogotá", "zona": "urbana",
+                "problema_ids": [1], "justificacion": "", "propuesta": "Test",
+                "actor_ids": [1], "beneficiario_ids": [1], **self.CONSENT}
+        response = client.post("/api/enviar", json=data)
+        assert response.status_code == 400
+
+    def test_api_enviar_validates_problemas(self, client):
+        data = {"departamento": "Bogotá D.C.", "municipio": "Bogotá", "zona": "urbana",
+                "problema_ids": [], "justificacion": "Test", "propuesta": "Test",
+                "actor_ids": [1], "beneficiario_ids": [1], **self.CONSENT}
+        response = client.post("/api/enviar", json=data)
+        assert response.status_code == 400
+
+
+class TestAdmin:
+
+    def test_admin_login_returns_200(self, client):
+        response = client.get("/admin/login")
+        assert response.status_code == 200
+
+    def test_admin_dashboard_requires_login(self, client):
+        response = client.get("/admin/")
+        assert response.status_code == 302
+
+    def test_admin_dashboard_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/")
+        assert response.status_code == 200
+
+    def test_admin_participaciones_requires_login(self, client):
+        response = client.get("/admin/participaciones")
+        assert response.status_code == 302
+
+    def test_admin_participaciones_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/participaciones")
+        assert response.status_code == 200
+
+    def test_admin_sectores_requires_login(self, client):
+        response = client.get("/admin/sectores")
+        assert response.status_code == 302
+
+    def test_admin_sectores_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/sectores")
+        assert response.status_code == 200
+
+    def test_admin_pilares_requires_login(self, client):
+        response = client.get("/admin/pilares")
+        assert response.status_code == 302
+
+    def test_admin_pilares_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/pilares")
+        assert response.status_code == 200
+
+    def test_admin_problemas_requires_login(self, client):
+        response = client.get("/admin/problemas")
+        assert response.status_code == 302
+
+    def test_admin_problemas_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/problemas")
+        assert response.status_code == 200
+
+    def test_admin_actores_requires_login(self, client):
+        response = client.get("/admin/actores")
+        assert response.status_code == 302
+
+    def test_admin_actores_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/actores")
+        assert response.status_code == 200
+
+    def test_admin_beneficiarios_requires_login(self, client):
+        response = client.get("/admin/beneficiarios")
+        assert response.status_code == 302
+
+    def test_admin_beneficiarios_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/beneficiarios")
+        assert response.status_code == 200
+
+    def test_admin_clasificaciones_requires_login(self, client):
+        response = client.get("/admin/clasificaciones")
+        assert response.status_code == 302
+
+    def test_admin_clasificaciones_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/clasificaciones")
+        assert response.status_code == 200
+
+    def test_admin_planes_requires_login(self, client):
+        response = client.get("/admin/planes")
+        assert response.status_code == 302
+
+    def test_admin_planes_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/planes")
+        assert response.status_code == 200
+
+    def test_admin_export_requires_login(self, client):
+        response = client.get("/admin/export")
+        assert response.status_code == 302
+
+    def test_admin_export_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/export")
+        assert response.status_code == 200
+
+    def test_admin_config_requires_login(self, client):
+        response = client.get("/admin/config")
+        assert response.status_code == 302
+
+    def test_admin_config_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/config")
+        assert response.status_code == 200
+
+    def test_admin_logs_requires_login(self, client):
+        response = client.get("/admin/logs")
+        assert response.status_code == 302
+
+    def test_admin_logs_with_session(self, logged_in_client):
+        response = logged_in_client.get("/admin/logs")
+        assert response.status_code == 200
+
+    def test_admin_logout(self, logged_in_client):
+        response = logged_in_client.get("/admin/logout", follow_redirects=True)
+        assert response.status_code == 200

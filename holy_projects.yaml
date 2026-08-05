@@ -1,0 +1,145 @@
+projects:
+  - nombre: lip
+    root: .
+    watch:
+      - app/
+      - tests/
+    ignore:
+      - .git
+      - __pycache__
+      - .venv
+      - venv
+      - node_modules
+      - "*.pyc"
+      - .holy
+      - .pytest_cache
+      - instance
+      - nginx
+      - logs
+      - htmlcov
+    modo_default: semi
+    agent:
+      modelo_analisis: deepseek-r1:8b
+      modelo_codigo: qwen2.5-coder:7b
+      modo: dual
+    comando_tests: "venv/Scripts/python.exe -m pytest tests/ -v --tb=short"
+    governance:
+      max_intentos: 3
+      classification_rules:
+        - patron: "app/models/**"
+          categoria: FUNDACIONAL
+          destino: directorsboard
+        - patron: "app/__init__.py"
+          categoria: FUNDACIONAL
+          destino: directorsboard
+        - patron: "config.py"
+          categoria: FUNDACIONAL
+          destino: directorsboard
+        - patron: ".env"
+          categoria: FUNDACIONAL
+          destino: directorsboard
+        - patron: "app/routes/api_v1.py"
+          categoria: ESTRATEGICO
+          destino: repairman
+        - patron: "app/services/srie/**"
+          categoria: ESTRATEGICO
+          destino: repairman
+        - patron: "app/routes/**"
+          categoria: ESTRATEGICO
+          destino: repairman
+        - patron: "app/services/**"
+          categoria: ESTRATEGICO
+          destino: repairman
+        - patron: "app/templates/**"
+          categoria: TACTICO
+          destino: repairman
+        - patron: "app/static/**"
+          categoria: TACTICO
+          destino: repairman
+        - patron: "app/cli/**"
+          categoria: TACTICO
+          destino: repairman
+        - patron: "tests/**"
+          categoria: TACTICO
+          destino: repairman
+        - patron: "app/routes/legal.py"
+          categoria: FUNDACIONAL
+          destino: directorsboard
+        - patron: "app/templates/legal/**"
+          categoria: ESTRATEGICO
+          destino: repairman
+        - patron: "app/services/consentimiento*"
+          categoria: FUNDACIONAL
+          destino: directorsboard
+        - patron: "**"
+          categoria: ESTRATEGICO
+          destino: repairman
+      pines:
+        - codigo: "P-01"
+          regla: "No modificar modelos de BD sin migración y aprobación"
+          area: "app/models/"
+          severity: critico
+        - codigo: "P-02"
+          regla: "No alterar config.py sin revisión — configuración central"
+          area: "config.py"
+          severity: alto
+        - codigo: "P-03"
+          regla: "No modificar app factory (app/__init__.py) sin aprobación del directorio"
+          area: "app/__init__.py"
+          severity: critico
+        - codigo: "P-04"
+          regla: "No romper el motor SRIE de clasificación"
+          area: "app/services/srie/"
+          severity: alto
+        - codigo: "P-05"
+          regla: "No romper el contrato de la API v1"
+          area: "app/routes/api_v1.py"
+          severity: alto
+        - codigo: "P-06"
+          regla: "No romper la UI pública de participación"
+          area: "app/templates/"
+          severity: medio
+        - codigo: "P-07"
+          regla: "No eliminar tests existentes, añadir para nueva funcionalidad"
+          area: "tests/"
+          severity: medio
+        - codigo: "P-08"
+          regla: "No hardcodear secrets"
+          area: ".env"
+          severity: critico
+        - codigo: "P-09"
+          regla: "No modificar app/errors.py sin revisión legal y de integridad — hub de errores (fan_in=6)"
+          area: "app/errors.py"
+          severity: alto
+        - codigo: "P-10"
+          regla: "No modificar app/decorators.py sin revisión de gobernanza — hub transversal (fan_in=4)"
+          area: "app/decorators.py"
+          severity: alto
+        - codigo: "P-11"
+          regla: "No alterar consentimiento, páginas legales o modelo de datos personales sin aprobación compliance"
+          area: "app/models/participacion.py, app/routes/legal.py, app/templates/legal/"
+          severity: critico
+      quality_phases:
+        - nombre: "desarrollo"
+          checks:
+            - descripcion: "tests unitarios e integración pasan"
+              aprobado: true
+          destino_si_falla: "ensamblador"
+        - nombre: "produccion"
+          checks:
+            - descripcion: "sin secrets hardcodeados"
+              aprobado: false
+          destino_si_falla: "ensamblador"
+      approval_areas:
+        - nombre: "compliance"
+          checks:
+            - descripcion: "protección de datos personales verificada (Ley 1581, consentimiento, ARCO)"
+              aprobado: true
+        - nombre: "calidad"
+          checks:
+            - descripcion: "todos los tests pasan (157/157)"
+              aprobado: true
+        - nombre: "rollback"
+          checks:
+            - descripcion: "plan de reversión documentado"
+              aprobado: false

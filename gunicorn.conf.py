@@ -1,41 +1,41 @@
-import os
+"""Configuración de Gunicorn para producción.
+
+Referencia: https://docs.gunicorn.org/en/stable/settings.html
+"""
 import multiprocessing
+import os
 
-# Server socket
+
+# Puerto de escucha
 bind = f"0.0.0.0:{os.environ.get('PORT', '8000')}"
-backlog = 2048
 
-# Worker processes
-workers = multiprocessing.cpu_count() * 2 + 1
-worker_class = 'sync'
+# Workers
+cpu_count = multiprocessing.cpu_count()
+workers = cpu_count * 2 + 1
+worker_class = "sync"
 worker_connections = 1000
+
+# Timeouts
 timeout = 120
+graceful_timeout = 30
 keepalive = 5
 
-# Restart workers after this many requests (prevents memory leaks)
+# Reinicio de workers (previene memory leaks)
 max_requests = 1000
 max_requests_jitter = 50
 
 # Logging
-accesslog = '-'
-errorlog = '-'
-loglevel = os.environ.get('LOG_LEVEL', 'info')
+accesslog = "-"
+errorlog = "-"
+loglevel = os.environ.get("LOG_LEVEL", "info")
 
-# Process naming
-proc_name = 'construyamos_colombia'
-
-# Server mechanics
+# Preload de la app (comparte memoria entre workers)
 preload_app = True
-daemon = False
-pidfile = None
-umask = 0o022
-tmp_upload_dir = None
 
-# SSL (uncomment if not using reverse proxy)
-# certfile = '/path/to/cert.pem'
-# keyfile = '/path/to/key.pem'
-
-# Security
+# Seguridad
 limit_request_line = 8190
 limit_request_fields = 100
 limit_request_field_size = 8190
+
+# Naming
+proc_name = "construyamos_v3"
