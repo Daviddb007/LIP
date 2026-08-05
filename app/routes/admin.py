@@ -10,6 +10,8 @@ import io
 import json
 from datetime import datetime, timedelta, timezone
 
+from werkzeug.security import check_password_hash
+
 from flask import (
     Blueprint, render_template, request, session, redirect,
     url_for, flash, jsonify, Response, current_app,
@@ -42,7 +44,7 @@ def login():
         valid_user = current_app.config.get("ADMIN_USER", "admin")
         valid_pass = current_app.config.get("ADMIN_PASS", "admin")
 
-        if username == valid_user and password == valid_pass:
+        if username == valid_user and check_password_hash(valid_pass, password):
             session.permanent = True
             session["admin"] = True
             session["admin_user"] = username
