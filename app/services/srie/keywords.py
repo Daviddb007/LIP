@@ -30,7 +30,7 @@ KEYWORDS_PILARES: dict[str, list[tuple[str, float]]] = {
         ("renovable", 0.8), ("tecnologia", 0.6), ("internet", 0.5),
         ("digital", 0.5), ("fibra optica", 0.7), ("banda ancha", 0.6),
         ("panel", 0.6), ("transmision", 0.7), ("subestacion", 0.8),
-        ("lluminacion", 0.9), ("alumbrado", 0.7),
+        ("iluminacion", 0.9), ("alumbrado", 0.7),
     ],
     # Defender la Patria (orden 3) - defensa, fronteras
     "defender-la-patria": [
@@ -44,7 +44,7 @@ KEYWORDS_PILARES: dict[str, list[tuple[str, float]]] = {
         ("coherencia", 1.0), ("meritocracia", 0.9), ("competencia", 0.7),
         ("profesionalismo", 0.8), ("tecnico", 0.6), ("ministro", 0.7),
         ("funcionario", 0.6), ("gestion", 0.5), ("planeacion", 0.6),
-        ("efficiencia", 0.8), ("ahorro", 0.5), ("gasto publico", 0.7),
+        ("eficiencia", 0.8), ("ahorro", 0.5), ("gasto publico", 0.7),
     ],
     # Seguridad (orden 5)
     "seguridad": [
@@ -79,7 +79,7 @@ KEYWORDS_PILARES: dict[str, list[tuple[str, float]]] = {
         ("cirugia", 0.7), ("especialista", 0.7), ("cita", 0.6),
         ("lista de espera", 0.8), ("consulta", 0.6), ("atencion", 0.6),
         ("seguro", 0.5), ("afiliacion", 0.6), ("contributivo", 0.6),
-        ("subsidado", 0.6), ("sistema de salud", 0.8), ("pyp", 0.5),
+        ("subsidiado", 0.6), ("sistema de salud", 0.8), ("pyp", 0.5),
         ("vacuna", 0.7), ("dengue", 0.6), ("malaria", 0.6),
         ("enfermedad", 0.7), ("cancer", 0.6), ("diabetes", 0.6),
         ("hipertension", 0.6), ("mental", 0.7), ("psicologia", 0.7),
@@ -92,7 +92,7 @@ KEYWORDS_PILARES: dict[str, list[tuple[str, float]]] = {
         ("campesino", 0.9), ("finca", 0.8), ("cosecha", 0.8), ("siembra", 0.8),
         ("tierra", 0.8), ("reforma", 0.7), ("predio", 0.7), ("parcela", 0.7),
         ("ganaderia", 0.8), ("ganado", 0.7), ("leche", 0.6),
-        ("cafe", 0.7), ("ca panela", 0.6), ("cacao", 0.7), ("arroz", 0.7),
+        ("cafe", 0.7),         ("panela", 0.6), ("cacao", 0.7), ("arroz", 0.7),
         ("maiz", 0.6), ("papa", 0.6), ("yuca", 0.6), ("platano", 0.6),
         ("fruta", 0.6), ("hortaliza", 0.6), ("apicultura", 0.7),
         ("rural", 0.7), ("vereda", 0.7), ("corregimiento", 0.6),
@@ -111,7 +111,7 @@ KEYWORDS_PILARES: dict[str, list[tuple[str, float]]] = {
         ("trabajo domestico", 0.7), ("cuidado", 0.6), ("maternidad", 0.7),
         ("reproductivo", 0.6), ("salud sexual", 0.7), ("planificacion", 0.6),
         ("aborto", 0.5), ("acoso", 0.8), ("hostigamiento", 0.8),
-        ("discriminacion", 0.7), ("techo proprio", 0.6),
+        ("discriminacion", 0.7),         ("techo propio", 0.6),
     ],
     # Minero-Energético (orden 10)
     "minero-energetico": [
@@ -131,7 +131,7 @@ KEYWORDS_PILARES: dict[str, list[tuple[str, float]]] = {
         ("educacion", 1.0), ("escolar", 0.9), ("colegio", 0.9), ("universidad", 0.8),
         ("docente", 0.9), ("profesor", 0.9), ("estudiante", 0.8), ("alumno", 0.8),
         ("enseñanza", 0.9), ("aprendizaje", 0.8), ("aula", 0.8), ("matricula", 0.7),
-        ("beca", 0.7), ("pensión", 0.6), ("calidad", 0.6), ("cobertura", 0.6),
+        ("beca", 0.7), ("pension", 0.6), ("calidad", 0.6), ("cobertura", 0.6),
         ("desercion", 0.8), ("repetencia", 0.7), ("analfabetismo", 0.9),
         ("biblioteca", 0.7), ("laboratorio", 0.7), ("tecnico", 0.6),
         ("tecnologico", 0.6), ("sena", 0.7), ("formacion", 0.6),
@@ -143,10 +143,10 @@ KEYWORDS_PILARES: dict[str, list[tuple[str, float]]] = {
     "cultura": [
         ("cultura", 1.0), ("artistico", 0.9), ("musica", 0.8), ("teatro", 0.8),
         ("danza", 0.7), ("pintura", 0.7), ("escultura", 0.7), ("literatura", 0.7),
-        ("cine", 0.7), ("patrimonio", 0.8), ("tradiccion", 0.7), ("folclor", 0.8),
+        ("cine", 0.7), ("patrimonio", 0.8),         ("tradicion", 0.7), ("folclor", 0.8),
         ("identidad", 0.6), ("creatividad", 0.7), ("industria cultural", 0.9),
         ("artesania", 0.8), ("turismo", 0.6), ("fiesta", 0.5),
-        ("carnaval", 0.6), ("colombiamarca", 0.5),
+        ("carnaval", 0.6),         ("marca colombia", 0.5),
     ],
     # Proteger el Medioambiente (orden 13)
     "proteger-el-medioambiente": [
@@ -198,7 +198,7 @@ KEYWORDS_PILARES: dict[str, list[tuple[str, float]]] = {
         ("adiccion", 0.7), ("consumo", 0.5), ("prevencion", 0.6),
         ("deporte", 0.6), ("recreacion", 0.6), ("cultura", 0.5),
         ("paz", 0.5), ("ciudadania", 0.6), ("liderazgo", 0.6),
-        ("voluntariado", 0.6), ("pensión", 0.5), ("beca", 0.6),
+        ("voluntariado", 0.6), ("pension", 0.5), ("beca", 0.6),
         ("empleo", 0.5), ("desempleo", 0.6), ("informalidad", 0.5),
     ],
 }
