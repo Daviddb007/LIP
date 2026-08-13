@@ -208,14 +208,14 @@ Laboratorio de simulación para investigadores y tomadores de decisiones.
 
 **Objetivo:** Incorporar analítica e inteligencia artificial al ecosistema.
 
-- [ ] Nube de palabras
-- [ ] Clustering
-- [ ] Embeddings
-- [ ] Análisis semántico
-- [ ] Detección de tendencias
-- [ ] Análisis territorial
-- [ ] Comparaciones
-- [ ] Predicciones
+- [x] Nube de palabras
+- [x] Clustering (semántico por embeddings + coseno, degradación a hashing local)
+- [x] Embeddings (LLM si está configurado; fallback local sin dependencias ML)
+- [x] Análisis semántico (tema dominante por mes en tendencias)
+- [x] Detección de tendencias
+- [x] Análisis territorial
+- [x] Comparaciones
+- [x] Predicciones
 
 ### Producto esperado
 

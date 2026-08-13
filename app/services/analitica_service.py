@@ -5,6 +5,7 @@ mensuales, análisis territorial y predicciones de participación.
 """
 from __future__ import annotations
 
+import math
 import re
 from collections import Counter, defaultdict
 from typing import Any
@@ -76,8 +77,9 @@ REGIONES: dict[str, list[str]] = {
 def obtener_analitica() -> dict[str, Any]:
     """Genera el reporte completo de analítica con todos los componentes."""
     palabras = _extraer_palabras()
-    clusters = _generar_clusters()
-    tendencias = _tendencia_mensual()
+    asignacion, textos_por_id = _asignacion_semantica()
+    clusters = _clusters_desde(asignacion, textos_por_id)
+    tendencias = _tendencia_mensual(asignacion)
     territorio = _analisis_territorial()
     comparativas = _comparativas_sector()
     predicciones = _predicciones()
@@ -117,41 +119,81 @@ def _extraer_palabras() -> list[dict]:
     ]
 
 
-def _generar_clusters() -> list[dict]:
-    """Agrupa propuestas en clusters semánticos según palabras clave."""
-    propuestas = Participacion.query.with_entities(Participacion.propuesta).all()
+UMBRAL_COSENO: float = 0.05
 
-    cluster_counts: dict[str, dict] = defaultdict(lambda: {'participaciones': 0, 'palabras_encontradas': set()})
 
-    for (propuesta,) in propuestas:
-        if not propuesta:
-            continue
-        texto = propuesta.lower()
+def _asignacion_semantica() -> tuple[dict[int, tuple[str, float]], dict[int, str]]:
+    """Asigna cada propuesta al cluster semántico más cercano.
 
-        for cluster_nombre, keywords in CLUSTER_KEYWORDS.items():
-            for kw in keywords:
-                if kw in texto:
-                    cluster_counts[cluster_nombre]['participaciones'] += 1
-                    cluster_counts[cluster_nombre]['palabras_encontradas'].add(kw)
-                    break
+    Usa embeddings (LLM si está configurado; hashing local como degradación)
+    y similitud coseno contra los centroides de los clusters declarados.
+    Devuelve (asignacion, textos_por_id): asignacion es {id: (cluster, coseno)}.
+    """
+    from app.services import llm_client
 
-    result = []
-    for nombre, datos in sorted(
-        cluster_counts.items(),
-        key=lambda x: x[1]['participaciones'],
-        reverse=True,
-    ):
+    rows = Participacion.query.with_entities(Participacion.id, Participacion.propuesta).all()
+    items = [(pid, texto) for pid, texto in rows if texto]
+    if not items:
+        return {}, {}
+
+    textos_por_id = dict(items)
+    textos = [t for _, t in items]
+    vectores = llm_client.hacer_embeddings(textos)
+
+    nombres = list(CLUSTER_KEYWORDS)
+    centroides = [_centroide_cluster(nombre) for nombre in nombres]
+
+    asignacion: dict[int, tuple[str, float]] = {}
+    for (pid, _texto), vec in zip(items, vectores):
+        puntajes = [(nombre, llm_client.coseno(vec, centro)) for nombre, centro in zip(nombres, centroides)]
+        nombre, cos = max(puntajes, key=lambda x: x[1])
+        if cos >= UMBRAL_COSENO:
+            asignacion[pid] = (nombre, round(cos, 3))
+
+    return asignacion, textos_por_id
+
+
+def _centroide_cluster(nombre: str) -> list[float]:
+    """Vector normalizado promedio de los embeddings de las keywords del cluster."""
+    from app.services import llm_client
+
+    keywords = CLUSTER_KEYWORDS[nombre]
+    vectores = llm_client.hacer_embeddings(keywords)
+    if not vectores:
+        return []
+    dim = len(vectores[0])
+    centro = [sum(v[d] for v in vectores) / len(vectores) for d in range(dim)]
+    norma = math.sqrt(sum(x * x for x in centro))
+    if norma == 0.0:
+        return centro
+    return [x / norma for x in centro]
+
+
+def _clusters_desde(asignacion: dict[int, tuple[str, float]], textos_por_id: dict[int, str]) -> list[dict]:
+    """Resume la asignación semántica en clusters con keywords representativas."""
+    from app.services import llm_client
+
+    agrupado: dict[str, list[str]] = defaultdict(list)
+    for pid, (nombre, _cos) in asignacion.items():
+        agrupado[nombre].append(textos_por_id.get(pid, ""))
+
+    result: list[dict] = []
+    for nombre, textos in sorted(agrupado.items(), key=lambda x: len(x[1]), reverse=True):
+        palabras = llm_client.keywords_fallback(" ".join(textos), 5)
         result.append({
             'nombre': nombre,
-            'participaciones': datos['participaciones'],
-            'palabras_clave': list(datos['palabras_encontradas'])[:5],
+            'participaciones': len(textos),
+            'palabras_clave': palabras,
         })
-
     return result
 
 
-def _tendencia_mensual() -> list[dict]:
-    """Calcula la tendencia mensual de participaciones."""
+def _tendencia_mensual(asignacion: dict[int, tuple[str, float]] | None = None) -> list[dict]:
+    """Tendencia mensual de participaciones, con el tema dominante por mes.
+
+    Si se pasa la asignación semántica, cada mes incluye el cluster con más
+    participaciones y su participación porcentual sobre el total del mes.
+    """
     date_col = date_trunc('month', Participacion.created_at)
     rows = (
         db.session.query(date_col, func.count(Participacion.id))
@@ -159,7 +201,28 @@ def _tendencia_mensual() -> list[dict]:
         .order_by(date_col)
         .all()
     )
-    return [{'mes': str(mes)[:7], 'participaciones': total} for mes, total in rows]
+    base = [{'mes': str(mes)[:7], 'participaciones': total} for mes, total in rows]
+    if not asignacion:
+        return base
+
+    contador_mes: dict[str, Counter] = defaultdict(Counter)
+    rows_ids = db.session.query(date_col, Participacion.id).all()
+    for mes, pid in rows_ids:
+        dato = asignacion.get(pid)
+        if dato:
+            contador_mes[str(mes)[:7]][dato[0]] += 1
+
+    for item in base:
+        contador = contador_mes.get(item['mes'])
+        if not contador:
+            continue
+        cluster, conteo = contador.most_common(1)[0]
+        item['tema_dominante'] = cluster
+        if item['participaciones'] > 0:
+            item['participacion_tema'] = round(conteo / item['participaciones'] * 100)
+        else:
+            item['participacion_tema'] = 0
+    return base
 
 
 def _analisis_territorial() -> list[dict]:
