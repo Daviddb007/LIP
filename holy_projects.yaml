@@ -71,6 +71,9 @@ projects:
         - patron: "app/services/consentimiento*"
           categoria: FUNDACIONAL
           destino: directorsboard
+        - patron: "worker.py"
+          categoria: ESTRATEGICO
+          destino: repairman
         - patron: "**"
           categoria: ESTRATEGICO
           destino: repairman
@@ -119,6 +122,10 @@ projects:
           regla: "No alterar consentimiento, páginas legales o modelo de datos personales sin aprobación compliance"
           area: "app/models/participacion.py, app/routes/legal.py, app/templates/legal/"
           severity: critico
+        - codigo: "P-12"
+          regla: "No romper el pipeline de grupos focales (org->sesión->audio->transcripción->grafo) ni la reserva de audios (almacenamiento local, whisper local) sin aprobación de módulo"
+          area: "app/routes/focales.py, app/services/transcripcion_service.py, app/services/grafo_service.py, app/services/worker_jobs.py, app/services/llm_client.py, worker.py"
+          severity: alto
       quality_phases:
         - nombre: "desarrollo"
           checks:
@@ -128,7 +135,7 @@ projects:
         - nombre: "produccion"
           checks:
             - descripcion: "sin secrets hardcodeados"
-              aprobado: false
+              aprobado: true
           destino_si_falla: "ensamblador"
       approval_areas:
         - nombre: "compliance"
@@ -137,9 +144,9 @@ projects:
               aprobado: true
         - nombre: "calidad"
           checks:
-            - descripcion: "todos los tests pasan (157/157)"
+            - descripcion: "todos los tests pasan (179/179)"
               aprobado: true
         - nombre: "rollback"
           checks:
-            - descripcion: "plan de reversión documentado"
-              aprobado: false
+            - descripcion: "plan de reversión documentado (docs/rollback.md)"
+              aprobado: true

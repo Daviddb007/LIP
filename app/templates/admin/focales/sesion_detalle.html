@@ -1,0 +1,203 @@
+{% extends "base.html" %}
+{% block title %}{{ sesion.titulo }} — Grupo Focal{% endblock %}
+{% block content %}
+<section class="section" style="padding: var(--space-2xl) 0 var(--space-xl); background: var(--bg-1);">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h1 class="heading-xl text-dark mb-1">{{ sesion.titulo }}</h1>
+                <p class="body-sm text-muted-2">
+                    {{ sesion.organizacion.nombre if sesion.organizacion else '' }} ·
+                    {{ sesion.fecha.strftime('%d/%m/%Y') if sesion.fecha else '—' }} ·
+                    {{ sesion.modalidad|capitalize }} · <span class="badge badge-info">{{ sesion.estado|capitalize }}</span>
+                </p>
+            </div>
+            <div class="d-flex gap-2 flex-wrap">
+                <a href="{{ url_for('focales.sesiones') }}" class="btn btn-outline"><i class="bi bi-arrow-left me-2"></i>Sesiones</a>
+                {% if sesion.transcript %}
+                <a href="{{ url_for('focales.transcript_ver', sesion_id=sesion.id) }}" class="btn btn-outline"><i class="bi bi-file-text me-2"></i>Transcript</a>
+                <a href="{{ url_for('focales.grafo_ver', sesion_id=sesion.id) }}" class="btn btn-primary"><i class="bi bi-diagram-3 me-2"></i>Ver grafo</a>
+                <a href="{{ url_for('focales.grafo_exportar', sesion_id=sesion.id) }}" class="btn btn-outline"><i class="bi bi-download me-2"></i>Exportar</a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        {% if sesion.objetivo %}
+        <div class="card-elevated p-4 mb-4">
+            <h3 class="heading-sm text-dark mb-2">Objetivo</h3>
+            <p class="body-sm">{{ sesion.objetivo }}</p>
+        </div>
+        {% endif %}
+
+        <!-- Estado del pipeline -->
+        <div class="card-elevated p-4 mb-4">
+            <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+                <div>
+                    <h3 class="heading-sm text-dark mb-1">Pipeline de transcripción</h3>
+                    <p class="caption text-muted-2 mb-0">
+                        {% if sesion.transcript %}
+                        <span class="badge badge-success">Transcrito</span> ·
+                        {{ sesion.transcript.total_segmentos if sesion.transcript.total_segmentos is defined else sesion.transcript.segmentos|list|length }} segmentos ·
+                        {{ sesion.transcript.palabras if sesion.transcript.palabras is defined else sesion.transcript.texto_completo.split()|length }} palabras
+                        {% else %}
+                        <span class="badge badge-secondary">Sin transcripción</span> — sube los audios de la sesión para iniciar
+                        {% endif %}
+                    </p>
+                </div>
+                <div class="d-flex gap-2">
+                    <form method="POST" action="{{ url_for('focales.grafo_construir', sesion_id=sesion.id) }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-outline"><i class="bi bi-diagram-3 me-2"></i>Construir grafo</button>
+                    </form>
+                    <form method="POST" action="{{ url_for('focales.sesion_estado', sesion_id=sesion.id) }}" class="d-flex gap-2 align-items-center">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <select name="estado" class="form-select form-select-sm" style="width:auto;">
+                            {% for value, label in [('programada','Programada'),('en_curso','En curso'),('finalizada','Finalizada')] %}
+                            <option value="{{ value }}" {{ 'selected' if sesion.estado == value }}>{{ label }}</option>
+                            {% endfor %}
+                        </select>
+                        <button type="submit" class="btn btn-outline btn-sm"><i class="bi bi-check-lg"></i></button>
+                    </form>
+                    <form method="POST" action="{{ url_for('focales.sesion_eliminar', sesion_id=sesion.id) }}" onsubmit="return confirm('¿Eliminar esta sesión y todos sus datos?');">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <button type="submit" class="btn btn-outline btn-sm text-danger"><i class="bi bi-trash"></i></button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4">
+            <!-- Audios -->
+            <div class="col-lg-7">
+                <div class="card-elevated p-4">
+                    <h3 class="heading-sm text-dark mb-3">Audios ({{ sesion.audios|list|length }})</h3>
+                    <form method="POST" action="{{ url_for('focales.audio_subir', sesion_id=sesion.id) }}" enctype="multipart/form-data" class="d-flex gap-2 mb-3 flex-wrap">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <input type="file" name="archivo" accept=".wav,.mp3,.m4a,.ogg,.webm,.flac" class="form-control" style="max-width: 320px;" required>
+                        <button type="submit" class="btn btn-primary"><i class="bi bi-upload me-2"></i>Subir audio</button>
+                    </form>
+                    <div class="caption text-muted-2 mb-3">Formatos: {{ extensiones|join(', ') }} · máx {{ max_mb }} MB. Almacenamiento reservado (fuera del web root).</div>
+                    <div style="overflow-x: auto;">
+                        <table class="table-premium w-100">
+                            <thead><tr><th>ID</th><th>Archivo</th><th>Duración</th><th>Estado</th><th></th></tr></thead>
+                            <tbody>
+                                {% for a in sesion.audios %}
+                                <tr>
+                                    <td><span class="badge badge-blue">{{ a.id }}</span></td>
+                                    <td class="caption">{{ a.nombre_original }}</td>
+                                    <td class="caption">{{ '%.1f min'|format(a.duracion_segundos / 60) if a.duracion_segundos else '—' }}</td>
+                                    <td>
+                                        <span class="badge {% if a.estado == 'transcrito' %}badge-success{% elif a.estado == 'error' %}badge-danger{% elif a.estado in ('procesando','en_cola') %}badge-warning{% else %}badge-secondary{% endif %}">{{ a.estado_label }}</span>
+                                        {% if a.error_mensaje %}<div class="caption text-danger mt-1">{{ a.error_mensaje }}</div>{% endif %}
+                                    </td>
+                                    <td>
+                                        <div class="d-flex gap-1">
+                                            <a href="{{ url_for('focales.audio_descargar', audio_id=a.id) }}" class="btn btn-outline btn-sm"><i class="bi bi-download"></i></a>
+                                            <form method="POST" action="{{ url_for('focales.audio_reprocesar', audio_id=a.id) }}">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="btn btn-outline btn-sm" title="Re-transcribir"><i class="bi bi-arrow-repeat"></i></button>
+                                            </form>
+                                            <form method="POST" action="{{ url_for('focales.audio_eliminar', audio_id=a.id) }}" onsubmit="return confirm('¿Eliminar este audio?');">
+                                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                                <button type="submit" class="btn btn-outline btn-sm text-danger"><i class="bi bi-trash"></i></button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="5" class="text-center text-muted-2 py-4">Sin audios aún</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Participantes -->
+            <div class="col-lg-5">
+                <div class="card-elevated p-4">
+                    <h3 class="heading-sm text-dark mb-3">Participantes ({{ sesion.participantes|list|length }})</h3>
+                    <form method="POST" action="{{ url_for('focales.participante_nuevo', sesion_id=sesion.id) }}" class="mb-3">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="mb-2"><input type="text" name="nombre" class="form-control" placeholder="Nombre *" required></div>
+                        <div class="row g-2 mb-2">
+                            <div class="col-6"><input type="text" name="cargo" class="form-control" placeholder="Cargo"></div>
+                            <div class="col-6"><input type="text" name="telefono" class="form-control" placeholder="Teléfono"></div>
+                        </div>
+                        <div class="mb-2"><input type="email" name="email" class="form-control" placeholder="Email"></div>
+                        <div class="form-check mb-2">
+                            <input class="form-check-input" type="checkbox" name="consentimiento_1581" id="consent1581">
+                            <label class="form-check-label caption" for="consent1581">Consentimiento Ley 1581 (grabación y uso de voz)</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-sm"><i class="bi bi-plus-lg me-2"></i>Agregar</button>
+                    </form>
+                    <div style="overflow-x: auto;">
+                        <table class="table-premium w-100">
+                            <thead><tr><th>Nombre</th><th>Cargo</th><th>Cons.</th><th></th></tr></thead>
+                            <tbody>
+                                {% for p in sesion.participantes %}
+                                <tr>
+                                    <td class="fw-bold">{{ p.nombre }}</td>
+                                    <td class="caption">{{ p.cargo or '—' }}</td>
+                                    <td>
+                                        {% if p.consentimiento_aceptado %}<span class="badge badge-success">Sí</span>
+                                        {% else %}<span class="badge badge-danger">No</span>{% endif %}
+                                    </td>
+                                    <td>
+                                        <form method="POST" action="{{ url_for('focales.participante_eliminar', p_id=p.id) }}" onsubmit="return confirm('¿Eliminar participante?');">
+                                            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                            <button type="submit" class="btn btn-outline btn-sm text-danger"><i class="bi bi-trash"></i></button>
+                                        </form>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                <tr><td colspan="4" class="text-center text-muted-2 py-3">Sin participantes</td></tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Preguntas -->
+        <div class="card-elevated p-4 mt-4">
+            <h3 class="heading-sm text-dark mb-3">Preguntas guía ({{ sesion.preguntas|list|length }})</h3>
+            <form method="POST" action="{{ url_for('focales.pregunta_nueva', sesion_id=sesion.id) }}" class="d-flex gap-2 mb-3 flex-wrap">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <select name="categoria" class="form-select" style="max-width: 280px;">
+                    {% for value, label in [('problema','Problemática principal'),('politica','Política pública'),('presupuesto','Valor percibido del presupuesto'),('valor_agregado','Valor agregado para el sector'),('otra','Otra')] %}
+                    <option value="{{ value }}">{{ label }}</option>
+                    {% endfor %}
+                </select>
+                <input type="text" name="texto" class="form-control" placeholder="Texto de la pregunta *" required style="min-width: 260px;">
+                <button type="submit" class="btn btn-primary"><i class="bi bi-plus-lg me-2"></i>Agregar</button>
+            </form>
+            <table class="table-premium w-100">
+                <thead><tr><th>#</th><th>Categoría</th><th>Pregunta</th><th></th></tr></thead>
+                <tbody>
+                    {% for q in sesion.preguntas %}
+                    <tr>
+                        <td><span class="badge badge-blue">{{ q.orden }}</span></td>
+                        <td><span class="badge badge-info">{{ q.to_dict().categoria_label }}</span></td>
+                        <td>{{ q.texto }}</td>
+                        <td>
+                            <form method="POST" action="{{ url_for('focales.pregunta_eliminar', p_id=q.id) }}" onsubmit="return confirm('¿Eliminar pregunta?');">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                <button type="submit" class="btn btn-outline btn-sm text-danger"><i class="bi bi-trash"></i></button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="4" class="text-center text-muted-2 py-3">Sin preguntas</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endblock %}

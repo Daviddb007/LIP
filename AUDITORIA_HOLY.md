@@ -184,6 +184,58 @@ Diferencias mayormente esperadas dev/prod. Único punto de atención: `ADMIN_API
 
 ---
 
+# Auditoría 2026-08-13 — Milestone M0+M1 "Grupos Focales" (verificación pre-commit)
+
+- **Tooling**: holy-core `0.7.0` · `ScannerEngine`, `briefing`, `test_holy_pins`, suite `pytest`, `DeploymentChecker`.
+- **Alcance**: verificación de todo lo creado en el milestone + gobernanza previa al commit.
+
+## Resultados
+
+| Área | Estado | Evidencia |
+|---|---|---|
+| Tests | **179/179 verdes** | 166 (unit+integration) + 13 `test_holy_pins` |
+| Scanner | Madurez **crecimiento** | 75 módulos, 9.468 líneas, 11 módulos de test |
+| Hubs nuevos del módulo | **2** (CRITICO) | `app/models/focal.py` (fan_in 6), `app/models/grafo.py` (fan_in 6) — cubiertos por P-01 |
+| PIN nuevo | **P-12** (ALTO) | Protección preventiva del pipeline focales + worker |
+| Gate de calidad | **Activado** | `produccion` (sin secrets) ✓, `calidad` (179/179) ✓, `rollback` (docs/rollback.md) ✓ |
+| Secrets | **Sin hallazgos** | `.env` no trackeado; `.env.example`/`.env.production.example` solo placeholders |
+| Audit trail | **Generado** | `.holy/memory.json` (vía `holy_runner.py --once`) |
+| Bugs corregidos | **6** (H-10..H-15) | ver BUGS.md |
+| Bugs de prueba SIDC | **FOCAL-01..04** añadidos | pipeline ejercitado (1 escalado, 8 omitidos) |
+
+## Hallazgos corregidos en este milestone (read-only → remediación)
+
+1. **H-10** `docker-compose.yml`: volumen `uploads_data` duplicado en `app` + faltaba
+   `RQ_CONNECTION_URI`/whisper/LLM en la app web.
+2. **H-11** Integridad FK PostgreSQL: sin `ondelete` en `relaciones_grafo`,
+   `nodo.transcript_id/sesion_id`, `segmento.audio_id`, `audio.transcript_id` →
+   IntegrityError al borrar transcript/sesión (SQLite no lo detecta en tests).
+3. **H-12** `procesar_audio` duplicaba transcript al reprocesar audio transcrito
+   (guard `transcript_id` + ruta `reprocesar` bloquea estado `transcrito`).
+4. **H-13** Archivos de audio huérfanos al eliminar sesión/org (limpieza de
+   directorio `uploads/sesion_X`).
+5. **H-14** `int(org_id)`/`int(sector_id)` sin validar → 500.
+6. **H-15** `coseno()` era producto punto → normalizado (afecta embeddings LLM).
+
+## Decisión de arquitectura (desviación documentada)
+
+- **Migraciones**: el proyecto no usa Alembic; sigue el patrón `db.create_all()`
+  (run.py `seed`, deploy-docker.sh). El milestone mantiene ese patrón. Consecuencia:
+  los `ondelete` añadidos solo aplican a bases nuevas; en una BD existente hay que
+  recrear las tablas focales (`DROP`+`create_all`) o aplicar DDL manual.
+- **Reserva total**: audios guardados en volumen `uploads_data` fuera del web root;
+  transcripción con whisper local (los audios nunca salen del servidor); a la nube
+  solo va texto (LLM_PROVIDER gemini/openai, default `ninguno` con fallback local).
+
+## Limitaciones
+
+- El `--once` de SIDC escaló LEGAL-01 (requiere humano): sin Ollama/OpenRouter la
+  clasificación es heurística (limitación ya documentada en la auditoría anterior).
+- Scanner: `quien_llama_a` no resuelve imports cross-módulo; el fan_in por imports
+  (§2.2) sigue siendo la métrica fiable.
+
+---
+
 ## Anexo: comandos utilizados
 
 ```

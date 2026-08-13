@@ -22,6 +22,19 @@ email-validator==2.2.0
 python-dotenv==1.1.0
 bleach==6.2.0
 
+# Background jobs (cola de procesamiento)
+rq==2.1.0
+
+# Speech-to-text local (reserva de datos: los audios no salen del servidor)
+faster-whisper==1.1.1
+
+# LLM providers (análisis semántico solo con texto, nunca audio)
+openai==1.68.2
+google-generativeai==0.8.5
+
+# Extracción de texto de documentos (repositorios C.1/C.2)
+pdfplumber==0.11.6
+
 # Testing
 pytest==8.4.1
 pytest-cov==6.2.1

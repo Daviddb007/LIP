@@ -65,6 +65,31 @@ class Config:
     DATA_RETENTION_UNTIL: str = os.environ.get("DATA_RETENTION_UNTIL", "2030-12-31")
     CONSENT_VERSION: str = os.environ.get("CONSENT_VERSION", "2026-01")
 
+    # ---------------------------------------------------------------
+    # Fase "Estrategia de participación robusta" (grupos focales)
+    # ---------------------------------------------------------------
+
+    # Almacenamiento reservado de audios/documentos (fuera del web root)
+    UPLOADS_DIR: str = os.environ.get("UPLOADS_DIR", "uploads")
+    UPLOAD_MAX_MB: int = int(os.environ.get("UPLOAD_MAX_MB", 500))
+    AUDIO_ALLOWED_EXTENSIONS: tuple[str, ...] = (".wav", ".mp3", ".m4a", ".ogg", ".webm", ".flac")
+
+    # Cola de trabajos (RQ)
+    RQ_CONNECTION_URI: str = os.environ.get("RQ_CONNECTION_URI", "redis://localhost:6379/2")
+    RQ_QUEUE_TRANSCRIPCION: str = os.environ.get("RQ_QUEUE_TRANSCRIPCION", "transcripcion")
+    RQ_QUEUE_ANALISIS: str = os.environ.get("RQ_QUEUE_ANALISIS", "analisis")
+
+    # Transcripción local (faster-whisper)
+    WHISPER_MODEL: str = os.environ.get("WHISPER_MODEL", "small")
+    WHISPER_DEVICE: str = os.environ.get("WHISPER_DEVICE", "cpu")
+    WHISPER_COMPUTE_TYPE: str = os.environ.get("WHISPER_COMPUTE_TYPE", "int8")
+
+    # Proveedor LLM (gemini | openai | ninguno). Solo recibe texto.
+    LLM_PROVIDER: str = os.environ.get("LLM_PROVIDER", "ninguno").lower()
+    LLM_API_KEY: str = os.environ.get("LLM_API_KEY", "")
+    LLM_MODEL: str = os.environ.get("LLM_MODEL", "")
+    LLM_EMBEDDING_MODEL: str = os.environ.get("LLM_EMBEDDING_MODEL", "")
+
 
 class DevelopmentConfig(Config):
     """Configuración para desarrollo local."""
@@ -109,6 +134,8 @@ class TestingConfig(Config):
     RATELIMIT_DEFAULT: str = "1000 per minute"
     RATELIMIT_ENVIAR: str = "100 per minute"
     ADMIN_API_TOKEN: str = "test-admin-token"
+    UPLOADS_DIR: str = "tests/tmp_uploads"
+    LLM_PROVIDER: str = "ninguno"
 
 
 config: dict[str, type[Config]] = {

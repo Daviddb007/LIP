@@ -127,6 +127,52 @@ def anonimizar_datos_command():
         print(f"{count} participaciones anonimizadas.")
 
 
+@app.cli.command("transcribir-pendientes")
+def transcribir_pendientes_command():
+    """Procesa sincrónicamente los audios de grupos focales pendientes (fallback sin Redis)."""
+    from app.models.focal import AudioFocal
+    from app.services.transcripcion_service import procesar_audio
+
+    with app.app_context():
+        pendientes = AudioFocal.query.filter(
+            AudioFocal.estado.in_(["pendiente", "error"])
+        ).order_by(AudioFocal.id).all()
+
+        if not pendientes:
+            print("No hay audios pendientes.")
+            return
+
+        for audio in pendientes:
+            print(f"Transcribiendo audio #{audio.id} ({audio.nombre_original})...")
+            resultado = procesar_audio(audio.id)
+            estado = "OK" if resultado["ok"] else "ERROR"
+            print(f"  -> {estado}: {resultado}")
+
+
+@app.cli.command("construir-grafos")
+def construir_grafos_command():
+    """Construye grafos de conocimiento para sesiones transcritas sin grafo."""
+    from app.models.focal import SesionFocal
+    from app.services.grafo_service import construir_grafo
+
+    with app.app_context():
+        sesiones = SesionFocal.query.all()
+        for sesion in sesiones:
+            if not sesion.transcript:
+                continue
+            from app.models.grafo import NodoGrafo
+
+            tiene_nodos = NodoGrafo.query.filter_by(sesion_id=sesion.id).first()
+            if tiene_nodos:
+                print(f"Sesión #{sesion.id}: grafo ya construido")
+                continue
+            resultado = construir_grafo(sesion.transcript.id)
+            if resultado["ok"]:
+                print(f"Sesión #{sesion.id}: {resultado['nodos']} nodos, temas: {resultado['temas']}")
+            else:
+                print(f"Sesión #{sesion.id}: ERROR {resultado.get('error')}")
+
+
 if __name__ == "__main__":
     with app.app_context():
         db.create_all()

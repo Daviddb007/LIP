@@ -13,6 +13,8 @@ from app.models.miembro import MiembroEquipo
 from app.models.organizacion import Organizacion
 from app.models.webhook import Webhook
 from app.models.api_token import ApiToken
+from app.models.focal import OrgFocal, SesionFocal, ParticipanteFocal, PreguntaFocal, AudioFocal
+from app.models.grafo import TranscriptFocal, SegmentoTranscript, NodoGrafo, RelacionGrafo
 
 __all__ = [
     "Plan", "Pilar", "LineaEstrategica", "Componente", "Objetivo", "Indicador",
@@ -20,4 +22,6 @@ __all__ = [
     "participacion_problemas", "participacion_actores", "participacion_beneficiarios",
     "Participacion", "ClasificacionSRIE",
     "Politica", "MiembroEquipo", "Organizacion", "Webhook", "ApiToken",
+    "OrgFocal", "SesionFocal", "ParticipanteFocal", "PreguntaFocal", "AudioFocal",
+    "TranscriptFocal", "SegmentoTranscript", "NodoGrafo", "RelacionGrafo",
 ]

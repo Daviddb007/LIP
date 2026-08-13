@@ -48,6 +48,19 @@ El proyecto ya dispone de:
 - [x] Nginx + Gunicorn
 - [x] Infraestructura lista para producción
 
+### Milestone M0+M1 — Grupos Focales (2026-08-13)
+
+Estrategia de participación robusta **completada y verificada** (ver `AUDITORIA_HOLY.md`):
+
+- [x] Organizaciones → sesiones → participantes → preguntas guía
+- [x] Audios reservados (volumen local, whisper local; la nube solo recibe texto)
+- [x] Transcripción en cola Redis/RQ con CLI `flask transcribir-pendientes`
+- [x] Grafo de conceptos (Cytoscape.js en admin) + export HTML + CLI `flask construir-grafos`
+- [x] API interna del módulo + 17 tests (suite total 179/179) + PIN P-12 preventivo
+- [x] Plan de reversión: `docs/rollback.md`
+
+> **Desviación documentada**: el proyecto no usa Alembic; patrón `db.create_all()` en run.py/deploy. Aplica únicamente a `create_engine` de app/DB (ver AUDITORIA_HOLY.md).
+
 ---
 
 ## Fase 1: Participación Inteligente

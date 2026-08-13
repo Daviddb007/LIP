@@ -15,6 +15,12 @@
 | H-07 | Auditoría | MEDIO | BUGS.md, .holy/ | Sin audit trail ni SIDC; BUGS.md vacío | resuelto |
 | H-08 | Refactor | BAJO | app/routes/admin.py, app/cli/migrate_v2.py | Complejidad mccabe 41 y 46 respectivamente | abierto |
 | H-09 | Despliegue | BAJO | .env.production | ADMIN_API_TOKEN missing_prod | abierto |
+| H-10 | Despliegue | ALTO | docker-compose.yml | Volumen uploads_data montado dos veces en `app` + falta RQ_CONNECTION_URI (encolado a localhost en contenedor) | resuelto |
+| H-11 | Base de datos | ALTO | app/models/grafo.py, app/models/focal.py | FKs del grafo sin ondelete → IntegrityError al borrar transcript/sesión en PostgreSQL | resuelto |
+| H-12 | Correctitud | ALTO | app/services/transcripcion_service.py | Reprocesar un audio transcrito duplicaba texto/segmentos en el transcript | resuelto |
+| H-13 | Higiene | MEDIO | app/routes/focales.py | Archivos de audio huérfanos en disco al eliminar sesión/organización (cascade solo borra filas) | resuelto |
+| H-14 | Robustez | BAJO | app/routes/focales.py | int(org_id)/int(sector_id) no validados → 500 con entrada no numérica | resuelto |
+| H-15 | Correctitud | BAJO | app/services/llm_client.py | coseno() era producto punto; afectaba similitud con embeddings LLM no normalizados | resuelto |
 
 ## Bugs de prueba holy-core
 
@@ -25,6 +31,10 @@
 | LEGAL-03 | Compliance | MEDIO | base.html footer | Links legales rotos (#) sin páginas reales | resuelto |
 | LEGAL-04 | Compliance | MEDIO | app/routes/ | Sin endpoints ARCO ni páginas de tratamiento de datos | resuelto |
 | LEGAL-05 | Compliance | BAJO | app/templates/base.html | Sin aviso de cookies | resuelto |
+| FOCAL-01 | Calidad | ALTO | app/services/grafo_service.py | Construir grafo sin segmentos debe fallar limpio (sin excepción) | resuelto |
+| FOCAL-02 | Calidad | ALTO | app/routes/focales.py | Rutas de grupos focales sin login deben redirigir a autenticación | resuelto |
+| FOCAL-03 | Calidad | MEDIO | app/routes/focales.py | Subida de formato de audio no permitido debe rechazarse | resuelto |
+| FOCAL-04 | Calidad | ALTO | app/services/transcripcion_service.py | Reproceso de audio transcrito no debe duplicar el transcript | resuelto |
 
 Formato de fila válida: `| ID | Categoría | Severidad | Ruta | Título |` con ID
 que contenga guion (`HOLY-*`, `BUG-*`, `AUTO-*`, ...).

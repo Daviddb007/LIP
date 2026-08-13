@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+{% block title %}Sesiones — Grupos Focales{% endblock %}
+{% block content %}
+<section class="section" style="padding: var(--space-2xl) 0 var(--space-xl); background: var(--bg-1);">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h1 class="heading-xl text-dark mb-1">Sesiones</h1>
+                <p class="body-sm text-muted-2">Grupos focales de organizaciones</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('focales.organizaciones') }}" class="btn btn-outline"><i class="bi bi-people me-2"></i>Organizaciones</a>
+                <a href="{{ url_for('focales.sesion_nueva') }}" class="btn btn-primary"><i class="bi bi-plus-lg me-2"></i>Nueva</a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <form method="GET" class="mb-3 d-flex gap-2 flex-wrap">
+            <select name="estado" class="form-select" style="max-width: 220px;">
+                <option value="">Estado: todos</option>
+                {% for value, label in [('programada','Programada'),('en_curso','En curso'),('finalizada','Finalizada')] %}
+                <option value="{{ value }}" {{ 'selected' if filtro_estado == value }}>{{ label }}</option>
+                {% endfor %}
+            </select>
+            <select name="org" class="form-select" style="max-width: 280px;">
+                <option value="">Organización: todas</option>
+                {% for o in orgs %}
+                <option value="{{ o.id }}" {{ 'selected' if filtro_org == o.id|string }}>{{ o.nombre }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-outline"><i class="bi bi-funnel"></i></button>
+        </form>
+        <div class="card-elevated p-4">
+            <div style="overflow-x: auto;">
+                <table class="table-premium w-100">
+                    <thead><tr><th>ID</th><th>Organización</th><th>Título</th><th>Fecha</th><th>Modalidad</th><th>Estado</th><th>Audios</th><th>Transcript</th><th>Grafo</th><th></th></tr></thead>
+                    <tbody>
+                        {% for s in sesiones %}
+                        <tr>
+                            <td><span class="badge badge-blue">{{ s.id }}</span></td>
+                            <td class="caption">{{ s.organizacion.nombre if s.organizacion else '—' }}</td>
+                            <td class="fw-bold">{{ s.titulo }}</td>
+                            <td class="caption">{{ s.fecha.strftime('%d/%m/%Y') if s.fecha else '—' }}</td>
+                            <td class="caption">{{ s.modalidad|capitalize }}</td>
+                            <td><span class="badge badge-info">{{ s.estado|capitalize }}</span></td>
+                            <td><span class="badge badge-purple">{{ s.audios|list|length }}</span></td>
+                            <td>{% if s.transcript %}<span class="badge badge-success">Listo</span>{% else %}<span class="badge badge-secondary">—</span>{% endif %}</td>
+                            <td>{% if s.transcript %}<a href="{{ url_for('focales.grafo_ver', sesion_id=s.id) }}" class="btn btn-outline btn-sm"><i class="bi bi-diagram-3"></i></a>{% else %}<span class="caption text-muted-2">—</span>{% endif %}</td>
+                            <td><a href="{{ url_for('focales.sesion_detalle', sesion_id=s.id) }}" class="btn btn-outline btn-sm"><i class="bi bi-eye"></i></a></td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="10" class="text-center text-muted-2 py-4">Sin sesiones registradas</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

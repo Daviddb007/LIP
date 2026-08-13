@@ -18,6 +18,15 @@ services:
       - PORT=8000
       - LOG_LEVEL=info
       - PLAN_ACTIVO_ID=1
+      - UPLOADS_DIR=/app/uploads
+      - RQ_CONNECTION_URI=redis://redis:6379/2
+      - WHISPER_MODEL=${WHISPER_MODEL:-small}
+      - WHISPER_DEVICE=${WHISPER_DEVICE:-cpu}
+      - WHISPER_COMPUTE_TYPE=${WHISPER_COMPUTE_TYPE:-int8}
+      - LLM_PROVIDER=${LLM_PROVIDER:-ninguno}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-}
+      - LLM_EMBEDDING_MODEL=${LLM_EMBEDDING_MODEL:-}
     depends_on:
       db:
         condition: service_healthy
@@ -27,6 +36,44 @@ services:
       - construyamos_network
     volumes:
       - app_logs:/app/logs
+      - uploads_data:/app/uploads
+
+  worker:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: construyamos_worker
+    restart: always
+    command: ["python", "worker.py"]
+    environment:
+      - FLASK_CONFIG=production
+      - SECRET_KEY=${SECRET_KEY}
+      - DATABASE_URL=postgresql://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
+      - ADMIN_USER=${ADMIN_USER}
+      - ADMIN_PASS=${ADMIN_PASS}
+      - ADMIN_API_TOKEN=${ADMIN_API_TOKEN}
+      - RATELIMIT_STORAGE_URI=redis://redis:6379/0
+      - CACHE_TYPE=RedisCache
+      - CACHE_REDIS_URL=redis://redis:6379/1
+      - RQ_CONNECTION_URI=redis://redis:6379/2
+      - PORT=8000
+      - LOG_LEVEL=info
+      - PLAN_ACTIVO_ID=1
+      - UPLOADS_DIR=/app/uploads
+      - WHISPER_MODEL=${WHISPER_MODEL:-small}
+      - LLM_PROVIDER=${LLM_PROVIDER:-ninguno}
+      - LLM_API_KEY=${LLM_API_KEY:-}
+      - LLM_MODEL=${LLM_MODEL:-}
+      - LLM_EMBEDDING_MODEL=${LLM_EMBEDDING_MODEL:-}
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - construyamos_network
+    volumes:
+      - uploads_data:/app/uploads
 
   db:
     image: postgres:16-alpine
@@ -82,6 +129,7 @@ volumes:
   postgres_data:
   redis_data:
   app_logs:
+  uploads_data:
 
 networks:
   construyamos_network:

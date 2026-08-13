@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% block title %}Grafo — {{ sesion.titulo }}{% endblock %}
+{% block content %}
+<section class="section" style="padding: var(--space-2xl) 0 var(--space-xl); background: var(--bg-1);">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <h1 class="heading-xl text-dark mb-1">Grafo de conocimiento</h1>
+                <p class="body-sm text-muted-2">{{ sesion.titulo }}</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('focales.sesion_detalle', sesion_id=sesion.id) }}" class="btn btn-outline"><i class="bi bi-arrow-left me-2"></i>Volver</a>
+                <a href="{{ url_for('focales.grafo_exportar', sesion_id=sesion.id) }}" class="btn btn-outline"><i class="bi bi-download me-2"></i>Exportar HTML</a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="card-elevated p-3 mb-3">
+            <div class="d-flex flex-wrap gap-3 align-items-center caption text-muted-2">
+                <span><span class="dot-graph" style="background:#3B82F6"></span> Segmento</span>
+                <span><span class="dot-graph" style="background:#F59E0B"></span> Tema</span>
+                <span><span class="dot-graph" style="background:#EF4444"></span> Problemática</span>
+                <span class="ms-auto" id="contador">Cargando grafo...</span>
+            </div>
+        </div>
+        <div class="card-elevated p-0" style="overflow:hidden;">
+            <div id="cy" style="height: 72vh; width: 100%; background: #f8fafc;"></div>
+        </div>
+    </div>
+</section>
+<style>
+    .dot-graph { width: 10px; height: 10px; border-radius: 50%; display: inline-block; margin-right: 4px; vertical-align: middle; }
+</style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cytoscape/3.30.2/cytoscape.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const url = "{{ url_for('focales.api_grafo', sesion_id=sesion.id) }}";
+    fetch(url)
+        .then(r => r.json())
+        .then(data => {
+            document.getElementById('contador').textContent =
+                data.resumen.nodos + ' nodos · ' + data.resumen.aristas + ' aristas';
+            const cy = cytoscape({
+                container: document.getElementById('cy'),
+                elements: [...data.nodos, ...data.aristas],
+                style: [
+                    { selector: 'node', style: {
+                        'background-color': 'data(color)',
+                        'label': 'data(label)',
+                        'color': '#334155',
+                        'font-size': '9px',
+                        'text-valign': 'bottom',
+                        'text-margin-y': '3px',
+                        'text-wrap': 'ellipsis',
+                        'text-max-width': '120px',
+                        'width': 28,
+                        'height': 28
+                    }},
+                    { selector: 'edge', style: {
+                        'width': 'mapData(peso,0,1,1,3)',
+                        'line-color': '#cbd5e1',
+                        'target-arrow-color': '#94a3b8',
+                        'target-arrow-shape': 'triangle',
+                        'curve-style': 'bezier',
+                        'opacity': '0.7'
+                    }},
+                    { selector: 'edge[tipo="similitud"]', style: { 'line-color': '#818cf8', 'opacity': '0.55' }},
+                    { selector: 'edge[tipo="tema"]', style: { 'line-color': '#f59e0b', 'opacity': '0.6' }}
+                ],
+                layout: { name: 'cose', animate: false, randomize: true, nodeRepulsion: 6000 },
+                wheelSensitivity: 0.2
+            });
+            cy.on('tap', 'node', (evt) => {
+                const n = evt.target;
+                alert(n.data('tipo').toUpperCase() + '\n\n' + (n.data('texto') || n.data('label')));
+            });
+        })
+        .catch(err => {
+            document.getElementById('contador').textContent = 'Error al cargar el grafo';
+            console.error(err);
+        });
+});
+</script>
+{% endblock %}

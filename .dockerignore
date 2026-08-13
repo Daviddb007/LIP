@@ -26,6 +26,11 @@ build/
 tests/
 pyproject.toml
 
+# Runtime (audio/documentos reservados, logs, audit trail)
+uploads/
+logs/
+.holy/
+
 # Logs
 app.log
 tunnel.log

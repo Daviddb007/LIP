@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if org else 'Nueva' }} Organización{% endblock %}
+{% block content %}
+<section class="section" style="padding: var(--space-2xl) 0 var(--space-xl); background: var(--bg-1);">
+    <div class="container">
+        <div class="d-flex justify-content-between align-items-center">
+            <div>
+                <h1 class="heading-xl text-dark mb-1">{{ 'Nueva' if not org else 'Detalle' }} organización</h1>
+                <p class="body-sm text-muted-2">Registro de organización para grupos focales</p>
+            </div>
+            <a href="{{ url_for('focales.organizaciones') }}" class="btn btn-outline"><i class="bi bi-arrow-left me-2"></i>Volver</a>
+        </div>
+    </div>
+</section>
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-8">
+                <div class="card-elevated p-4">
+                    <form method="POST">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre *</label>
+                            <input type="text" name="nombre" class="form-control" value="{{ org.nombre if org else '' }}" required maxlength="200">
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Tipo</label>
+                                <select name="tipo" class="form-select">
+                                    {% for value, label in [('gremio','Gremio'),('universidad','Universidad'),('ong','ONG'),('centro_pensamiento','Centro de Pensamiento'),('empresa','Empresa'),('cooperacion','Cooperación Internacional'),('comunidad','Comunidad / Sociedad civil'),('otra','Otra')] %}
+                                    <option value="{{ value }}" {{ 'selected' if org and org.tipo == value }}>{{ label }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Sector</label>
+                                <select name="sector_id" class="form-select">
+                                    <option value="">— Sin sector —</option>
+                                    {% for s in sectores %}
+                                    <option value="{{ s.id }}" {{ 'selected' if org and org.sector_id == s.id }}>{{ s.nombre }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </div>
+                        <div class="mb-3 mt-3">
+                            <label class="form-label">Descripción</label>
+                            <textarea name="descripcion" class="form-control" rows="3">{{ org.descripcion if org else '' }}</textarea>
+                        </div>
+                        <div class="row g-3">
+                            <div class="col-md-4">
+                                <label class="form-label">Contacto</label>
+                                <input type="text" name="contacto_nombre" class="form-control" value="{{ org.contacto_nombre if org else '' }}" placeholder="Nombre">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Email</label>
+                                <input type="email" name="contacto_email" class="form-control" value="{{ org.contacto_email if org else '' }}" placeholder="correo@org.co">
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label">Teléfono</label>
+                                <input type="text" name="contacto_telefono" class="form-control" value="{{ org.contacto_telefono if org else '' }}" placeholder="+57...">
+                            </div>
+                        </div>
+                        <div class="d-flex gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary"><i class="bi bi-check-lg me-2"></i>Guardar</button>
+                            <a href="{{ url_for('focales.organizaciones') }}" class="btn btn-outline">Cancelar</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

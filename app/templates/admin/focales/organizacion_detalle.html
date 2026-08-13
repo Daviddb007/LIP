@@ -1,0 +1,64 @@
+{% extends "base.html" %}
+{% block title %}{{ org.nombre }} — Grupos Focales{% endblock %}
+{% block content %}
+<section class="section" style="padding: var(--space-2xl) 0 var(--space-xl); background: var(--bg-1);">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-3">
+            <div>
+                <div class="d-flex align-items-center gap-2">
+                    <h1 class="heading-xl text-dark mb-1">{{ org.nombre }}</h1>
+                    {% if org.activo %}<span class="badge badge-success">Activa</span>
+                    {% else %}<span class="badge badge-danger">Inactiva</span>{% endif %}
+                </div>
+                <p class="body-sm text-muted-2">{{ org.to_dict().tipo_label }}{% if org.sector %} · Sector {{ org.sector.nombre }}{% endif %}</p>
+            </div>
+            <div class="d-flex gap-2">
+                <a href="{{ url_for('focales.organizaciones') }}" class="btn btn-outline"><i class="bi bi-arrow-left me-2"></i>Volver</a>
+                <a href="{{ url_for('focales.sesion_nueva', org_id=org.id) }}" class="btn btn-primary"><i class="bi bi-plus-lg me-2"></i>Nueva sesión</a>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="section" style="padding-top: 0;">
+    <div class="container">
+        {% if org.descripcion %}
+        <div class="card-elevated p-4 mb-4">
+            <h3 class="heading-sm text-dark mb-2">Descripción</h3>
+            <p class="body-sm">{{ org.descripcion }}</p>
+        </div>
+        {% endif %}
+        <div class="card-elevated p-4 mb-4">
+            <h3 class="heading-sm text-dark mb-3">Contacto</h3>
+            <div class="row">
+                <div class="col-md-4"><div class="caption text-muted-2">Nombre</div><div class="body-sm">{{ org.contacto_nombre or '—' }}</div></div>
+                <div class="col-md-4"><div class="caption text-muted-2">Email</div><div class="body-sm">{{ org.contacto_email or '—' }}</div></div>
+                <div class="col-md-4"><div class="caption text-muted-2">Teléfono</div><div class="body-sm">{{ org.contacto_telefono or '—' }}</div></div>
+            </div>
+        </div>
+        <div class="card-elevated p-4">
+            <h3 class="heading-sm text-dark mb-3">Sesiones ({{ org.sesiones|list|length }})</h3>
+            <div style="overflow-x: auto;">
+                <table class="table-premium w-100">
+                    <thead><tr><th>ID</th><th>Título</th><th>Fecha</th><th>Modalidad</th><th>Estado</th><th>Audios</th><th>Transcript</th><th></th></tr></thead>
+                    <tbody>
+                        {% for s in org.sesiones %}
+                        <tr>
+                            <td><span class="badge badge-blue">{{ s.id }}</span></td>
+                            <td class="fw-bold">{{ s.titulo }}</td>
+                            <td class="caption">{{ s.fecha.strftime('%d/%m/%Y') if s.fecha else '—' }}</td>
+                            <td class="caption">{{ s.modalidad|capitalize }}</td>
+                            <td><span class="badge badge-info">{{ s.estado|capitalize }}</span></td>
+                            <td><span class="badge badge-purple">{{ s.audios|list|length }}</span></td>
+                            <td>{% if s.transcript %}<span class="badge badge-success">Listo</span>{% else %}<span class="badge badge-secondary">—</span>{% endif %}</td>
+                            <td><a href="{{ url_for('focales.sesion_detalle', sesion_id=s.id) }}" class="btn btn-outline btn-sm"><i class="bi bi-eye"></i></a></td>
+                        </tr>
+                        {% else %}
+                        <tr><td colspan="8" class="text-center text-muted-2 py-4">Sin sesiones aún</td></tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

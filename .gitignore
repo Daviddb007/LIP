@@ -41,3 +41,7 @@ coverage.xml
 .holy/
 holy_runner.py
 *.BAK
+
+# Uploads reservados (audios, documentos) — runtime, no versionar
+uploads/
+tests/tmp_uploads/
