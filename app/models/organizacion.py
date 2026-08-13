@@ -21,6 +21,8 @@ class Organizacion(db.Model):
     slug = db.Column(db.String(100), unique=True, nullable=False)
     tipo = db.Column(db.String(50), nullable=False)
     plan = db.Column(db.String(50), nullable=False, default="gratuito")
+    email_contacto = db.Column(db.String(200), nullable=True)
+    color = db.Column(db.String(20), nullable=True)
     activo = db.Column(db.Boolean, nullable=False, default=True)
     created_at = db.Column(db.DateTime, default=lambda: datetime.now(timezone.utc).replace(tzinfo=None), nullable=False)
     config = db.Column(db.Text, nullable=True, default="{}")
@@ -53,8 +55,11 @@ class Organizacion(db.Model):
             "slug": self.slug,
             "tipo": self.tipo,
             "plan": self.plan,
+            "email_contacto": self.email_contacto,
+            "color": self.color,
             "activo": self.activo,
             "created_at": self.created_at.isoformat() if self.created_at else None,
+            "config": self.config,
         }
 
     @classmethod

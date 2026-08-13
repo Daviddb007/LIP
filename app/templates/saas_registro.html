@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+
+{% block title %}Registrar organización — SRIE Platform{% endblock %}
+
+{% block content %}
+<section class="section" style="padding-top: 4rem;">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-6">
+                <div class="card-elevated p-4">
+                    <h3 class="heading-sm mb-1"><i class="bi bi-rocket-takeoff me-2 text-gold"></i>Crear mi portal</h3>
+                    <p class="text-muted-2 body-sm mb-4">Despliega tu propio ecosistema de inteligencia pública en minutos. Obtendrás un dominio propio <code>/saas/&lt;slug&gt;</code>.</p>
+                    <form id="form-org">
+                        <div class="mb-3">
+                            <label class="form-label">Nombre de la organización *</label>
+                            <input type="text" class="form-control" id="org-nombre" required maxlength="200">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Tipo</label>
+                            <select class="form-select" id="org-tipo">
+                                <option value="ministerio">Ministerio</option>
+                                <option value="gobernacion">Gobernación</option>
+                                <option value="alcaldia">Alcaldía</option>
+                                <option value="universidad">Universidad</option>
+                                <option value="centro_pensamiento">Centro de Pensamiento</option>
+                                <option value="ong">ONG</option>
+                                <option value="cooperacion">Cooperación Internacional</option>
+                                <option value="empresa" selected>Empresa Privada</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Email de contacto</label>
+                            <input type="email" class="form-control" id="org-email">
+                        </div>
+                        <div class="mb-4">
+                            <label class="form-label">Plan</label>
+                            <select class="form-select" id="org-plan">
+                                <option value="gratuito" selected>Gratuito — 100 participaciones/mes</option>
+                                <option value="basico">Básico — 1.000 participaciones/mes</option>
+                                <option value="profesional">Profesional — 10.000 participaciones/mes</option>
+                                <option value="empresarial">Empresarial — Ilimitado</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-gold w-100">
+                            <i class="bi bi-cpu-fill me-2"></i>Crear portal
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+document.getElementById('form-org').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const nombre = document.getElementById('org-nombre').value.trim();
+    if (!nombre) return;
+    const body = {
+        nombre,
+        tipo: document.getElementById('org-tipo').value,
+        plan: document.getElementById('org-plan').value,
+        email_contacto: document.getElementById('org-email').value.trim() || null,
+    };
+    try {
+        const r = await fetch('/api/organizaciones', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(body)
+        });
+        if (r.ok) {
+            const org = await r.json();
+            showToast('Tu portal quedó listo.', 'Bienvenido', 'success');
+            window.location.href = '/saas/' + org.slug;
+        } else {
+            const err = await r.json();
+            showToast(err.error || 'Error al crear', 'Error', 'error');
+        }
+    } catch(err) {
+        showToast('Error de conexión', 'Error', 'error');
+    }
+});
+</script>
+{% endblock %}

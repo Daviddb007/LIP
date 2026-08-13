@@ -192,7 +192,7 @@ async function crearOrganizacion(plan) {
     if (!nombre) return;
     const tipo = prompt('Tipo (ministerio, gobernacion, alcaldia, universidad, ong, empresa):', 'empresa') || 'empresa';
     try {
-        const r = await fetch('/api/v1/organizaciones', {
+        const r = await fetch('/api/organizaciones', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ nombre, tipo, plan })

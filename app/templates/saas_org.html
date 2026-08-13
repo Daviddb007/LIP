@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+
+{% block title %}{{ org.nombre }} — SRIE Platform{% endblock %}
+
+{% block content %}
+<section class="hero" style="min-height: 60vh;">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7 hero-content">
+                <div class="badge badge-primary mb-3">
+                    <i class="bi bi-building me-1"></i>
+                    {{ org.tipo.replace('_', ' ').title() }}
+                </div>
+                <h1 class="display-xl mb-3">{{ org.nombre }}</h1>
+                <p class="body-lg text-white-50 mb-4" style="max-width: 560px;">
+                    Portal de inteligencia pública de {{ org.nombre }} sobre la plataforma SRIE.
+                    Canal de participación ciudadana, clasificación de problemas y monitoreo estratégico.
+                </p>
+                <div class="d-flex gap-3 flex-wrap align-items-center">
+                    <a href="{{ url_for('participar.participar') }}" class="btn btn-gold btn-lg">
+                        <i class="bi bi-megaphone me-2"></i>Participar
+                    </a>
+                    <a href="{{ url_for('analitica.pagina') }}" class="btn btn-outline btn-lg" style="border-color: rgba(255,255,255,0.3); color: white;">
+                        <i class="bi bi-bar-chart me-2"></i>Ver observatorio
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-5 d-none d-lg-block">
+                <div style="background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 24px; padding: 2rem;">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="text-white fw-bold mb-0">Plan {{ org.plan.title() }}</h5>
+                        <span class="badge bg-success">Activo</span>
+                    </div>
+                    <hr style="border-color: rgba(255,255,255,0.15);">
+                    <div class="d-flex justify-content-between py-2">
+                        <span class="text-white-50">Organización</span>
+                        <span class="text-white fw-semibold">{{ org.nombre }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2">
+                        <span class="text-white-50">Dominio</span>
+                        <span class="text-white fw-semibold">/saas/{{ org.slug }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between py-2">
+                        <span class="text-white-50">Miembro desde</span>
+                        <span class="text-white fw-semibold">{{ org.created_at.strftime('%d/%m/%Y') }}</span>
+                    </div>
+                    {% if org.email_contacto %}
+                    <div class="d-flex justify-content-between py-2">
+                        <span class="text-white-50">Contacto</span>
+                        <span class="text-white fw-semibold">{{ org.email_contacto }}</span>
+                    </div>
+                    {% endif %}
+                    <a href="mailto:{{ org.email_contacto or 'daviddb@stonelytics.tech' }}" class="btn btn-outline-primary w-100 mt-3">
+                        <i class="bi bi-envelope me-1"></i>Contactar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="section">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card-premium h-100 p-4">
+                    <i class="bi bi-megaphone" style="font-size: 2rem; color: var(--gold);"></i>
+                    <h5 class="fw-bold mt-3">Participación</h5>
+                    <p class="text-muted-2 body-sm mb-0">Recolección ciudadana estructurada por problemas, actores y beneficiarios.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-premium h-100 p-4">
+                    <i class="bi bi-cpu" style="font-size: 2rem; color: var(--gold);"></i>
+                    <h5 class="fw-bold mt-3">Motor SRIE</h5>
+                    <p class="text-muted-2 body-sm mb-0">Clasificación automática con confianza por pilar del plan estratégico.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card-premium h-100 p-4">
+                    <i class="bi bi-bar-chart" style="font-size: 2rem; color: var(--gold);"></i>
+                    <h5 class="fw-bold mt-3">Monitoreo</h5>
+                    <p class="text-muted-2 body-sm mb-0">Observatorio con análisis semántico, armonización y alertas operativas.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

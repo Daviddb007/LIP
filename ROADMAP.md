@@ -67,17 +67,20 @@ Estrategia de participación robusta **completada y verificada** (ver `AUDITORIA
 
 **Objetivo:** Convertir el formulario actual en una experiencia conversacional. El ciudadano nunca debe sentir que diligencia una encuesta; debe sentirse acompañado.
 
+> **Estado (2026-08-13):** Implementado y verificado end-to-end (wizard 5 pasos en `/participar` → clasificación SRIE top-3 con explicación → resultados públicos). La variante **conversacional** (chat guiado en vez de formulario) queda documentada como mejora futura: el motor de clasificación, los catálogos y la explicación automática ya son reutilizables desde un chat, pero la UX conversacional no está construida.
+
 ### Alcance
 
-- [ ] Selección de hasta 3 grandes temas
-- [ ] Problemas por cada tema
-- [ ] Contexto ciudadano
-- [ ] Propuesta
-- [ ] Actores responsables
-- [ ] Beneficiarios
-- [ ] Clasificación SRIE con explicación automática
-- [ ] Visualización del resultado
-- [ ] Experiencia premium responsive
+- [x] Selección de hasta 3 grandes temas
+- [x] Problemas por cada tema
+- [x] Contexto ciudadano
+- [x] Propuesta
+- [x] Actores responsables
+- [x] Beneficiarios
+- [x] Clasificación SRIE con explicación automática
+- [x] Visualización del resultado
+- [x] Experiencia premium responsive
+- [ ] Experiencia conversacional (chat guiado) — mejora futura
 
 ### Producto esperado
 

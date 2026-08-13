@@ -131,7 +131,23 @@ def dashboard():
         .limit(15)
         .all()
     )
-    return render_template("admin/dashboard.html", stats=stats, participaciones=participaciones)
+    from app.services.alertas_service import obtener_alertas
+
+    alertas = obtener_alertas()
+    return render_template(
+        "admin/dashboard.html",
+        stats=stats,
+        participaciones=participaciones,
+        alertas=alertas,
+    )
+
+
+@admin_bp.route("/api/alertas")
+@login_required
+def api_alertas():
+    from app.services.alertas_service import obtener_alertas
+
+    return jsonify(obtener_alertas())
 
 
 # ------------------------------------------------------------------

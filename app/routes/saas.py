@@ -16,6 +16,19 @@ def landing():
     return render_template("saas.html", total_organizaciones=total_orgs)
 
 
+@saas_bp.route("/saas/registro")
+def registro():
+    return render_template("saas_registro.html")
+
+
+@saas_bp.route("/saas/<slug>")
+def org_landing(slug):
+    org = Organizacion.por_slug(slug)
+    if not org:
+        return render_template("saas_org_no_encontrada.html", slug=slug), 404
+    return render_template("saas_org.html", org=org)
+
+
 @saas_bp.route("/api/organizaciones", methods=["GET"])
 @login_required
 def api_listar():
@@ -37,6 +50,8 @@ def api_crear():
         slug=Organizacion.generar_slug(nombre),
         tipo=tipo,
         plan=data.get("plan", "gratuito"),
+        email_contacto=data.get("email_contacto") or None,
+        color=data.get("color") or None,
     )
     db.session.add(org)
     db.session.commit()

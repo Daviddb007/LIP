@@ -124,6 +124,11 @@ def _register_blueprints(app: Flask) -> None:
         from flask import render_template
         return render_template("api_docs.html")
 
+    @app.route("/api/docs/swagger")
+    def swagger_pagina():
+        from flask import render_template
+        return render_template("swagger.html")
+
     # Exempt admin and health blueprints from default rate limiting
     limiter.exempt(admin_bp)
     limiter.exempt(health_bp)

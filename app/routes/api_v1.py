@@ -12,6 +12,7 @@ from app.models.participacion import Participacion
 from app.models.politica import Politica
 from app.services.analitica_service import obtener_analitica
 from app.services.armonizacion_service import generar_armonizacion
+from app.services.openapi_spec import spec_openapi
 from app.services.stats_service import get_estadisticas_completas
 
 api_v1_bp = Blueprint("api_v1", __name__, url_prefix="/api/v1")
@@ -112,19 +113,24 @@ def api_participaciones():
     })
 
 
+@api_v1_bp.route("/openapi.json")
+def api_openapi():
+    return jsonify(spec_openapi())
+
+
 @api_v1_bp.route("/politicas")
 def api_politicas():
-    sector = request.args.get("sector", "")
+    sector = request.args.get("sector", type=int)
     query = Politica.query.filter_by(activo=True)
     if sector:
-        query = query.filter(Politica.sector_id == int(sector))
+        query = query.filter(Politica.sector_id == sector)
     politicas = query.order_by(Politica.created_at.desc()).all()
     return jsonify({"total": len(politicas), "data": [p.to_dict() for p in politicas]})
 
 
 @api_v1_bp.route("/politicas/<int:politica_id>")
 def api_politica_detalle(politica_id: int):
-    politica = Politica.query.get(politica_id)
+    politica = db.session.get(Politica, politica_id)
     if not politica or not politica.activo:
         return jsonify({"error": "Política no encontrada"}), 404
     return jsonify(politica.to_dict())

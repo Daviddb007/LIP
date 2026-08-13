@@ -77,6 +77,27 @@
             </div>
         </div>
 
+        {% if alertas %}
+        <div class="card-elevated p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0 fw-bold"><i class="bi bi-bell-fill me-2 text-danger"></i>Alertas operativas</h5>
+                <a href="{{ url_for('admin.api_alertas') }}" class="btn btn-sm btn-outline-light">Actualizar</a>
+            </div>
+            <div class="d-flex flex-column gap-2">
+                {% for a in alertas %}
+                <a href="{{ a.enlace }}" class="d-flex align-items-start gap-2 p-3 rounded-2"
+                   style="text-decoration: none; background: var(--surface-2);">
+                    <span class="badge {% if a.severidad == 'alta' %}bg-danger{% elif a.severidad == 'media' %}bg-warning text-dark{% else %}bg-secondary{% endif %}">{{ a.severidad }}</span>
+                    <div>
+                        <div class="fw-semibold text-white">{{ a.titulo }}</div>
+                        <small class="text-muted-2">{{ a.detalle }}</small>
+                    </div>
+                </a>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+
         <!-- Top Problemas + Top Actores -->
         <div class="row g-3 mb-4">
             <div class="col-lg-6">

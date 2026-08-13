@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% block title %}Portal no encontrado — SRIE Platform{% endblock %}
+
+{% block content %}
+<section class="hero" style="min-height: 60vh;">
+    <div class="container text-center">
+        <div class="badge badge-primary mb-3"><i class="bi bi-building-x me-1"></i> 404</div>
+        <h1 class="display-xl mb-3">Portal no encontrado</h1>
+        <p class="body-lg text-white-50 mb-4" style="max-width: 520px; margin: 0 auto;">
+            No existe un portal activo con el dominio <code>/saas/{{ slug }}</code>.
+        </p>
+        <a href="{{ url_for('saas.landing') }}" class="btn btn-gold btn-lg">
+            <i class="bi bi-arrow-left me-2"></i>Volver a SRIE Platform
+        </a>
+    </div>
+</section>
+{% endblock %}
