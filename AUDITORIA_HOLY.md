@@ -248,3 +248,48 @@ venv/Scripts/python.exe -m pytest tests/ -q
 venv/Scripts/python.exe -c "<DeploymentChecker.check_all()>"
 git status / git rev-list --left-right --count origin/master...HEAD
 ```
+
+---
+
+# Cierre de frentes — Auditoría 2026-08-13 (verificación de fases del plan maestro)
+
+- **Alcance**: cierre de gaps del plan maestro (12 fases) en 3 frentes: (2) funcional
+  F10/F9/F12/F1, (3) tests por fase, (1) gobernanza/ROADMAP.
+- **Método**: verificación end-to-end (`scripts/verificacion_f1.py`), suite pytest,
+  scanner holy-core, revisión manual de rutas/templates por fase.
+
+## Resultado por frente
+
+| Frente | Estado | Evidencia |
+|---|---|---|
+| **2. Gaps funcionales** | **Completado** | F10 OpenAPI 3.0.3 + Swagger UI + hardening `/politicas`; F9 `alertas_service` + dashboard + `/admin/api/alertas`; F12 multi-tenant básico (registro, landing `/saas/<slug>`, email/color); F1 verificación E2E `participar → SRIE → resultados` |
+| **3. Tests por fase** | **Completado** | +9 archivos de test (F3 biblioteca, F4/8 armonización+analítica, F5 laboratorio, F6 asistente, F9 alertas, F10 api v1, F11 integraciones, F12 saas, export) → **276/276 verdes**; ratio **0.32 ≥ 0.20** (17 test files / 53 módulos) |
+| **1. Gobernanza** | **Completado** | ROADMAP checkboxes con evidencia por fase (F1–F12); BUGS.md H-05 resuelto + H-16..H-18; gate `calidad` actualizado a 276/276 |
+
+## Hallazgos corregidos en este cierre
+
+1. **H-16** `POST /api/v1/clasificar` (F10) recibía dict pero el orquestador esperaba
+   `Participacion` → 500. Nuevo `clasificar_sin_persistencia()` sin escritura en BD.
+2. **H-17** `/biblioteca` y `/api/politicas` crasheaban con `sector` no numérico
+   (`int()` sin validar) → 500. Ahora `request.args.get(..., type=int)`.
+3. **H-18** `saas.html` publicaba a `/api/v1/organizaciones` (inexistente) en vez de
+   `/api/organizaciones` → creación de portal rota en frontend.
+
+## Estado del plan maestro tras cierre
+
+- **F1**: implementado + verificado E2E (wizard 5 pasos → SRIE top-3 con explicación);
+  variante conversacional queda como mejora futura documentada.
+- **F2 (Centro de Conocimiento)**: **sin implementar** — única fase sin evidencia de
+  módulo educativo; `/iniciativa` y `/asistente` la cubren parcialmente.
+- **F3–F8**: implementados y con tests dedicados (biblioteca, observatorio/analítica,
+  asistente, armonización, laboratorio).
+- **F9–F12**: implementados con tests dedicados; pendientes menores (admin de políticas
+  y usuarios; heatmaps; aislamiento tenant completo).
+
+## Limitaciones
+
+- El aislamiento multi-tenant completo (F12) requiere escopar políticas/participaciones
+  por `organizacion_id` — no implementado en este cierre (iteración futura).
+- F2 requiere una iteración dedicada (no fue parte del alcance de cierre aprobado).
+- Deprecaciones restantes: `Query.get()` legacy en biblioteca/integraciones (warnings),
+  complejidad mccabe de `admin.py`/`migrate_v2.py` (H-08 abierto).

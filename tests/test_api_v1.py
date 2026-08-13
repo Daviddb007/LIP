@@ -127,6 +127,40 @@ class TestAuth:
         assert r.status_code == 401
 
 
+class TestClasificar:
+
+    def test_clasificar_requiere_json(self, client):
+        r = client.post("/api/v1/clasificar", content_type="text/html")
+        assert r.status_code == 400
+
+    def test_clasificar_requiere_texto(self, client):
+        r = client.post("/api/v1/clasificar", json={})
+        assert r.status_code == 400
+
+    def test_clasificar_devuelve_resultados(self, client):
+        r = client.post("/api/v1/clasificar", json={
+            "justificacion": "Falta agua potable en las veredas",
+            "propuesta": "Construir acueductos veredales",
+        })
+        assert r.status_code == 200
+        data = r.get_json()
+        assert "resultados" in data
+        assert len(data["resultados"]) >= 1
+        primero = data["resultados"][0]
+        assert "pilar_slug" in primero
+        assert "confianza" in primero
+        assert "explicacion" in primero
+
+    def test_clasificar_ordenados_por_ranking(self, client):
+        r = client.post("/api/v1/clasificar", json={
+            "justificacion": "Mejorar la educacion y la salud en el municipio",
+            "propuesta": "Aumentar cupos escolares y cobertura sanitaria",
+        })
+        assert r.status_code == 200
+        rankings = [x["ranking"] for x in r.get_json()["resultados"]]
+        assert rankings == sorted(rankings)
+
+
 class TestGeneracionToken:
 
     def test_token_admin_exitoso(self, client):

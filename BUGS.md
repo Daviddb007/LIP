@@ -10,7 +10,7 @@
 | H-02 | Gobernanza | ALTO | app/errors.py (fan_in=6) | Hub crítico sin PIN ni rule FUNDACIONAL | resuelto (P-09) |
 | H-03 | Gobernanza | ALTO | app/decorators.py (fan_in=4) | Hub transversal sin PIN ni rule FUNDACIONAL | resuelto (P-10) |
 | H-04 | Gobernanza | MEDIO | holy_projects.yaml | Gate de quality/approval bloqueado | resuelto |
-| H-05 | Cobertura | MEDIO | tests/ | Ratio tests/módulos 0.141 < 0.20 (9 tests vs 64 módulos) | abierto |
+| H-05 | Cobertura | MEDIO | tests/ | Ratio tests/módulos 0.141 < 0.20 (9 tests vs 64 módulos) | resuelto (17 files, 53 módulos → 0.32) |
 | H-06 | Deprecación | MEDIO | app/ (14 usos) | datetime.utcnow() deprecado Python 3.14 | resuelto |
 | H-07 | Auditoría | MEDIO | BUGS.md, .holy/ | Sin audit trail ni SIDC; BUGS.md vacío | resuelto |
 | H-08 | Refactor | BAJO | app/routes/admin.py, app/cli/migrate_v2.py | Complejidad mccabe 41 y 46 respectivamente | abierto |
@@ -21,6 +21,9 @@
 | H-13 | Higiene | MEDIO | app/routes/focales.py | Archivos de audio huérfanos en disco al eliminar sesión/organización (cascade solo borra filas) | resuelto |
 | H-14 | Robustez | BAJO | app/routes/focales.py | int(org_id)/int(sector_id) no validados → 500 con entrada no numérica | resuelto |
 | H-15 | Correctitud | BAJO | app/services/llm_client.py | coseno() era producto punto; afectaba similitud con embeddings LLM no normalizados | resuelto |
+| H-16 | Robustez | ALTO | app/routes/api_v1.py | POST /api/v1/clasificar pasaba un dict a clasificar_participacion (esperaba objeto Participacion) → 500. Corregido con clasificar_sin_persistencia() | resuelto |
+| H-17 | Robustez | BAJO | app/routes/biblioteca.py | Filtro sector no numérico (int(sector_filter)) → 500 en /biblioteca y /api/politicas. Corregido con request.args.get(..., type=int) | resuelto |
+| H-18 | Correctitud | MEDIO | app/templates/saas.html | JS de creación de organización apuntaba a /api/v1/organizaciones (inexistente); la ruta real es /api/organizaciones | resuelto |
 
 ## Bugs de prueba holy-core
 

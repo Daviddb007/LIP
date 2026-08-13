@@ -144,7 +144,7 @@ projects:
               aprobado: true
         - nombre: "calidad"
           checks:
-            - descripcion: "todos los tests pasan (191/191)"
+            - descripcion: "todos los tests pasan (276/276)"
               aprobado: true
         - nombre: "rollback"
           checks:

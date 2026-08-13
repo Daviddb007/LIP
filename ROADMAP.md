@@ -92,6 +92,8 @@ El ciudadano entiende que su participación fue analizada y clasificada.
 
 **Objetivo:** Construir un espacio interactivo para explicar cómo funciona el Estado colombiano. No será un repositorio documental; será una plataforma educativa en lenguaje sencillo, visual e interactivo.
 
+> **Estado (2026-08-13):** Sin implementación verificada como centro de conocimiento. La landing `/iniciativa` (iniciativa.html) divulgó la iniciativa y el motor, y el asistente (`/asistente`, F5) responde sobre entidades/instrumentos, pero el módulo educativo interactivo (políticas públicas, timeline, glosario, casos) **no está construido**. Pendiente real.
+
 ### Módulos
 
 - [ ] **¿Qué es una política pública?** — Concepto, video, infografía, ejemplos, caso práctico
@@ -110,23 +112,25 @@ Cualquier ciudadano debe comprender cómo funciona una política pública en men
 
 **Objetivo:** Transformar las políticas públicas en información navegable. No PDFs. Información viva. Cada política tendrá su propia página.
 
+> **Estado (2026-08-13):** Implementado. Modelo `Politica` con 17 campos, `/biblioteca` con filtros (estado/sector), detalle `/biblioteca/<id>`, API `/api/politicas` y consulta con SRIE (`/api/politicas/<id>/preguntar`). Tests: `tests/test_biblioteca.py`.
+
 ### Cada ficha incluirá
 
-- [ ] Resumen ejecutivo
-- [ ] Problema que resuelve
-- [ ] Objetivos
-- [ ] Población objetivo
-- [ ] Normatividad
-- [ ] Cronología
-- [ ] Entidades responsables
-- [ ] Indicadores
-- [ ] Presupuesto
-- [ ] Estado
-- [ ] Documentos
-- [ ] ODS relacionados
+- [x] Resumen ejecutivo
+- [x] Problema que resuelve
+- [x] Objetivos
+- [x] Población objetivo
+- [x] Normatividad
+- [x] Cronología
+- [x] Entidades responsables
+- [x] Indicadores
+- [x] Presupuesto
+- [x] Estado
+- [x] Documentos
+- [x] ODS relacionados
 - [ ] Mapa territorial
 - [ ] Línea de tiempo
-- [ ] **"Hacer preguntas"** utilizando SRIE
+- [x] **"Hacer preguntas"** utilizando SRIE
 
 ### Producto esperado
 
@@ -138,15 +142,17 @@ La política pública deja de ser un documento. Se convierte en una experiencia 
 
 **Objetivo:** Visualizar qué está ocurriendo en Colombia. No solamente mostrar estadísticas. Mostrar inteligencia.
 
+> **Estado (2026-08-13):** Implementado como observatorio en `/resultados` (mapa nacional con `map.js`, estadísticas, top problemas/actores/beneficiarios/pilares) + `/analitica` (series de tiempo, territorio, comparativos, clustering, predicciones). Tests: `tests/test_analitica.py`, `tests/integration/test_api.py`.
+
 ### Dashboard
 
-- [ ] Mapa nacional / departamental / municipal
-- [ ] Series de tiempo
-- [ ] Problemas, prioridades y pilares
-- [ ] Comparativos y brechas
-- [ ] Actores y beneficiarios
+- [x] Mapa nacional / departamental / municipal
+- [x] Series de tiempo
+- [x] Problemas, prioridades y pilares
+- [x] Comparativos y brechas
+- [x] Actores y beneficiarios
 - [ ] Heatmaps
-- [ ] Indicadores en tiempo real
+- [x] Indicadores en tiempo real
 
 ### Producto esperado
 
@@ -157,6 +163,8 @@ El primer observatorio ciudadano alimentado en tiempo real.
 ## Fase 5: Asistente Público SRIE
 
 **Objetivo:** Crear un asistente conversacional especializado en el Estado colombiano. No será ChatGPT; será un especialista.
+
+> **Estado (2026-08-13):** Implementado. `/asistente` con motor de conocimiento oficial (23 entradas: entidades, instrumentos, participación, políticas) y API `/api/asistente/preguntar`. Tests: `tests/test_asistente.py`.
 
 ### Capacidades
 
@@ -180,12 +188,14 @@ El ciudadano conversa con el Estado.
 
 **Objetivo:** Comparar automáticamente participación ciudadana, planes, políticas, programas, ODS, planes de gobierno y planes territoriales.
 
+> **Estado (2026-08-13):** Implementado. `/armonizacion` con matriz de cobertura, coincidencias, vacíos/brechas, oportunidades y análisis ODS. API `/api/armonizacion` + `/api/v1/armonizacion`. Tests: `tests/test_armonizacion.py`.
+
 SRIE identificará:
 
-- [ ] Coincidencias
-- [ ] Vacíos
-- [ ] Brechas
-- [ ] Oportunidades
+- [x] Coincidencias
+- [x] Vacíos
+- [x] Brechas
+- [x] Oportunidades
 
 ### Producto esperado
 
@@ -196,6 +206,8 @@ Construcción automática de matrices de armonización.
 ## Fase 7: Laboratorio de Innovación Pública
 
 **Objetivo:** Permitir experimentar escenarios y simulaciones.
+
+> **Estado (2026-08-13):** Implementado. `/laboratorio` con simulación de presupuesto, redistribución sectorial y nuevos sectores (índice de armonía base vs simulado). API `/api/laboratorio/estado` y `/api/laboratorio/simular`. Tests: `tests/test_laboratorio.py`.
 
 - ¿Qué pasaría si aumenta el presupuesto?
 - ¿Qué pasa si cambia una prioridad?
@@ -228,46 +240,54 @@ SRIE evoluciona hacia inteligencia estratégica.
 
 ## Fase 9: Centro Administrativo (Centro Nacional de Inteligencia)
 
-- [ ] Participaciones
+> **Estado (2026-08-13):** Implementado en `/admin` (dashboard con indicadores + alertas operativas, CRUD participaciones/sectores/actores/beneficiarios/pilares/problemas, clasificaciones, planes, export CSV/JSON, config, logs). Tests: `tests/integration/test_api.py`, `tests/test_export.py`, `tests/test_alertas.py`. Pendiente: gestión de políticas y usuarios en el admin.
+
+- [x] Participaciones
 - [ ] Políticas
 - [ ] Usuarios
-- [ ] Clasificaciones
-- [ ] Alertas
-- [ ] Reportes
-- [ ] Indicadores
-- [ ] Configuración
-- [ ] Logs
-- [ ] Exportaciones
-- [ ] Monitoreo
+- [x] Clasificaciones
+- [x] Alertas
+- [x] Reportes
+- [x] Indicadores
+- [x] Configuración
+- [x] Logs
+- [x] Exportaciones
+- [x] Monitoreo
 
 ---
 
 ## Fase 10: API Pública
 
-- [ ] API REST con Swagger
-- [ ] Documentación
-- [ ] Versionamiento
-- [ ] Tokens y permisos
+> **Estado (2026-08-13):** Implementado. API REST `/api/v1` con spec OpenAPI 3.0.3 (`/api/v1/openapi.json`), Swagger UI (`/api/docs/swagger`), docs custom (`/api/docs`), versionado v1 y tokens con roles (lectura/escritura/admin) vía `ApiToken`. Tests: `tests/test_api_v1.py`.
+
+- [x] API REST con Swagger
+- [x] Documentación
+- [x] Versionamiento
+- [x] Tokens y permisos
 
 ---
 
 ## Fase 11: Ecosistema Abierto
 
+> **Estado (2026-08-13):** Implementado el ecosistema de integraciones en `/ecosistema` (partners: Ministerio, DNP, Gobernaciones, etc.) con webhooks CRUD (`/api/webhooks`) y despacho de eventos (`dispatch`). Tests: `tests/test_integraciones.py`.
+
 Permitir integrar:
 
-- [ ] Ministerios
-- [ ] Gobernaciones
-- [ ] Alcaldías
-- [ ] Universidades
-- [ ] Centros de pensamiento
-- [ ] ONG
-- [ ] Cooperación internacional
+- [x] Ministerios
+- [x] Gobernaciones
+- [x] Alcaldías
+- [x] Universidades
+- [x] Centros de pensamiento
+- [x] ONG
+- [x] Cooperación internacional
 
 ---
 
 ## Fase 12: Plataforma SaaS StoneLytics
 
 **Objetivo:** Convertir Laboratorio de Inteligencia Pública en un producto comercial multi-tenant. Cada cliente podrá crear su propio portal, plan, políticas, observatorio, SRIE y dashboard sin modificar el código.
+
+> **Estado (2026-08-13):** Implementado el **multi-tenant básico**: registro de organización (plan/tipo/email/color), landing pública por slug (`/saas/<slug>`) y API de organizaciones. Pendiente como iteración futura: aislamiento completo por tenant (políticas, observatorio, SRIE y dashboard propios por organización). Tests: `tests/test_saas.py`.
 
 ### Arquitectura de Producto
 

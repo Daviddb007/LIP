@@ -155,12 +155,22 @@ def api_analitica():
 @api_v1_bp.route("/clasificar", methods=["POST"])
 @limiter.limit("10 per minute")
 def api_clasificar():
-    from app.services.srie.classifier import clasificar_participacion
+    from app.services.srie.classifier import clasificar_sin_persistencia
     data = request.get_json(silent=True)
     if not data:
         return jsonify({"error": "JSON requerido"}), 400
-    resultado = clasificar_participacion(data)
-    return jsonify(resultado) if resultado else jsonify({"error": "Error en clasificación"}), 500
+    justificacion = (data.get("justificacion") or "").strip()
+    propuesta = (data.get("propuesta") or "").strip()
+    if not justificacion and not propuesta:
+        return jsonify({"error": "Se requiere justificacion o propuesta"}), 400
+    resultado = clasificar_sin_persistencia(
+        justificacion=justificacion,
+        propuesta=propuesta,
+        problema_slug=data.get("problema_slug") or None,
+    )
+    if not resultado:
+        return jsonify({"error": "No fue posible clasificar el texto"}), 422
+    return jsonify({"resultados": resultado})
 
 
 @api_v1_bp.route("/token", methods=["POST"])

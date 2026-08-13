@@ -14,14 +14,14 @@ biblioteca_bp = Blueprint("biblioteca", __name__)
 def lista():
     sectores = Sector.query.filter_by(activo=True).order_by(Sector.orden).all()
     estado_filter = request.args.get("estado", "")
-    sector_filter = request.args.get("sector", "")
+    sector_filter = request.args.get("sector", type=int)
 
     query = Politica.query.filter_by(activo=True)
 
     if estado_filter:
         query = query.filter(Politica.estado == estado_filter)
     if sector_filter:
-        query = query.filter(Politica.sector_id == int(sector_filter))
+        query = query.filter(Politica.sector_id == sector_filter)
 
     politicas = query.order_by(Politica.updated_at.desc()).all()
 
@@ -44,10 +44,10 @@ def detalle(politica_id: int):
 
 @biblioteca_bp.route("/api/politicas")
 def api_lista():
-    sector_filter = request.args.get("sector", "")
+    sector_filter = request.args.get("sector", type=int)
     query = Politica.query.filter_by(activo=True)
     if sector_filter:
-        query = query.filter(Politica.sector_id == int(sector_filter))
+        query = query.filter(Politica.sector_id == sector_filter)
     politicas = query.order_by(Politica.updated_at.desc()).all()
     return jsonify([p.to_dict() for p in politicas])
 

@@ -36,7 +36,7 @@ class TestPagina:
 
     def test_lista_con_filtro_sector_invalido(self, client):
         r = client.get("/biblioteca?sector=no-numero")
-        assert r.status_code == 500
+        assert r.status_code == 200
 
     def test_detalle_404_para_inexistente(self, client):
         r = client.get("/biblioteca/999999")
