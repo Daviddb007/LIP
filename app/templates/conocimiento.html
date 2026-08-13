@@ -1,0 +1,263 @@
+{% extends "base.html" %}
+
+{% block title %}Centro de Conocimiento — ¿Cómo funciona el Estado?{% endblock %}
+{% block meta_description %}Aprende en menos de 15 minutos cómo se construye una política pública en Colombia: concepto, ciclo interactivo, instrumentos del Estado, glosario y casos reales.{% endblock %}
+
+{% block content %}
+<!-- Hero -->
+<section class="hero">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-8 hero-content">
+                <div class="badge badge-primary mb-3">Centro de Conocimiento Público</div>
+                <h1 class="display-xl mb-4">
+                    El Estado, <span class="text-gradient">en lenguaje claro</span>
+                </h1>
+                <p class="body-lg text-white-50 mb-4" style="max-width: 600px;">
+                    ¿Cómo nace una política pública? ¿Qué es un CONPES o un PND?
+                    Explora de forma visual e interactiva cómo se toman las decisiones
+                    que construyen Colombia. En menos de 15 minutos.
+                </p>
+                <div class="d-flex gap-3 flex-wrap">
+                    <a href="#que-es" class="btn btn-gold btn-lg">
+                        <i class="bi bi-mortarboard me-2"></i>Empezar a aprender
+                    </a>
+                    <a href="#glosario" class="btn btn-outline btn-lg" style="border-color: rgba(255,255,255,0.3); color: white;">
+                        <i class="bi bi-book me-2"></i>Ir al glosario
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Módulo 1: ¿Qué es una política pública? -->
+<section class="section" id="que-es">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <div class="overline">Módulo 1</div>
+            <h2 class="display-md">{{ contenido.modulo1.titulo }}</h2>
+            <p>{{ contenido.modulo1.resumen }}</p>
+        </div>
+
+        <div class="row g-4 mb-5">
+            {% for item in contenido.modulo1.ingredientes %}
+            <div class="col-lg-4 animate-on-scroll">
+                <div class="card-premium h-100">
+                    <div class="step-number mb-3"><i class="bi {{ item.icono }}"></i></div>
+                    <h3 class="heading-lg mb-2">{{ item.titulo }}</h3>
+                    <p class="text-muted-2 mb-0">{{ item.texto }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Infografía: caso práctico -->
+        <div class="card-glass p-4 p-lg-5 animate-on-scroll">
+            <div class="row g-4 align-items-center">
+                <div class="col-lg-5">
+                    <div class="overline text-gold">Caso práctico</div>
+                    <h3 class="heading-lg mb-3">{{ contenido.modulo1.caso_practico.titulo }}</h3>
+                    <p class="text-muted-2 mb-0">
+                        Sigamos el ciclo completo con un ejemplo cotidiano para ver cada
+                        etapa en acción.
+                    </p>
+                </div>
+                <div class="col-lg-7">
+                    <div class="d-flex flex-column gap-3">
+                        {% for paso in contenido.modulo1.caso_practico.pasos %}
+                        <div class="d-flex align-items-center gap-3">
+                            <div class="step-number">{{ loop.index }}</div>
+                            <div class="fw-bold">{{ paso }}</div>
+                        </div>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Módulo 2: Ciclo de la política pública -->
+<section class="section section-alt" id="ciclo">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <div class="overline">Módulo 2</div>
+            <h2 class="display-md">¿Cómo nace una política pública?</h2>
+            <p>Un ciclo de 8 etapas. Toca cada una para descubrir su pregunta clave y su entregable.</p>
+        </div>
+
+        <div class="row g-4 align-items-stretch">
+            <div class="col-lg-3 animate-on-scroll">
+                <div class="card-premium h-100 text-center d-flex flex-column justify-content-center">
+                    <div class="display-xl mb-3" style="color: var(--gold);">8</div>
+                    <p class="text-muted-2 mb-0">
+                        pasos enlazados, de la idea al mejoramiento continuo.
+                    </p>
+                </div>
+            </div>
+            <div class="col-lg-9 animate-on-scroll">
+                <div class="accordion" id="acordeonCiclo">
+                    {% for paso in contenido.ciclo %}
+                    <div class="accordion-item">
+                        <h3 class="accordion-header" id="cicloHead{{ paso.numero }}">
+                            <button class="accordion-button collapsed" type="button"
+                                data-bs-toggle="collapse" data-bs-target="#cicloBody{{ paso.numero }}"
+                                aria-expanded="false" aria-controls="cicloBody{{ paso.numero }}">
+                                <span class="me-3 fw-bold" style="color: var(--gold);">{{ paso.numero }}.</span>
+                                {{ paso.titulo }}
+                            </button>
+                        </h3>
+                        <div id="cicloBody{{ paso.numero }}" class="accordion-collapse collapse"
+                            aria-labelledby="cicloHead{{ paso.numero }}" data-bs-parent="#acordeonCiclo">
+                            <div class="accordion-body">
+                                <p class="mb-1"><strong>Pregunta clave:</strong> {{ paso.pregunta_clave }}</p>
+                                <p class="text-muted-2 mb-0"><strong>Entregable:</strong> {{ paso.entregable }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Módulo 3: Instrumentos del Estado -->
+<section class="section" id="instrumentos">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <div class="overline">Módulo 3</div>
+            <h2 class="display-md">Instrumentos del Estado</h2>
+            <p>Las herramientas que usa el Estado para transformar decisiones en realidad.</p>
+        </div>
+
+        <div class="row g-4">
+            {% for item in contenido.instrumentos %}
+            <div class="col-lg-4 col-md-6 animate-on-scroll">
+                <div class="card-premium h-100 d-flex flex-column">
+                    <div class="badge badge-primary align-self-start mb-2">{{ item.jerarquia }}</div>
+                    <h3 class="heading-lg mb-2">{{ item.nombre }}</h3>
+                    <p class="text-muted-2 flex-grow-1 mb-3">{{ item.que_es }}</p>
+                    <button class="btn btn-nav-cta btn-sm align-self-start" data-bs-toggle="modal"
+                        data-bs-target="#instrumento{{ item.slug }}">
+                        Ver ejemplo <i class="bi bi-arrow-right ms-1"></i>
+                    </button>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Modales de instrumentos -->
+{% for item in contenido.instrumentos %}
+<div class="modal fade" id="instrumento{{ item.slug }}" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content card-glass">
+            <div class="modal-header border-0">
+                <h3 class="heading-lg mb-0">{{ item.nombre }}</h3>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <div class="badge badge-primary mb-3">{{ item.jerarquia }}</div>
+                <p class="text-muted-2">{{ item.que_es }}</p>
+                <p class="mb-0"><i class="bi bi-lightbulb text-gold me-2"></i><strong>Ejemplo:</strong> {{ item.ejemplo }}</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endfor %}
+
+<!-- Módulo 4: Glosario interactivo -->
+<section class="section section-alt" id="glosario">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <div class="overline">Módulo 4</div>
+            <h2 class="display-md">Glosario interactivo</h2>
+            <p>Busca un término o explora los conceptos enlazados entre sí.</p>
+        </div>
+
+        <div class="row justify-content-center mb-4 animate-on-scroll">
+            <div class="col-lg-6">
+                <div class="input-group">
+                    <span class="input-group-text"><i class="bi bi-search"></i></span>
+                    <input type="text" id="glosarioBuscar" class="form-control"
+                        placeholder="Buscar un término, por ejemplo: CONPES...">
+                </div>
+            </div>
+        </div>
+
+        <div class="row g-4" id="glosarioGrid">
+            {% for termino in contenido.glosario %}
+            <div class="col-lg-4 col-md-6 glosario-item animate-on-scroll">
+                <div class="card-premium h-100">
+                    <h3 class="heading-lg mb-2">{{ termino.termino }}</h3>
+                    <p class="text-muted-2">{{ termino.definicion }}</p>
+                    <div class="d-flex flex-wrap gap-2">
+                        {% for rel in termino.relacionados %}
+                        <span class="badge badge-primary badge-rel" data-termino="{{ rel|lower }}">{{ rel }}</span>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- Módulo 5: Casos reales -->
+<section class="section section-dark" id="casos">
+    <div class="container">
+        <div class="section-header animate-on-scroll">
+            <div class="overline">Módulo 5</div>
+            <h2 class="display-md">Casos reales en Colombia</h2>
+            <p>Ejemplos documentados de políticas públicas con ciclo completo.</p>
+        </div>
+
+        <div class="row g-4">
+            {% for caso in contenido.casos %}
+            <div class="col-lg-4 animate-on-scroll">
+                <div class="card-premium h-100">
+                    <div class="step-number mb-3"><i class="bi bi-briefcase"></i></div>
+                    <h3 class="heading-lg mb-2">{{ caso.titulo }}</h3>
+                    <p class="text-muted-2 flex-grow-1">{{ caso.resumen }}</p>
+                    <p class="small mb-0" style="color: var(--gold);"><i class="bi bi-file-earmark-text me-1"></i>{{ caso.fuente }}</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="text-center mt-5 animate-on-scroll">
+            <a href="{{ url_for('asistente.pagina') }}" class="btn btn-gold btn-lg">
+                <i class="bi bi-cpu me-2"></i>Pregúntale al asistente SRIE
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Filtro del glosario
+    const buscarInput = document.getElementById('glosarioBuscar');
+    const items = document.querySelectorAll('.glosario-item');
+    if (buscarInput) {
+        buscarInput.addEventListener('input', function() {
+            const q = this.value.trim().toLowerCase();
+            items.forEach(function(item) {
+                item.style.display = (item.textContent.toLowerCase().includes(q)) ? '' : 'none';
+            });
+        });
+
+        // Términos enlazados: al hacer clic, rellenar el buscador
+        document.querySelectorAll('.badge-rel').forEach(function(badge) {
+            badge.addEventListener('click', function() {
+                buscarInput.value = this.getAttribute('data-termino');
+                buscarInput.dispatchEvent(new Event('input'));
+                document.getElementById('glosario').scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+    }
+</script>
+{% endblock %}

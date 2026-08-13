@@ -67,60 +67,9 @@ def logout():
 @admin_bp.route("/")
 @login_required
 def dashboard():
-    now = datetime.now(timezone.utc).replace(tzinfo=None)
-    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+    from app.services.stats_service import get_dashboard_stats
 
-    total = Participacion.query.count()
-    this_month = Participacion.query.filter(Participacion.created_at >= month_start).count()
-    municipios = db.session.query(db.func.count(db.distinct(Participacion.municipio))).scalar() or 0
-    pilares_cubiertos = db.session.query(db.func.count(db.distinct(ClasificacionSRIE.pilar_id))).scalar() or 0
-    total_pilares = Pilar.query.filter_by(activo=True).count()
-    raw_avg = db.session.query(db.func.avg(ClasificacionSRIE.confianza)).scalar() or 0
-    avg_conf = round(float(raw_avg) * 100, 1)
-
-    # Top problemas
-    top_problemas = (
-        db.session.query(
-            ProblemaCatalogo.nombre,
-            db.func.count(participacion_problemas.c.participacion_id).label("total"),
-        )
-        .join(
-            participacion_problemas,
-            participacion_problemas.c.problema_id == ProblemaCatalogo.id,
-        )
-        .group_by(ProblemaCatalogo.nombre)
-        .order_by(db.desc("total"))
-        .limit(5)
-        .all()
-    )
-
-    # Top actores
-    top_actores = (
-        db.session.query(
-            Actor.nombre,
-            db.func.count(participacion_actores.c.participacion_id).label("total"),
-        )
-        .join(
-            participacion_actores,
-            participacion_actores.c.actor_id == Actor.id,
-        )
-        .group_by(Actor.nombre)
-        .order_by(db.desc("total"))
-        .limit(5)
-        .all()
-    )
-
-    stats = {
-        "total": total,
-        "this_month": this_month,
-        "municipios": municipios,
-        "pilares": pilares_cubiertos,
-        "total_pilares": total_pilares,
-        "coverage": round(pilares_cubiertos / total_pilares * 100) if total_pilares > 0 else 0,
-        "avg_confidence": avg_conf,
-        "top_problemas": [{"nombre": p, "total": c} for p, c in top_problemas],
-        "top_actores": [{"nombre": a, "total": c} for a, c in top_actores],
-    }
+    stats = get_dashboard_stats()
 
     participaciones = (
         Participacion.query

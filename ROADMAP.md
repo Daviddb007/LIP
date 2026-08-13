@@ -92,15 +92,15 @@ El ciudadano entiende que su participación fue analizada y clasificada.
 
 **Objetivo:** Construir un espacio interactivo para explicar cómo funciona el Estado colombiano. No será un repositorio documental; será una plataforma educativa en lenguaje sencillo, visual e interactivo.
 
-> **Estado (2026-08-13):** Sin implementación verificada como centro de conocimiento. La landing `/iniciativa` (iniciativa.html) divulgó la iniciativa y el motor, y el asistente (`/asistente`, F5) responde sobre entidades/instrumentos, pero el módulo educativo interactivo (políticas públicas, timeline, glosario, casos) **no está construido**. Pendiente real.
+> **Estado (2026-08-13):** Implementado. `/conocer` (página única con los 5 módulos) con `app/routes/conocimiento.py`, contenido estructurado en `app/services/conocimiento_service.py` y template `app/templates/conocimiento.html`. Módulo 1 con infografía + caso práctico (sin video). Tests: `tests/test_conocimiento.py`.
 
 ### Módulos
 
-- [ ] **¿Qué es una política pública?** — Concepto, video, infografía, ejemplos, caso práctico
-- [ ] **¿Cómo nace una política pública?** — Timeline interactivo: Problema → Agenda → Diagnóstico → Formulación → Implementación → Seguimiento → Evaluación → Mejoramiento
-- [ ] **Instrumentos del Estado** — PND, CONPES, Leyes, Decretos, Políticas Públicas, Programas, Proyectos, Planes territoriales, ODS, Indicadores
-- [ ] **Glosario interactivo** — Cada concepto enlaza otros (como Wikipedia, pero más visual)
-- [ ] **Casos reales** — Ejemplos colombianos documentados
+- [x] **¿Qué es una política pública?** — Concepto, infografía, ejemplos, caso práctico
+- [x] **¿Cómo nace una política pública?** — Timeline interactivo: Problema → Agenda → Diagnóstico → Formulación → Implementación → Seguimiento → Evaluación → Mejoramiento
+- [x] **Instrumentos del Estado** — PND, CONPES, Leyes, Decretos, Políticas Públicas, Programas, Proyectos, Planes territoriales, ODS, Indicadores
+- [x] **Glosario interactivo** — Cada concepto enlaza otros (como Wikipedia, pero más visual)
+- [x] **Casos reales** — Ejemplos colombianos documentados
 
 ### Producto esperado
 

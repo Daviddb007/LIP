@@ -166,6 +166,25 @@ def _migrar_sectores(participacion: Participacion, sector_ids: list[int]) -> Non
             )
 
 
+def _buscar_pilar(srie_pilar: str, pilares_map: dict) -> int | None:
+    """Resuelve el id de pilar V3 desde el nombre V2 (match exacto o difuso)."""
+    pilar_id = pilares_map.get(srie_pilar)
+    if pilar_id:
+        return pilar_id
+    for nombre, pid in pilares_map.items():
+        if srie_pilar in nombre or nombre in srie_pilar:
+            return pid
+    return None
+
+
+def _confianza_normalizada(valor) -> float:
+    """Convierte la confianza V2 (0-100) al rango V3 (0-1) con límites seguros."""
+    try:
+        return min(max(float(valor) / 100.0, 0.0), 1.0)
+    except (ValueError, TypeError):
+        return 0.5
+
+
 def _migrar_clasificacion(
     participacion: Participacion,
     row: dict,
@@ -176,13 +195,7 @@ def _migrar_clasificacion(
     if not srie_pilar:
         return
 
-    pilar_id = pilares_map.get(srie_pilar)
-    if not pilar_id:
-        for nombre, pid in pilares_map.items():
-            if srie_pilar in nombre or nombre in srie_pilar:
-                pilar_id = pid
-                break
-
+    pilar_id = _buscar_pilar(srie_pilar, pilares_map)
     if not pilar_id:
         logger.debug("Pilar '%s' no encontrado en V3, saltando clasificación", srie_pilar)
         return
@@ -190,18 +203,10 @@ def _migrar_clasificacion(
     clasificacion = ClasificacionSRIE(
         participacion_id=participacion.id,
         pilar_id=pilar_id,
-        confianza=0.5,
+        confianza=_confianza_normalizada(row.get("srie_confianza")),
         ranking=1,
         modelo_usado="migracion-v2",
     )
-
-    srie_confianza = row.get("srie_confianza")
-    if srie_confianza:
-        try:
-            confianza_float = float(srie_confianza) / 100.0
-            clasificacion.confianza = min(max(confianza_float, 0.0), 1.0)
-        except (ValueError, TypeError):
-            pass
 
     db.session.add(clasificacion)
 

@@ -86,6 +86,7 @@ def _register_blueprints(app: Flask) -> None:
     from app.routes.home import home_bp
     from app.routes.participar import participar_bp
     from app.routes.iniciativa import iniciativa_bp
+    from app.routes.conocimiento import conocimiento_bp
     from app.routes.resultados import resultados_bp
     from app.routes.admin import admin_bp
     from app.routes.health import health_bp
@@ -104,6 +105,7 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(home_bp)
     app.register_blueprint(participar_bp)
     app.register_blueprint(iniciativa_bp)
+    app.register_blueprint(conocimiento_bp)
     app.register_blueprint(resultados_bp)
     app.register_blueprint(admin_bp, url_prefix="/admin")
     app.register_blueprint(health_bp)

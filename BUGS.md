@@ -13,8 +13,8 @@
 | H-05 | Cobertura | MEDIO | tests/ | Ratio tests/módulos 0.141 < 0.20 (9 tests vs 64 módulos) | resuelto (17 files, 53 módulos → 0.32) |
 | H-06 | Deprecación | MEDIO | app/ (14 usos) | datetime.utcnow() deprecado Python 3.14 | resuelto |
 | H-07 | Auditoría | MEDIO | BUGS.md, .holy/ | Sin audit trail ni SIDC; BUGS.md vacío | resuelto |
-| H-08 | Refactor | BAJO | app/routes/admin.py, app/cli/migrate_v2.py | Complejidad mccabe 41 y 46 respectivamente | abierto |
-| H-09 | Despliegue | BAJO | .env.production | ADMIN_API_TOKEN missing_prod | abierto |
+| H-08 | Refactor | BAJO | app/routes/admin.py, app/cli/migrate_v2.py | Complejidad mccabe 41 y 46 respectivamente | resuelto (2026-08-13) |
+| H-09 | Despliegue | BAJO | .env.production | ADMIN_API_TOKEN missing_prod | resuelto (2026-08-13) |
 | H-10 | Despliegue | ALTO | docker-compose.yml | Volumen uploads_data montado dos veces en `app` + falta RQ_CONNECTION_URI (encolado a localhost en contenedor) | resuelto |
 | H-11 | Base de datos | ALTO | app/models/grafo.py, app/models/focal.py | FKs del grafo sin ondelete → IntegrityError al borrar transcript/sesión en PostgreSQL | resuelto |
 | H-12 | Correctitud | ALTO | app/services/transcripcion_service.py | Reprocesar un audio transcrito duplicaba texto/segmentos en el transcript | resuelto |

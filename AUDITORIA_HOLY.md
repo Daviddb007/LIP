@@ -279,17 +279,44 @@ git status / git rev-list --left-right --count origin/master...HEAD
 
 - **F1**: implementado + verificado E2E (wizard 5 pasos → SRIE top-3 con explicación);
   variante conversacional queda como mejora futura documentada.
-- **F2 (Centro de Conocimiento)**: **sin implementar** — única fase sin evidencia de
-  módulo educativo; `/iniciativa` y `/asistente` la cubren parcialmente.
+- **F2 (Centro de Conocimiento)**: **implementado (2026-08-13)** — `/conocer` página única
+  con los 5 módulos (concepto+infografía+caso práctico, ciclo de 8 pasos, instrumentos,
+  glosario interactivo con buscador, casos reales). Tests: `tests/test_conocimiento.py`.
 - **F3–F8**: implementados y con tests dedicados (biblioteca, observatorio/analítica,
   asistente, armonización, laboratorio).
 - **F9–F12**: implementados con tests dedicados; pendientes menores (admin de políticas
   y usuarios; heatmaps; aislamiento tenant completo).
 
+## Iteración 2026-08-13 — F2 + deuda H-08/H-09
+
+### F2 Centro de Conocimiento Público
+- **`app/services/conocimiento_service.py`**: contenido estructurado (glosario 12
+  términos interconectados, 9 instrumentos con jerarquía, ciclo de 8 pasos, 3 casos
+  reales, módulo 1 con infografía + caso práctico).
+- **`app/routes/conocimiento.py`**: `conocimiento_bp` con ruta `/conocer`, registrado en
+  `_register_blueprints` de `app/__init__.py`.
+- **`app/templates/conocimiento.html`**: página única con hero + 5 secciones ancladas;
+  timeline en acordeón Bootstrap, modales de instrumentos, buscador JS client-side en
+  glosario y términos enlazados. Enlace "Conocer" en navbar y footer (`base.html`).
+- **`tests/test_conocimiento.py`**: 12 tests (página + contrato del servicio).
+
+### H-08 — Complejidad (resuelto)
+- `dashboard()` de `admin.py` extraído a `stats_service.get_dashboard_stats()`:
+  elimina ~70 líneas de la ruta y la duplicación con el servicio existente.
+- `_migrar_clasificacion` de `migrate_v2.py` simplificado vía `_buscar_pilar()` y
+  `_confianza_normalizada()` (mccabe 10 → helpers de una sola responsabilidad).
+- Sin cambio de comportamiento: tests existentes de admin y migración siguen verdes.
+
+### H-09 — ADMIN_API_TOKEN (resuelto)
+- Añadido `ADMIN_API_TOKEN` a `.env.production` (git-ignored) con token generado vía
+  `secrets.token_urlsafe(32)`. `config.py` ya lo leía de entorno y `.env.production.example`
+  ya documentaba la variable.
+
 ## Limitaciones
 
 - El aislamiento multi-tenant completo (F12) requiere escopar políticas/participaciones
-  por `organizacion_id` — no implementado en este cierre (iteración futura).
-- F2 requiere una iteración dedicada (no fue parte del alcance de cierre aprobado).
-- Deprecaciones restantes: `Query.get()` legacy en biblioteca/integraciones (warnings),
-  complejidad mccabe de `admin.py`/`migrate_v2.py` (H-08 abierto).
+  por `organizacion_id` — no implementado (iteración futura).
+- El módulo 1 de F2 prescinde del video del ROADMAP original: se sustituyó por
+  infografía + caso práctico (decisión aprobada).
+- Deprecaciones restantes: `Query.get()` legacy en biblioteca/integraciones (warnings).
+- Pendientes menores: admin de políticas y usuarios; heatmaps; F1 conversacional.

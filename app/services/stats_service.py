@@ -10,16 +10,18 @@ from typing import Any
 
 from app import cache, db
 from app.models.catalog import (
+    Actor,
     Sector,
     Subsector,
     ProblemaCatalogo,
+    participacion_actores,
     participacion_problemas,
 )
 from app.models.participacion import Participacion, ClasificacionSRIE
 from app.models.plan import Pilar
 from app.models.politica import Politica
 from app.services.db_helpers import date_trunc
-from sqlalchemy import func
+from sqlalchemy import desc, func
 
 
 def get_estadisticas_generales() -> dict[str, int]:
@@ -117,6 +119,81 @@ def get_estadisticas_completas() -> dict[str, Any]:
         "srie_pilares": srie_pilares,
         "srie_urgencia": srie_urgencia,
         "srie_impacto": srie_impacto,
+    }
+
+
+def get_dashboard_stats() -> dict[str, Any]:
+    """Estadísticas del dashboard de administración.
+
+    Incluye totales, participación del mes, cobertura de pilares, confianza
+    promedio de clasificación y los top de problemas y actores.
+
+    Returns:
+        dict con total, this_month, municipios, pilares, total_pilares,
+        coverage, avg_confidence, top_problemas y top_actores.
+    """
+    from datetime import datetime, timezone as tz
+
+    now = datetime.now(tz.utc).replace(tzinfo=None)
+    month_start = now.replace(day=1, hour=0, minute=0, second=0, microsecond=0)
+
+    total = db.session.query(func.count(Participacion.id)).scalar() or 0
+    this_month = (
+        db.session.query(func.count(Participacion.id))
+        .filter(Participacion.created_at >= month_start)
+        .scalar()
+        or 0
+    )
+    municipios = (
+        db.session.query(func.count(func.distinct(Participacion.municipio))).scalar() or 0
+    )
+    pilares_cubiertos = (
+        db.session.query(func.count(func.distinct(ClasificacionSRIE.pilar_id))).scalar() or 0
+    )
+    total_pilares = db.session.query(func.count(Pilar.id)).filter(Pilar.activo.is_(True)).scalar() or 0
+    raw_avg = db.session.query(func.avg(ClasificacionSRIE.confianza)).scalar() or 0
+    avg_conf = round(float(raw_avg) * 100, 1)
+
+    top_problemas = (
+        db.session.query(
+            ProblemaCatalogo.nombre,
+            func.count(participacion_problemas.c.participacion_id).label("total"),
+        )
+        .join(
+            participacion_problemas,
+            participacion_problemas.c.problema_id == ProblemaCatalogo.id,
+        )
+        .group_by(ProblemaCatalogo.nombre)
+        .order_by(desc("total"))
+        .limit(5)
+        .all()
+    )
+
+    top_actores = (
+        db.session.query(
+            Actor.nombre,
+            func.count(participacion_actores.c.participacion_id).label("total"),
+        )
+        .join(
+            participacion_actores,
+            participacion_actores.c.actor_id == Actor.id,
+        )
+        .group_by(Actor.nombre)
+        .order_by(desc("total"))
+        .limit(5)
+        .all()
+    )
+
+    return {
+        "total": total,
+        "this_month": this_month,
+        "municipios": municipios,
+        "pilares": pilares_cubiertos,
+        "total_pilares": total_pilares,
+        "coverage": round(pilares_cubiertos / total_pilares * 100) if total_pilares > 0 else 0,
+        "avg_confidence": avg_conf,
+        "top_problemas": [{"nombre": nombre, "total": total_x} for nombre, total_x in top_problemas],
+        "top_actores": [{"nombre": nombre, "total": total_x} for nombre, total_x in top_actores],
     }
 
 
