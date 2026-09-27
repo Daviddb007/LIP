@@ -1,0 +1,337 @@
+{% extends "base.html" %}
+
+{% block title %}LIP · Modo presentación — Inteligencia Pública{% endblock %}
+{% block styles %}
+<style>
+/* ===== Deck full-screen (patrón MOLE-CLOUD / VicTech) ===== */
+#deck{position:fixed;inset:0;background:var(--navy-2);color:var(--cream);overflow:hidden;z-index:100;font-family:var(--font-sans)}
+#deck .slide{position:absolute;inset:0;display:none;align-items:center;padding:4rem 6vw;overflow:auto}
+#deck .slide.active{display:flex}
+#deck .slide[data-center]{justify-content:center;text-align:center}
+#deck .deck-ui{position:fixed;bottom:0;left:0;right:0;z-index:120;display:flex;align-items:center;justify-content:space-between;padding:1rem 4vw;background:linear-gradient(0deg,rgba(8,19,37,.9),transparent);pointer-events:none}
+#deck .deck-ui > *{pointer-events:auto}
+#deck .deck-dots{display:flex;gap:.45rem;align-items:center}
+#deck .deck-dot{width:9px;height:9px;border-radius:50%;border:1px solid var(--gold);background:transparent;padding:0;cursor:pointer;opacity:.5;transition:opacity .2s,transform .2s}
+#deck .deck-dot.on{background:var(--gold);opacity:1;transform:scale(1.15)}
+#deck .deck-counter{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.16em;color:var(--dim)}
+#deck .deck-progress{position:fixed;top:0;left:0;height:3px;background:linear-gradient(90deg,var(--gold-d),var(--gold));z-index:121;width:0}
+#deck .deck-ctrl{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.1em;color:var(--dim);text-transform:uppercase}
+#deck .kicker{font-family:var(--font-mono);font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--gold);display:flex;align-items:center;gap:.6rem;margin-bottom:1.6rem}
+#deck .kicker::before{content:"";width:34px;height:1px;background:var(--gold)}
+#deck h1,#deck h2{font-weight:700;letter-spacing:-.04em;line-height:.98;text-wrap:balance}
+#deck h1{font-size:clamp(2.6rem,7vw,6rem)}
+#deck h2{font-size:clamp(2rem,5vw,4rem)}
+#deck h1 em,#deck h2 em{font-style:italic;font-family:var(--font-serif);font-weight:500;color:var(--gold)}
+#deck .sub{color:var(--dim);max-width:52ch;font-size:clamp(.95rem,1.4vw,1.1rem);margin-top:1.4rem}
+#deck .sub b{color:#fff}
+#deck .slide-num{position:absolute;top:1.5rem;right:4vw;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.2em;color:var(--dim-2)}
+/* portada video */
+.slide.portada video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.05) brightness(.55);z-index:0}
+.slide.portada .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,31,58,.75),rgba(8,19,37,.96));z-index:1}
+.slide.portada .content{position:relative;z-index:2}
+/* stats deck */
+.deck-stats{display:flex;gap:2.5rem;flex-wrap:wrap;margin-top:2.2rem;font-family:var(--font-mono)}
+.deck-stats .ds span{display:block;font-size:1.9rem;font-weight:700;color:#fff;font-variant-numeric:tabular-nums}
+.deck-stats .ds em{font-style:normal;color:var(--gold)}
+.deck-stats .ds{color:var(--dim);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase}
+/* dos motores / audiencias */
+.deck-cols{display:grid;grid-template-columns:1fr 1fr;gap:2rem;margin-top:2.5rem;width:100%}
+.deck-cols .card-elevated p{color:var(--dim);font-size:.92rem;max-width:44ch}
+.deck-cols .mono-lbl{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem}
+.deck-cols h3{font-size:1.4rem;font-weight:600;letter-spacing:-.02em;margin-bottom:.7rem}
+.deck-cols h3 em{font-style:italic;font-family:var(--font-serif);color:var(--gold);font-weight:500}
+/* tubo en deck */
+.deck-tubo{width:100%;max-width:1100px;margin-top:2rem}
+.deck-tubo svg{width:100%;height:auto}
+/* lista check */
+.deck-list{list-style:none;margin-top:1.6rem}
+.deck-list li{display:flex;gap:.8rem;align-items:baseline;color:var(--dim);font-size:1rem;padding:.45rem 0;border-bottom:1px solid var(--line)}
+.deck-list li::before{content:"\2713";color:var(--gold);font-weight:700}
+@media(max-width:820px){ .deck-cols{grid-template-columns:1fr} }
+</style>
+{% endblock %}
+
+{% block content %}
+<div id="deck" aria-label="Presentación del Laboratorio de Inteligencia Pública">
+  <div class="deck-progress" id="deckProgress"></div>
+
+  <!-- 01 · Portada -->
+  <section class="slide portada active" data-slide>
+    <video id="deckVideo" muted autoplay loop playsinline preload="auto" poster="{{ url_for('static', filename='video/poster-exp-bandera.webp') }}" aria-hidden="true">
+      <source src="{{ url_for('static', filename='video/exp-bandera.webm') }}" type="video/webm">
+      <source src="{{ url_for('static', filename='video/exp-bandera.mp4') }}" type="video/mp4">
+    </video>
+    <div class="veil"></div>
+    <div class="content">
+      <div class="kicker">Sistema Nacional de Inteligencia Pública · PND 2027–2030</div>
+      <h1>El país se construye <em>escuchándolo</em></h1>
+      <p class="sub">La voz ciudadana se clasifica contra el plan y se vuelve <b>evidencia</b>. Los procesos de contratación se abren y las empresas entran al Estado con <b>datos</b>.</p>
+      <div class="deck-stats">
+        <div class="ds"><span>{{ '{:,}'.format(stats.secop_total).replace(',', '.') }}</span>Procesos SECOP II abiertos</div>
+        <div class="ds"><span>{{ stats.pilares }}</span>Pilares estratégicos</div>
+        <div class="ds"><span>{{ '{:,}'.format(stats.total).replace(',', '.') }}</span>Propuestas ciudadanas</div>
+      </div>
+      <div class="slide-num">01 / 10</div>
+    </div>
+  </section>
+
+  <!-- 02 · El problema -->
+  <section class="slide" data-slide>
+    <div class="content" style="width:100%">
+      <div class="kicker">El problema</div>
+      <h2>La participación no produce <em>evidencia</em></h2>
+      <p class="sub">Las propuestas se pierden sin clasificación, los formularios parecen trámites y no hay datos agregados para decidir. Contratar con el Estado se hace <b>a ciegas</b>.</p>
+      <ul class="deck-list">
+        <li>Formularios que no conectan con la planeación real</li>
+        <li>Sin retroalimentación inmediata al ciudadano</li>
+        <li>Sin datos trazables para el tomador de decisión</li>
+        <li>Oportunidades SECOP dispersas e inaccesibles para las pymes</li>
+      </ul>
+      <div class="slide-num">02 / 10</div>
+    </div>
+  </section>
+
+  <!-- 03 · La solución -->
+  <section class="slide" data-slide>
+    <div class="content" style="width:100%">
+      <div class="kicker">La solución</div>
+      <h2>Un sistema, dos motores: <em>voz y contratación</em></h2>
+      <p class="sub">LIP convierte la participación en inteligencia accionable y abre la contratación pública con datos.</p>
+      <div class="deck-cols">
+        <div class="card-elevated p-4">
+          <div class="mono-lbl">Motor 01 · SRIE</div>
+          <h3>Inteligencia <em>participativa</em></h3>
+          <p>Tu propuesta se clasifica automáticamente contra el plan, con explicación ciudadana, y queda como evidencia pública.</p>
+        </div>
+        <div class="card-elevated p-4">
+          <div class="mono-lbl">Motor 02 · SECOP</div>
+          <h3>Inteligencia de <em>contratación</em></h3>
+          <p>Los procesos abiertos, filtrados por pilar y valor — y un equipo que licita por tu empresa.</p>
+        </div>
+      </div>
+      <div class="slide-num">03 / 10</div>
+    </div>
+  </section>
+
+  <!-- 04 · El flujo (tubo animado) -->
+  <section class="slide" data-slide>
+    <div class="content" style="width:100%">
+      <div class="kicker">El flujo</div>
+      <h2>De la voz ciudadana a la <em>decisión pública</em></h2>
+      <div class="deck-tubo">
+        <svg viewBox="0 0 1200 260" role="img" aria-label="Flujo de la participación">
+          <rect class="stn" x="40" y="80" width="180" height="90" rx="10"/>
+          <text class="stn-lbl" x="130" y="110" text-anchor="middle">Voz ciudadana</text>
+          <text class="stn-lbl" x="130" y="142" text-anchor="middle" opacity=".5">propuesta</text>
+          <rect class="stn" x="360" y="80" width="180" height="90" rx="10"/>
+          <text class="stn-lbl" x="450" y="110" text-anchor="middle">Motor SRIE</text>
+          <text class="stn-lbl" x="450" y="142" text-anchor="middle" opacity=".5">clasificación</text>
+          <rect class="stn" x="680" y="80" width="180" height="90" rx="10"/>
+          <text class="stn-lbl" x="770" y="110" text-anchor="middle">Evidencia</text>
+          <text class="stn-lbl" x="770" y="142" text-anchor="middle" opacity=".5">pública</text>
+          <rect class="stn" x="1000" y="80" width="180" height="90" rx="10"/>
+          <text class="stn-lbl" x="1090" y="110" text-anchor="middle">Decisión</text>
+          <text class="stn-lbl" x="1090" y="142" text-anchor="middle" opacity=".5">con datos</text>
+          <path class="lane" d="M220 100 H360"/><path class="lane" d="M220 150 H360"/>
+          <path class="lane" d="M540 100 H680"/><path class="lane" d="M540 150 H680"/>
+          <path class="lane" d="M860 100 H1000"/><path class="lane" d="M860 150 H1000"/>
+          <path class="tubo-arrow" d="M290 125 L340 125"/>
+          <path class="tubo-arrow" d="M610 125 L660 125"/>
+          <path class="tubo-arrow" d="M930 125 L980 125"/>
+          <g data-dots></g>
+        </svg>
+      </div>
+      <div class="slide-num">04 / 10</div>
+    </div>
+  </section>
+
+  <!-- 05 · Para quién -->
+  <section class="slide" data-slide>
+    <div class="content" style="width:100%">
+      <div class="kicker">Para quién</div>
+      <h2>Un sistema, <em>tres formas</em> de entrar</h2>
+      <div class="deck-cols">
+        <div class="card-elevated p-4">
+          <div class="mono-lbl">Ciudadano</div>
+          <h3>Tu voz, clasificada y <em>pública</em></h3>
+          <p>Participa en 5 minutos y sabes dónde conecta tu propuesta dentro del plan. Sin cuentas, sin trámites.</p>
+        </div>
+        <div class="card-elevated p-4">
+          <div class="mono-lbl">Estado · Entidad</div>
+          <h3>Evidencia <em>accionable</em></h3>
+          <p>Lo que el país pide, medido y trazable, para priorizar con datos.</p>
+        </div>
+        <div class="card-elevated p-4">
+          <div class="mono-lbl">Empresa</div>
+          <h3>Contratación pública <em>abierta</em></h3>
+          <p>SECOP filtrado por pilar y valor, más un equipo de licitación que entra por ti.</p>
+        </div>
+        <div class="card-elevated p-4">
+          <div class="mono-lbl">Institución</div>
+          <h3>SRIE Platform <em>reutilizable</em></h3>
+          <p>La misma tecnología, con tu marco estratégico, para tu organización.</p>
+        </div>
+      </div>
+      <div class="slide-num">05 / 10</div>
+    </div>
+  </section>
+
+  <!-- 06 · Telemetría real -->
+  <section class="slide" data-center data-slide>
+    <div class="content">
+      <div class="kicker" style="justify-content:center">Telemetría · corte {{ stats.secop_corte }}</div>
+      <h2>El país, <em>medido</em></h2>
+      <div class="deck-stats" style="justify-content:center">
+        <div class="ds"><span>{{ '{:,}'.format(stats.secop_total).replace(',', '.') }}</span>Procesos SECOP II</div>
+        <div class="ds"><span>{{ stats.pilares }}</span>Pilares del plan</div>
+        <div class="ds"><span>{{ '{:,}'.format(stats.total).replace(',', '.') }}</span>Propuestas ciudadanas</div>
+        <div class="ds"><span>{{ '{:,}'.format(stats.municipios).replace(',', '.') }}</span>Municipios alcanzados</div>
+      </div>
+      <div class="slide-num">06 / 10</div>
+    </div>
+  </section>
+
+  <!-- 07 · SECOP visor -->
+  <section class="slide" data-slide>
+    <div class="content" style="width:100%">
+      <div class="kicker">Visor SECOP II</div>
+      <h2>Contratar con el Estado, <em>sin jugar a ciegas</em></h2>
+      <p class="sub">Un visor interactivo de los procesos con oferta abierta: filtra en vivo por departamento, modalidad, pilar y rango de valor. Ordena por columnas y entra a cada proceso.</p>
+      <div class="deck-stats">
+        <div class="ds"><span>{{ '{:,}'.format(stats.secop_total).replace(',', '.') }}</span>Procesos vigentes</div>
+        <div class="ds"><span>4 <em>gráficos</em></span>+ valor y RUP</div>
+        <div class="ds"><span>100<em>%</em></span>Fuente datos.gov.co</div>
+      </div>
+      <div class="slide-num">07 / 10</div>
+    </div>
+  </section>
+
+  <!-- 08 · Motor reutilizable -->
+  <section class="slide" data-slide>
+    <div class="content" style="width:100%">
+      <div class="kicker">El motor</div>
+      <h2>SRIE Platform, <em>reutilizable</em></h2>
+      <p class="sub">LIP es la implementación nacional. La misma tecnología se despliega para cualquier gobierno, universidad u organización con su propio marco estratégico.</p>
+      <div class="deck-cols">
+        <div class="card-elevated p-4">
+          <div class="mono-lbl">SRIE CORE</div>
+          <p>plan → pilar → línea → componente → objetivo → indicador</p>
+        </div>
+        <div class="card-elevated p-4">
+          <div class="mono-lbl">Despliegue</div>
+          <p>multi-tenant · white-label · marco configurable · datos abiertos</p>
+        </div>
+      </div>
+      <div class="slide-num">08 / 10</div>
+    </div>
+  </section>
+
+  <!-- 09 · Por qué es distinto -->
+  <section class="slide" data-slide>
+    <div class="content" style="width:100%">
+      <div class="kicker">Por qué es distinto</div>
+      <h2>Lo que suele pasar, y lo que <em>LIP hace</em></h2>
+      <div class="deck-cols">
+        <div class="card-elevated p-4">
+          <div class="mono-lbl">Antes</div>
+          <p>Formularios-trámite · propuestas perdidas · sin datos · contratar a ciegas</p>
+        </div>
+        <div class="card-elevated p-4">
+          <div class="mono-lbl">Con LIP</div>
+          <p>Conversación de 5 pasos · clasificación al instante · evidencia trazable · SECOP abierto + licitación</p>
+        </div>
+      </div>
+      <div class="slide-num">09 / 10</div>
+    </div>
+  </section>
+
+  <!-- 10 · Cierre -->
+  <section class="slide" data-center data-slide>
+    <div class="content">
+      <div class="kicker" style="justify-content:center">Tu turno</div>
+      <h2>El futuro de Colombia se decide <em>hoy, contigo</em></h2>
+      <div class="deck-stats" style="justify-content:center">
+        <div class="ds"><span><a href="{{ url_for('participar.participar') }}" style="color:var(--gold)">Participar</a></span></div>
+        <div class="ds"><span><a href="{{ url_for('secop.pagina') }}" style="color:var(--gold)">Visor SECOP</a></span></div>
+        <div class="ds"><span><a href="{{ url_for('saas.landing') }}" style="color:var(--gold)">SRIE Platform</a></span></div>
+      </div>
+      <div class="slide-num">10 / 10</div>
+    </div>
+  </section>
+
+  <div class="deck-ui">
+    <span class="deck-ctrl" id="deckHint">← → · F pantalla completa</span>
+    <div class="deck-dots" id="deckDots"></div>
+    <span class="deck-counter" id="deckCounter"></span>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var deck = document.getElementById('deck');
+  if(!deck) return;
+  var slides = Array.prototype.slice.call(deck.querySelectorAll('[data-slide]'));
+  var dotsWrap = document.getElementById('deckDots');
+  var counter = document.getElementById('deckCounter');
+  var progress = document.getElementById('deckProgress');
+  var total = slides.length, index = 0;
+  var dots = slides.map(function(_, i){
+    var b = document.createElement('button');
+    b.className = 'deck-dot'; b.setAttribute('aria-label','Diapositiva '+(i+1));
+    b.addEventListener('click', function(){ go(i); });
+    dotsWrap.appendChild(b); return b;
+  });
+  function render(){
+    slides.forEach(function(s, i){ s.classList.toggle('active', i===index); s.setAttribute('aria-hidden', i===index?'false':'true'); });
+    dots.forEach(function(d, i){ d.classList.toggle('on', i===index); });
+    counter.textContent = (index+1)+' / '+total;
+    progress.style.width = ((index+1)/total*100)+'%';
+  }
+  function go(i){ index = Math.max(0, Math.min(total-1, i)); render(); }
+  function next(){ go(index+1); } function prev(){ go(index-1); }
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '||e.key==='PageDown'){ e.preventDefault(); next(); }
+    else if(e.key==='ArrowLeft'||e.key==='ArrowUp'||e.key==='PageUp'){ e.preventDefault(); prev(); }
+    else if(e.key==='Home'){ e.preventDefault(); go(0); }
+    else if(e.key==='End'){ e.preventDefault(); go(total-1); }
+    else if(e.key==='f'||e.key==='F'){ if(!document.fullscreenElement) document.documentElement.requestFullscreen(); else document.exitFullscreen(); }
+    else if(e.key==='Escape'){ if(document.fullscreenElement) document.exitFullscreen(); else window.location.href='/'; }
+  });
+  var lock=false;
+  deck.addEventListener('wheel', function(e){ if(lock||Math.abs(e.deltaY)<18) return; lock=true; if(e.deltaY>0) next(); else prev(); setTimeout(function(){lock=false;},600); }, {passive:true});
+  var sy=0, sx=0;
+  deck.addEventListener('touchstart', function(e){ sy=e.touches[0].clientY; sx=e.touches[0].clientX; }, {passive:true});
+  deck.addEventListener('touchend', function(e){ var dy=sy-e.changedTouches[0].clientY, dx=sx-e.changedTouches[0].clientX; if(Math.abs(dy)>50&&Math.abs(dy)>Math.abs(dx)){ if(dy>0) next(); else prev(); } }, {passive:true});
+
+  /* Tubo animado en la slide 04 */
+  var svg = deck.querySelector('[data-dots]');
+  var SVGNS='http://www.w3.org/2000/svg';
+  function el(name, attrs, parent){ var n=document.createElementNS(SVGNS,name); for(var k in attrs) n.setAttribute(k,attrs[k]); if(parent) parent.appendChild(n); return n; }
+  function spawn(){
+    var d = el('circle',{r:7,class:'tubo-dot',cx:250,cy:125},svg);
+    gsap.to(d,{attr:{cx:310,cy:125},duration:.6,ease:'power1.out',onComplete:function(){
+      gsap.to(d,{attr:{cx:680,cy:125},duration:1.3,ease:'power1.inOut',onComplete:function(){
+        gsap.to(d,{attr:{cx:1000,cy:125},duration:1.1,ease:'power1.inOut',onComplete:function(){
+          gsap.to(d,{attr:{cx:1120,cy:125},duration:.5,ease:'power1.in',onComplete:function(){ d.remove(); }});
+        }});
+      }});
+    }});
+    gsap.to(d,{attr:{cx:260,cy:125},duration:.4,ease:'power1.in',delay:.02});
+  }
+  var playing=false, timer=null;
+  if(!reduce){ playing=true; timer=setInterval(spawn, 1000); spawn(); }
+  var dotsG = svg;
+  // pausa cuando no se ve la slide 04
+  var flowSlide = slides[3];
+  new IntersectionObserver(function(entries){
+    if(!reduce){ clearInterval(timer); }
+    if(entries[0].isIntersecting && !reduce){ timer=setInterval(spawn,1000); }
+  }, {threshold:0}).observe(flowSlide);
+
+  render(); go(0);
+})();
+</script>
+{% endblock %}

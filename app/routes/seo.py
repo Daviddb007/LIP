@@ -12,6 +12,7 @@ seo_bp = Blueprint("seo", __name__)
 # URLs públicas indexables (endpoint, prioridad, cambio)
 _PAGINAS = [
     ("home.index", "1.0", "weekly"),
+    ("home.presentacion", "0.4", "monthly"),
     ("secop.pagina", "0.9", "daily"),
     ("secop.licitar", "0.8", "weekly"),
     ("iniciativa.iniciativa", "0.8", "monthly"),
