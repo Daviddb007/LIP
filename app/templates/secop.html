@@ -129,10 +129,19 @@
                 </div>
                 <div class="col-md-2">
                     <label class="form-label body-sm">Requiere RUP</label>
-                    <select name="rup" class="form-select">
+                    <select name="rup" id="rup" class="form-select">
                         <option value="">Cualquiera</option>
                         <option value="0" {% if filtros.rup == '0' %}selected{% endif %}>No</option>
                         <option value="1" {% if filtros.rup == '1' %}selected{% endif %}>Sí</option>
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label body-sm">Pilar PND</label>
+                    <select name="pilar" id="pilar" class="form-select">
+                        <option value="">Todos</option>
+                        {% for p in chart_pilares %}
+                        <option value="{{ p.label }}" {% if filtros.pilar == p.label %}selected{% endif %}>{{ p.label }}</option>
+                        {% endfor %}
                     </select>
                 </div>
                 <div class="col-md-3">
@@ -142,6 +151,14 @@
                 <div class="col-md-3">
                     <label class="form-label body-sm">Valor máximo (COP)</label>
                     <input type="number" name="valor_max" class="form-control" min="0" step="1000" value="{{ filtros.valor_max }}" placeholder="Sin límite">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label body-sm">Vence desde</label>
+                    <input type="date" id="fecha_desde" name="fecha_desde" class="form-control" value="{{ filtros.fecha_desde }}">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label body-sm">Vence hasta</label>
+                    <input type="date" id="fecha_hasta" name="fecha_hasta" class="form-control" value="{{ filtros.fecha_hasta }}">
                 </div>
                 <div class="col-12">
                     <button type="submit" class="btn btn-gold"><i class="bi bi-funnel me-2"></i>Filtrar</button>
@@ -334,7 +351,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const PAGE = 25;
     let ALL = [];
     let charts = {};
-    const state = { q:'', depto:'', modalidad:'', rup:'', pilar:'', vmin:null, vmax:null, sortKey:'f', sortDir:'asc', page:0 };
+    const state = { q:'', depto:'', modalidad:'', rup:'', pilar:'', vmin:null, vmax:null, fdesde:'', fhasta:'', sortKey:'f', sortDir:'asc', page:0 };
 
     function esc(s){ return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
     function fmtCOP(n){
@@ -356,6 +373,8 @@ document.addEventListener('DOMContentLoaded', function () {
             if(state.pilar && !(r.pil || []).includes(state.pilar)) return false;
             if(state.vmin !== null && r.v < state.vmin) return false;
             if(state.vmax !== null && r.v > state.vmax) return false;
+            if(state.fdesde && r.f < state.fdesde) return false;
+            if(state.fhasta && r.f > state.fhasta) return false;
             return true;
         });
     }
@@ -385,21 +404,31 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function renderCharts(f){
         destroyCharts();
-        function bar(id, pairs, horiz){
+        function bar(id, pairs, horiz, param){
             const el = document.getElementById(id); if(!el || !pairs.length) return;
             charts[id] = new Chart(el, {
                 type:'bar',
                 data:{ labels: pairs.map(p=>p[0]), datasets:[{ data: pairs.map(p=>p[1]), backgroundColor: colors, hoverBackgroundColor:'#F6ECD2', borderRadius:6 }]},
                 options:{ indexAxis: horiz ? 'y' : 'x', plugins:{ legend:{display:false} },
+                    onClick: function(evt, els){
+                        if(!param || !els.length) return;
+                        const idx = els[0].index;
+                        state[param] = pairs[idx][0];
+                        state.page = 0;
+                        const sel = document.getElementById(param === 'depto' ? 'departamento' : param);
+                        if(sel) sel.value = state[param];
+                        update();
+                    },
                     scales:{ x: horiz ? { ticks:{ color:'#94a3b8', font:{size:10} }, grid:{ color:'rgba(148,163,184,0.12)' } } : { grid:{display:false}, ticks:{ color:'#94a3b8', font:{size:10}, autoSkip:false, maxRotation:32 } },
                         y: horiz ? { grid:{display:false}, ticks:{ color:'#e2e8f0', font:{size:10} } } : { ticks:{ color:'#94a3b8' }, grid:{ color:'rgba(148,163,184,0.12)' } } },
                     maintainAspectRatio:false }
             });
+            if(param) el.style.cursor = 'pointer';
         }
-        bar('chartDepartamentos', countBy(f, 'd', 10), true);
-        bar('chartModalidades', countBy(f, 'm', 8), true);
-        bar('chartTipos', countBy(f, 't', 8), true);
-        bar('chartPilares', (function(){ const m={}; f.forEach(r => (r.pil||[]).forEach(p => m[p]=(m[p]||0)+1)); return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8); })(), true);
+        bar('chartDepartamentos', countBy(f, 'd', 10), true, 'depto');
+        bar('chartModalidades', countBy(f, 'm', 8), true, 'modalidad');
+        bar('chartTipos', countBy(f, 't', 8), true, null);
+        bar('chartPilares', (function(){ const m={}; f.forEach(r => (r.pil||[]).forEach(p => m[p]=(m[p]||0)+1)); return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8); })(), true, 'pilar');
         // distribución de valor
         const buckets = [['<10M',10e6],['10-50M',50e6],['50-100M',100e6],['100-300M',300e6],['300M-1MM',1e9],['1-5MM',5e9],['>5MM',Infinity]];
         const bCounts = buckets.map(()=>0);
@@ -451,6 +480,20 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function update(){ const f = filtered(); renderStats(f); renderCharts(f); renderTable(f); }
 
+    // ---- leer inputs al estado ----
+    function readFilters(){
+        state.q = (document.getElementById('q').value || '');
+        state.depto = document.getElementById('departamento').value || '';
+        state.modalidad = document.getElementById('modalidad').value || '';
+        state.rup = document.getElementById('rup').value || '';
+        state.pilar = document.getElementById('pilar').value || '';
+        state.vmin = parseFloat(document.getElementById('valor_min').value) || null;
+        state.vmax = parseFloat(document.getElementById('valor_max').value) || null;
+        state.fdesde = document.getElementById('fecha_desde').value || '';
+        state.fhasta = document.getElementById('fecha_hasta').value || '';
+    }
+    function refresh(){ readFilters(); state.page=0; update(); }
+
     // ---- init: fetch data ----
     fetch('{{ url_for('secop.api_procesos') }}').then(r=>r.json()).then(data => {
         ALL = data || [];
@@ -458,10 +501,10 @@ document.addEventListener('DOMContentLoaded', function () {
     }).catch(() => { document.getElementById('tablaProcesos').innerHTML = '<tr><td colspan="8" class="text-center text-muted-2 py-4">No se pudieron cargar los datos.</td></tr>'; });
 
     // ---- filtros client-side ----
-    document.getElementById('filterForm').addEventListener('submit', function(e){ e.preventDefault(); state.page=0; update(); });
-    ['q','departamento','modalidad','rup','pilar','valor_min','valor_max'].forEach(id => {
+    document.getElementById('filterForm').addEventListener('submit', function(e){ e.preventDefault(); refresh(); });
+    ['q','departamento','modalidad','rup','pilar','valor_min','valor_max','fecha_desde','fecha_hasta'].forEach(id => {
         const el = document.getElementById(id);
-        if(el){ el.addEventListener('change', function(){ state.page=0; update(); }); el.addEventListener('input', function(){ state.page=0; update(); }); }
+        if(el){ el.addEventListener('change', refresh); el.addEventListener('input', refresh); }
     });
 
     // ---- sort ----

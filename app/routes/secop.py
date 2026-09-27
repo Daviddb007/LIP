@@ -87,7 +87,7 @@ def _stats(corte) -> dict:
     }
 
 
-def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="", pilar="", valor_min=None, valor_max=None):
+def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="", pilar="", valor_min=None, valor_max=None, fecha_desde=None, fecha_hasta=None):
     query = SecopProceso.query.filter_by(corte=corte)
     if q:
         like = f"%{q}%"
@@ -106,6 +106,10 @@ def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="",
         query = query.filter(SecopProceso.valor >= valor_min)
     if valor_max is not None:
         query = query.filter(SecopProceso.valor <= valor_max)
+    if fecha_desde:
+        query = query.filter(SecopProceso.fecha_limite >= fecha_desde)
+    if fecha_hasta:
+        query = query.filter(SecopProceso.fecha_limite <= fecha_hasta)
     return query
 
 
@@ -124,9 +128,11 @@ def pagina():
     pilar = request.args.get("pilar", "").strip()
     valor_min = request.args.get("valor_min", type=int)
     valor_max = request.args.get("valor_max", type=int)
+    fecha_desde = request.args.get("fecha_desde", "").strip() or None
+    fecha_hasta = request.args.get("fecha_hasta", "").strip() or None
     page = request.args.get("page", 1, type=int)
 
-    query = _query_filtrada(corte, q, departamento, modalidad, requiere_rup, pilar, valor_min, valor_max)
+    query = _query_filtrada(corte, q, departamento, modalidad, requiere_rup, pilar, valor_min, valor_max, fecha_desde, fecha_hasta)
     pagination = query.order_by(
         SecopProceso.fecha_limite.asc(), SecopProceso.valor.desc()
     ).paginate(page=page, per_page=25, error_out=False)
@@ -158,7 +164,8 @@ def pagina():
         "departamentos": _departamentos(corte),
         "modalidades": _modalidades(corte),
         "filtros": {"q": q, "departamento": departamento, "modalidad": modalidad, "rup": requiere_rup, "pilar": pilar,
-                    "valor_min": valor_min or "", "valor_max": valor_max or ""},
+                    "valor_min": valor_min or "", "valor_max": valor_max or "",
+                    "fecha_desde": fecha_desde or "", "fecha_hasta": fecha_hasta or ""},
         "rows": rows,
         "pagination": pagination,
     }
