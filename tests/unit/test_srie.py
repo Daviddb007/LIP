@@ -1,5 +1,4 @@
 """Tests unitarios para el motor SRIE v2."""
-import pytest
 
 from app.services.srie.matcher import clasificar_texto, get_pilar_by_slug
 from app.services.srie.confidence import calcular_confianza

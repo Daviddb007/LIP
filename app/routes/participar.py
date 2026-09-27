@@ -7,15 +7,13 @@ from __future__ import annotations
 from datetime import datetime, timezone
 
 from flask import Blueprint, current_app, render_template, request, jsonify
-from flask_limiter import Limiter
-from flask_limiter.util import get_remote_address
 
 from app import db, limiter, csrf
 from app.decorators import get_client_ip, hash_ip
 from app.errors import ValidationError, DatabaseError
 from app.models.participacion import Participacion
 from app.models.catalog import (
-    ProblemaCatalogo, Actor, Beneficiario,
+    Actor, Beneficiario,
     participacion_problemas, participacion_actores, participacion_beneficiarios,
 )
 from app.services.validation import validate_participacion, validate_consentimiento
@@ -32,7 +30,7 @@ def participar():
 @participar_bp.route("/api/catalogo/sectores")
 def api_sectores():
     """Retorna sectores con subsectores y problemas anidados."""
-    from app.models.catalog import Sector, Subsector
+    from app.models.catalog import Sector
 
     sectores = Sector.query.filter_by(activo=True).order_by(Sector.orden).all()
     result = []
@@ -51,14 +49,12 @@ def api_sectores():
 
 @participar_bp.route("/api/catalogo/actores")
 def api_actores():
-    from app.models.catalog import Actor
     actores = Actor.query.filter_by(activo=True).order_by(Actor.orden).all()
     return jsonify([a.to_dict() for a in actores])
 
 
 @participar_bp.route("/api/catalogo/beneficiarios")
 def api_beneficiarios():
-    from app.models.catalog import Beneficiario
     beneficiarios = Beneficiario.query.filter_by(activo=True).order_by(Beneficiario.orden).all()
     return jsonify([b.to_dict() for b in beneficiarios])
 

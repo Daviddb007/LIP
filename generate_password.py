@@ -25,5 +25,5 @@ if __name__ == "__main__":
         password = getpass.getpass("Contraseña: ")
 
     hash_value = generate_hash(password)
-    print(f"\nHash generado (copiar como ADMIN_PASS):")
+    print("\nHash generado (copiar como ADMIN_PASS):")
     print(f"ADMIN_PASS={hash_value}")

@@ -8,7 +8,6 @@ M:N junction tables para actores y beneficiarios en participaciones.
 """
 from __future__ import annotations
 
-from datetime import datetime
 
 from app import db
 

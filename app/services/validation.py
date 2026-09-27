@@ -9,7 +9,7 @@ from __future__ import annotations
 import bleach
 
 from app.errors import ValidationError
-from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario, Sector
+from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario
 
 ALLOWED_TAGS: list[str] = []
 ALLOWED_ATTRIBUTES: dict = {}
@@ -133,7 +133,7 @@ def _validate_problemas(data: dict) -> None:
     ids = [int(pid) for pid in problema_ids]
     count = ProblemaCatalogo.query.filter(
         ProblemaCatalogo.id.in_(ids),
-        ProblemaCatalogo.activo == True,
+        ProblemaCatalogo.activo,
     ).count()
     if count != len(ids):
         raise ValidationError("Uno o más problemas seleccionados no son válidos")
@@ -164,7 +164,7 @@ def _validate_gobernanza(data: dict) -> None:
 
     if actor_ids:
         ids = [int(aid) for aid in actor_ids]
-        count = Actor.query.filter(Actor.id.in_(ids), Actor.activo == True).count()
+        count = Actor.query.filter(Actor.id.in_(ids), Actor.activo).count()
         if count != len(ids):
             raise ValidationError("Uno o más actores seleccionados no son válidos")
 
@@ -178,7 +178,7 @@ def _validate_gobernanza(data: dict) -> None:
     if beneficiario_ids:
         ids = [int(bid) for bid in beneficiario_ids]
         count = Beneficiario.query.filter(
-            Beneficiario.id.in_(ids), Beneficiario.activo == True
+            Beneficiario.id.in_(ids), Beneficiario.activo
         ).count()
         if count != len(ids):
             raise ValidationError("Uno o más beneficiarios seleccionados no son válidos")

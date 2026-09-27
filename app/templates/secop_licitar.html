@@ -1,0 +1,248 @@
+{% extends "base.html" %}
+
+{% block title %}Licitamos por tu empresa — Empieza a licitar en lo público | StoneLytics{% endblock %}
+{% block meta_description %}¿Tu empresa quiere empezar a licitar en el sector público? Te ayudamos a licitar: RUP, búsqueda de oportunidades en SECOP, preparación de propuestas y seguimiento. Equipo de profesionales disponible.{% endblock %}
+{% block og_title %}Licitamos por tu empresa — Contratación pública con StoneLytics{% endblock %}
+{% block og_description %}Te ayudamos a licitar con el Estado de Colombia: buscamos oportunidades en SECOP, preparamos tu propuesta y te acompañamos hasta la adjudicación.{% endblock %}
+
+{% block content %}
+
+<!-- JSON-LD: ProfessionalService + FAQ -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Servicio de Licitación Pública — StoneLytics",
+  "description": "Acompañamiento integral para que tu empresa empiece a licitar en el sector público de Colombia: registro RUP, búsqueda de oportunidades en SECOP II, preparación de propuestas, documentos y seguimiento del proceso.",
+  "url": "{{ url_for('secop.licitar', _external=True) }}",
+  "areaServed": { "@type": "Country", "name": "Colombia" },
+  "provider": { "@type": "Organization", "name": "StoneLytics", "url": "https://www.stonelytics.tech" },
+  "makesOffer": {
+    "@type": "Offer",
+    "description": "Servicio de licitación pública llave en mano para empresas que quieren contratar con el Estado.",
+    "areaServed": "CO"
+  }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Mi empresa puede empezar a licitar en lo público?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sí. La mayoría de empresas formalizadas pueden participar en procesos de SECOP II. Para modalidades como mínima cuantía no se exige RUP, lo que reduce la barrera de entrada. Nosotros te ayudamos a preparar todo." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Qué incluye el servicio de licitación?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Incluye la revisión y obtención del RUP, la búsqueda y selección de oportunidades en SECOP, la preparación de la propuesta y la documentación requerida, la radicación y el seguimiento del proceso hasta la adjudicación." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Necesito equipo propio de licitación?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No. Contamos con un equipo de profesionales de licitación pública disponible para acompañar tu empresa de principio a fin." }
+    }
+  ]
+}
+</script>
+
+<!-- Hero -->
+<section class="hero" style="padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-9">
+                <div class="badge badge-white mb-3">Servicio de Licitación Pública</div>
+                <h1 class="display-lg text-white mb-3">¿Tu empresa quiere empezar a licitar en lo público?</h1>
+                <p class="body-lg text-white-50" style="max-width: 640px; margin: 0 auto;">
+                    Te ayudamos a licitar con el Estado. Buscamos las oportunidades, preparamos tu propuesta y te acompañamos hasta la adjudicación — con el <strong class="text-gold">equipo de profesionales disponible</strong> para tu empresa.
+                </p>
+                <div class="mt-4">
+                    <a href="#formulario" class="btn btn-gold btn-lg"><i class="bi bi-arrow-down-circle me-2"></i>Solicitar asesoría</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Qué hacemos -->
+<section class="section">
+    <div class="container">
+        <div class="section-header mb-4">
+            <span class="overline">Qué hacemos por ti</span>
+            <h2 class="heading-sm">Del registro a la adjudicación</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-3 col-md-6">
+                <div class="card-elevated p-4 h-100">
+                    <div class="step-number mb-3"><i class="bi bi-person-check"></i></div>
+                    <h3 class="heading-sm mb-2">RUP y documentación</h3>
+                    <p class="body-sm text-muted-2 mb-0">Revisamos y preparamos tu Registro Único de Proponentes y la documentación habilitante de tu empresa.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card-elevated p-4 h-100">
+                    <div class="step-number mb-3"><i class="bi bi-search"></i></div>
+                    <h3 class="heading-sm mb-2">Búsqueda en SECOP</h3>
+                    <p class="body-sm text-muted-2 mb-0">Identificamos procesos con oferta abierta que realmente se ajustan a tu sector, capacidad y región.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card-elevated p-4 h-100">
+                    <div class="step-number mb-3"><i class="bi bi-file-earmark-text"></i></div>
+                    <h3 class="heading-sm mb-2">Preparación de propuesta</h3>
+                    <p class="body-sm text-muted-2 mb-0">Redactamos y estructuramos tu propuesta técnica y económica para competir con solidez.</p>
+                </div>
+            </div>
+            <div class="col-lg-3 col-md-6">
+                <div class="card-elevated p-4 h-100">
+                    <div class="step-number mb-3"><i class="bi bi-graph-up-arrow"></i></div>
+                    <h3 class="heading-sm mb-2">Seguimiento</h3>
+                    <p class="body-sm text-muted-2 mb-0">Damos seguimiento al proceso, resolvemos observaciones y te acompañamos hasta la adjudicación.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Cómo funciona -->
+<section class="section-alt">
+    <div class="container">
+        <div class="section-header mb-4">
+            <span class="overline">Cómo funciona</span>
+            <h2 class="heading-sm">3 pasos para tu primera licitación</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="step-card card-elevated h-100">
+                    <div class="step-number">1</div>
+                    <h3 class="heading-sm mb-2">Cuéntanos tu caso</h3>
+                    <p class="body-sm text-muted-2 mb-0">Déjanos tu contacto y el sector de tu empresa. Un profesional de licitación te responde en menos de 24 horas.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="step-card card-elevated h-100">
+                    <div class="step-number">2</div>
+                    <h3 class="heading-sm mb-2">Evaluamos tu empresa</h3>
+                    <p class="body-sm text-muted-2 mb-0">Revisamos tu cámara de comercio, experiencia y el estado de tu RUP para decirte si estás listo y en qué modalidades puedes participar.</p>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="step-card card-elevated h-100">
+                    <div class="step-number">3</div>
+                    <h3 class="heading-sm mb-2">Licitamos contigo</h3>
+                    <p class="body-sm text-muted-2 mb-0">Preparamos y radicamos tus primeras propuestas en SECOP II y te acompañamos hasta el resultado.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Profesionales -->
+<section class="section">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="display-lg text-white mb-3">El equipo de profesionales disponible</h2>
+                <p class="body-lg text-white-50" style="max-width: 560px; margin-left: auto; margin-right: auto;">
+                    No necesitas crear un departamento de licitación. Nuestro equipo de profesionales en contratación pública, documentación y propuestas trabaja por ti desde el primer día.
+                </p>
+                <div class="row g-3 mt-2 text-start">
+                    <div class="col-md-4">
+                        <div class="card-elevated p-4 h-100">
+                            <i class="bi bi-briefcase text-gold fs-3 mb-2"></i>
+                            <h3 class="heading-sm">Especialistas en SECOP</h3>
+                            <p class="body-sm text-muted-2 mb-0">Conocen modalidades, pliegos y plataforma SECOP II.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card-elevated p-4 h-100">
+                            <i class="bi bi-shield-check text-gold fs-3 mb-2"></i>
+                            <h3 class="heading-sm">Documentación y RUP</h3>
+                            <p class="body-sm text-muted-2 mb-0">Preparan la habilitación y la oferta técnica y económica.</p>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="card-elevated p-4 h-100">
+                            <i class="bi bi-graph-up text-gold fs-3 mb-2"></i>
+                            <h3 class="heading-sm">Acompañamiento gerencial</h3>
+                            <p class="body-sm text-muted-2 mb-0">Te reportan cada etapa del proceso, sin incertidumbre.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Formulario de lead -->
+<section class="section-alt" id="formulario">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-lg-7">
+                <div class="card-elevated p-4">
+                    <h2 class="heading-sm mb-1"><i class="bi bi-send me-2 text-gold"></i>Solicita tu asesoría gratuita</h2>
+                    <p class="text-muted-2 body-sm mb-4">Cuéntanos sobre tu empresa y un profesional de licitación pública te contactará.</p>
+
+                    {% with messages = get_flashed_messages(with_categories=true) %}
+                    {% if messages %}
+                        {% for category, message in messages %}
+                        <div class="alert alert-{{ 'success' if category == 'success' else 'danger' }}">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                    {% endwith %}
+
+                    <form method="post" action="{{ url_for('secop.licitar') }}">
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <label class="form-label">Nombre *</label>
+                                <input type="text" name="nombre" class="form-control" required maxlength="120" value="{{ form_vals.get('nombre', '') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Empresa *</label>
+                                <input type="text" name="empresa" class="form-control" required maxlength="160" value="{{ form_vals.get('empresa', '') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Correo electrónico *</label>
+                                <input type="email" name="email" class="form-control" required maxlength="160" value="{{ form_vals.get('email', '') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Teléfono / WhatsApp *</label>
+                                <input type="tel" name="telefono" class="form-control" required maxlength="40" value="{{ form_vals.get('telefono', '') }}">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">Sector de tu empresa</label>
+                                <input type="text" name="sector" class="form-control" maxlength="160" value="{{ form_vals.get('sector', '') }}" placeholder="Ej. construcción, tecnología, aseo…">
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label">¿Ya tienes RUP?</label>
+                                <select name="estado_rup" class="form-select">
+                                    <option value="">Lo desconozco</option>
+                                    <option value="Si, tengo RUP vigente">Sí, tengo RUP vigente</option>
+                                    <option value="No, necesito ayuda con el RUP">No, necesito ayuda con el RUP</option>
+                                </select>
+                            </div>
+                            <div class="col-12">
+                                <label class="form-label">¿En qué te podemos ayudar?</label>
+                                <textarea name="mensaje" class="form-control" rows="3" maxlength="1000">{{ form_vals.get('mensaje', '') }}</textarea>
+                            </div>
+                            <div class="col-12">
+                                <button type="submit" class="btn btn-gold w-100 btn-lg">
+                                    <i class="bi bi-send me-2"></i>Quiero licitar con el Estado
+                                </button>
+                            </div>
+                            <p class="body-sm text-muted-2 mb-0 mt-1">
+                                <i class="bi bi-shield-check me-1"></i>
+                                Tus datos están protegidos conforme a la Ley 1581 (habeas data). Solo los usamos para contactarte.
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -1,7 +1,6 @@
 """Tests de la Fase 3: Biblioteca Inteligente (app/routes/biblioteca.py)."""
 import uuid
 
-import pytest
 
 from app import db
 from app.models.catalog import Sector

@@ -4,7 +4,6 @@ import io
 import uuid
 
 from app import db
-from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario
 from app.models.participacion import Participacion
 from app.services.export_service import exportar_participaciones_csv
 

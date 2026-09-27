@@ -76,9 +76,6 @@ def clasificar_sin_persistencia(
     Usado por la API pública v1 (POST /api/v1/clasificar). Retorna lista de
     resultados con pilar, confianza, explicación, keywords y ranking.
     """
-    from app.services.srie.matcher import clasificar_texto
-    from app.services.srie.confidence import calcular_confianza
-    from app.services.srie.explanation import generar_explicacion
 
     texto = texto_completo or f"{justificacion} {propuesta}"
     resultados = clasificar_texto(texto=texto, problema_slug=problema_slug, top_n=3)

@@ -1,0 +1,334 @@
+{% extends "base.html" %}
+
+{% block title %}Visor SECOP II — Contratación pública de Colombia{% endblock %}
+{% block meta_description %}Explora los procesos de contratación pública de Colombia (SECOP II) con oferta abierta: entidad, modalidad, valor y fecha límite. Datos vivos de datos.gov.co, actualizados a diario.{% endblock %}
+{% block og_title %}Visor SECOP II — Contratación pública de Colombia{% endblock %}
+{% block og_description %}Procesos de contratación pública con oferta abierta, filtrables por departamento, modalidad y valor. Inteligencia pública para tu empresa.{% endblock %}
+
+{% block content %}
+
+{% if vacio %}
+<section class="hero" style="padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <div class="badge badge-white mb-3">Visor SECOP</div>
+                <h1 class="display-lg text-white mb-3">Aún no hay datos de SECOP cargados</h1>
+                <p class="body-lg text-white-50">Ejecuta <code>flask secop-actualizar</code> para descargar los procesos vigentes desde datos.gov.co.</p>
+            </div>
+        </div>
+    </div>
+</section>
+{% else %}
+
+<!-- JSON-LD: Dataset + Breadcrumb -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Dataset",
+  "name": "Procesos SECOP II con oferta abierta (Colombia)",
+  "description": "Procesos de contratación pública de Colombia con oferta abierta, normalizados desde el dataset SECOP II de datos.gov.co. Filtrables por entidad, departamento, modalidad, valor y pilar del Plan Nacional de Desarrollo.",
+  "url": "{{ url_for('secop.pagina', _external=True) }}",
+  "publisher": { "@type": "Organization", "name": "StoneLytics", "url": "https://www.stonelytics.tech" },
+  "distribution": [
+    { "@type": "DataDownload", "encodingFormat": "JSON", "contentUrl": "{{ url_for('secop.api_datos', _external=True) }}" }
+  ],
+  "temporalCoverage": "{{ corte.isoformat() }}",
+  "spatialCoverage": { "@type": "Country", "name": "Colombia" },
+  "creator": { "@type": "Organization", "name": "Colombia Compra Eficiente" }
+}
+</script>
+
+<!-- Hero -->
+<section class="hero" style="padding: var(--space-3xl) 0;">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-9">
+                <div class="badge badge-white mb-3">SECOP II · Datos abiertos</div>
+                <h1 class="display-lg text-white mb-3">Oportunidades de contratación pública en Colombia</h1>
+                <p class="body-lg text-white-50" style="max-width: 640px; margin: 0 auto;">
+                    Procesos con oferta abierta en el SECOP II. Corte del {{ corte_legible }} ·
+                    <strong class="text-gold">{{ stats.total }} procesos vigentes</strong>. Fuente: datos.gov.co.
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Métricas -->
+<section class="section" style="padding-top: 0; margin-top: -60px;">
+    <div class="container">
+        <div class="row g-3">
+            <div class="col-6 col-md-3">
+                <div class="card-elevated stat-card">
+                    <div class="stat-number text-white">{{ stats.total }}</div>
+                    <div class="stat-label">Procesos vigentes</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-elevated stat-card">
+                    <div class="stat-number text-gold">{{ stats_fmt.valor_total }}</div>
+                    <div class="stat-label">Valor total (COP)</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-elevated stat-card">
+                    <div class="stat-number text-white">{{ stats.entidades }}</div>
+                    <div class="stat-label">Entidades que contratan</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="card-elevated stat-card">
+                    <div class="stat-number text-white">{{ stats.sin_rup }}</div>
+                    <div class="stat-label">Sin exigir RUP</div>
+                </div>
+            </div>
+        </div>
+        <p class="body-sm text-muted-2 mt-3 mb-0">
+            <i class="bi bi-info-circle me-1"></i>
+            Corte {{ corte_legible }} · actualizado {{ generado }} · <strong>{{ stats.vencen_7d }}</strong> procesos vencen en los próximos 7 días.
+            Siempre verifica el proceso en SECOP antes de preparar una propuesta.
+        </p>
+    </div>
+</section>
+
+<!-- Filtros -->
+<section class="section" style="padding-top: var(--space-lg);">
+    <div class="container">
+        <div class="card-elevated p-4">
+            <div class="section-header mb-4">
+                <span class="overline">Explorar procesos</span>
+                <h2 class="heading-sm">Filtra las oportunidades</h2>
+            </div>
+            <form method="get" action="{{ url_for('secop.pagina') }}" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label body-sm">Buscar por objeto o entidad</label>
+                    <input type="text" name="q" class="form-control" value="{{ filtros.q }}" placeholder="Ej. consultoría, colegio, cámaras…">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label body-sm">Departamento</label>
+                    <select name="departamento" class="form-select">
+                        <option value="">Todos</option>
+                        {% for d in departamentos %}
+                        <option value="{{ d }}" {% if filtros.departamento == d %}selected{% endif %}>{{ d }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label body-sm">Modalidad</label>
+                    <select name="modalidad" class="form-select">
+                        <option value="">Todas</option>
+                        {% for m in modalidades %}
+                        <option value="{{ m }}" {% if filtros.modalidad == m %}selected{% endif %}>{{ m }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2">
+                    <label class="form-label body-sm">Requiere RUP</label>
+                    <select name="rup" class="form-select">
+                        <option value="">Cualquiera</option>
+                        <option value="0" {% if filtros.rup == '0' %}selected{% endif %}>No</option>
+                        <option value="1" {% if filtros.rup == '1' %}selected{% endif %}>Sí</option>
+                    </select>
+                </div>
+                <div class="col-12">
+                    <button type="submit" class="btn btn-gold"><i class="bi bi-funnel me-2"></i>Aplicar filtros</button>
+                    <a href="{{ url_for('secop.pagina') }}" class="btn btn-outline ms-2">Limpiar</a>
+                    <span class="text-muted-2 body-sm ms-3">{{ pagination.total }} resultados</span>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+
+<!-- Gráficos -->
+<section class="section" style="padding-top: var(--space-lg);">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-lg-4">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-3">Por departamento</h3>
+                    <canvas id="chartDepartamentos" height="220"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-3">Por modalidad</h3>
+                    <canvas id="chartModalidades" height="220"></canvas>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-3">Por pilar PND</h3>
+                    <canvas id="chartPilares" height="220"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Tabla -->
+<section class="section" style="padding-top: var(--space-lg);">
+    <div class="container">
+        <div class="table-responsive">
+            <table class="table table-premium">
+                <thead>
+                    <tr>
+                        <th>Proceso</th>
+                        <th>Entidad</th>
+                        <th>Departamento</th>
+                        <th>Modalidad</th>
+                        <th>Valor</th>
+                        <th>Vence</th>
+                        <th>RUP</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for r in rows %}
+                    <tr>
+                        <td>
+                            <strong>{{ r.nombre }}</strong>
+                            {% if r.pilares %}
+                            <div class="body-sm text-muted-2 mt-1">
+                                {% for p in r.pilares %}<span class="badge badge-white me-1">{{ p }}</span>{% endfor %}
+                            </div>
+                            {% endif %}
+                        </td>
+                        <td>{{ r.entidad }}</td>
+                        <td>{{ r.departamento }}</td>
+                        <td class="body-sm">{{ r.modalidad }}</td>
+                        <td class="text-gold">{{ r.valor_fmt }}</td>
+                        <td>
+                            <span class="body-sm">{{ r.fecha_fmt }}</span>
+                            {% if r.dl < 0 %}<span class="badge bg-danger text-white ms-1">vencido</span>
+                            {% elif r.dl <= 7 %}<span class="badge bg-warning text-dark ms-1">{{ r.dl }} d</span>
+                            {% endif %}
+                        </td>
+                        <td>{% if r.requiere_rup %}<span class="badge badge-white">RUP</span>{% else %}<span class="badge bg-success text-white">Sin RUP</span>{% endif %}</td>
+                        <td><a href="{{ r.url }}" target="_blank" rel="noopener nofollow" class="btn btn-outline btn-sm"><i class="bi bi-box-arrow-up-right"></i></a></td>
+                    </tr>
+                    {% else %}
+                    <tr><td colspan="8" class="text-center text-muted-2 py-4">No hay procesos que coincidan con los filtros.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        {% if pagination.pages > 1 %}
+        <nav class="mt-4">
+            <ul class="pagination justify-content-center">
+                {% if pagination.has_prev %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('secop.pagina', page=pagination.prev_num, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar) }}">←</a></li>
+                {% endif %}
+                {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
+                    {% if p %}
+                    <li class="page-item {% if p == pagination.page %}active{% endif %}">
+                        <a class="page-link" href="{{ url_for('secop.pagina', page=p, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar) }}">{{ p }}</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled"><span class="page-link">…</span></li>
+                    {% endif %}
+                {% endfor %}
+                {% if pagination.has_next %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('secop.pagina', page=pagination.next_num, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar) }}">→</a></li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+    </div>
+</section>
+
+<!-- FAQ GEO -->
+<section class="section-alt">
+    <div class="container">
+        <div class="section-header mb-4">
+            <span class="overline">Inteligencia pública</span>
+            <h2 class="heading-sm">Preguntas frecuentes sobre contratación pública</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-2">¿Qué es el SECOP II?</h3>
+                    <p class="body-sm text-muted-2 mb-0">Es el sistema electrónico de contratación pública de Colombia administrado por Colombia Compra Eficiente. Publica los procesos de contratación de las entidades del Estado: licitaciones, selecciones abreviadas, mínimas cuantías y contratación directa, entre otros.</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-2">¿Cómo empiezo a licitar con el Estado?</h3>
+                    <p class="body-sm text-muted-2 mb-0">Lo primero es tener el <strong>RUP</strong> (Registro Único de Proponentes) vigente en el SECOP II y conocer la modalidad de tu proceso. Nuestro equipo te acompaña en cada paso.</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-2">¿Qué es el RUP?</h3>
+                    <p class="body-sm text-muted-2 mb-0">El Registro Único de Proponentes acredita la capacidad jurídica, financiera y de experiencia de tu empresa para contratar con el Estado. Algunos procesos (mínima cuantía) no lo exigen.</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-2">¿Necesito una empresa formal para participar?</h3>
+                    <p class="body-sm text-muted-2 mb-0">En la mayoría de modalidades sí se exige cámara de comercio y, según el proceso, RUP. Si tu empresa aún no está lista, podemos ayudarte a preparar la documentación.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA licitación -->
+<section class="section-dark">
+    <div class="container">
+        <div class="row justify-content-center text-center">
+            <div class="col-lg-8">
+                <h2 class="display-lg text-white mb-3">¿Tu empresa quiere licitar en lo público?</h2>
+                <p class="body-lg text-white-50 mb-4" style="max-width: 560px; margin-left: auto; margin-right: auto;">
+                    Buscamos las oportunidades, preparamos tu propuesta y te acompañamos hasta la adjudicación. Tenemos el equipo de profesionales disponible.
+                </p>
+                <a href="{{ url_for('secop.licitar') }}" class="btn btn-gold btn-lg"><i class="bi bi-arrow-right-circle me-2"></i>Quiero licitar</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+{% endif %}
+{% endblock %}
+
+{% block scripts %}
+{% if not vacio %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    const colors = ['#D4A843', '#C41E3A', '#2F5FA8', '#10B981', '#8B5CF6', '#F97316', '#14B8A6', '#64748B', '#EF4444', '#3B82F6'];
+
+    function makeChart(id, labels, data) {
+        const el = document.getElementById(id);
+        if (!el || !labels.length) return;
+        new Chart(el, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    data: data,
+                    backgroundColor: colors,
+                    borderRadius: 6,
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                plugins: { legend: { display: false } },
+                scales: {
+                    x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.15)' } },
+                    y: { ticks: { color: '#e2e8f0' }, grid: { display: false } }
+                },
+                maintainAspectRatio: false
+            }
+        });
+    }
+
+    makeChart('chartDepartamentos', {{ chart_departamentos|map(attribute='label')|list|tojson }}, {{ chart_departamentos|map(attribute='total')|list|tojson }});
+    makeChart('chartModalidades', {{ chart_modalidades|map(attribute='label')|list|tojson }}, {{ chart_modalidades|map(attribute='total')|list|tojson }});
+    makeChart('chartPilares', {{ chart_pilares|map(attribute='label')|list|tojson }}, {{ chart_pilares|map(attribute='total')|list|tojson }});
+});
+</script>
+{% endif %}
+{% endblock %}

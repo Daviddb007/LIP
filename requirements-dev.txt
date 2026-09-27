@@ -1,0 +1,4 @@
+# Dev/test deps — verificación reproducible
+ruff==0.9.10
+# tests/test_holy_pins.py requiere holy_core: instalar editable desde el repo TRINITY
+#   venv/Scripts/python.exe -m pip install C:/Users/Usuario/TRINITY/runtimes/HOLY/holy-core

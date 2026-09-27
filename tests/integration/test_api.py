@@ -1,12 +1,7 @@
 """Tests de integración para endpoints API y rutas públicas v2."""
 import json
 
-import pytest
 
-from app import db
-from app.models.participacion import Participacion, ClasificacionSRIE
-from app.models.plan import Plan, Pilar
-from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario
 
 
 class TestHealthCheck:

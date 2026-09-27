@@ -1,14 +1,9 @@
 """Tests de integración para nuevas rutas portadas de V2 a V3."""
 import json
 
-import pytest
 
 from app import db
-from app.models.politica import Politica
-from app.models.miembro import MiembroEquipo
-from app.models.organizacion import Organizacion
 from app.models.webhook import Webhook
-from app.models.api_token import ApiToken
 
 
 class TestBiblioteca:

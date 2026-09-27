@@ -8,7 +8,6 @@ from __future__ import annotations
 import gzip
 import logging
 import time
-from io import BytesIO
 from logging.handlers import RotatingFileHandler
 
 from flask import Flask, g, request
@@ -101,6 +100,8 @@ def _register_blueprints(app: Flask) -> None:
     from app.routes.legal import legal_bp
     from app.routes.api_v1 import api_v1_bp
     from app.routes.focales import focales_bp
+    from app.routes.secop import secop_bp
+    from app.routes.seo import seo_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(participar_bp)
@@ -120,6 +121,8 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(legal_bp)
     app.register_blueprint(api_v1_bp)
     app.register_blueprint(focales_bp)
+    app.register_blueprint(secop_bp)
+    app.register_blueprint(seo_bp)
 
     @app.route("/api/docs")
     def api_docs():

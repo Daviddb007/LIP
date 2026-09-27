@@ -8,3 +8,12 @@ markers = [
     "unit: Unit tests (fast, no database)",
     "integration: Integration tests (may use database)",
 ]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+
+[tool.ruff.lint]
+# Defaults de ruff (E4 imports · E7 statement · E9 runtime · F pyflakes) —
+# el set que el repo ya pasaba en verde; no ampliar sin limpiar E501 primero.
+select = ["E4", "E7", "E9", "F"]

@@ -1,7 +1,7 @@
 """Formularios WTForms para la app."""
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField
-from wtforms.validators import DataRequired, Length
+from wtforms.validators import DataRequired
 
 
 class LoginForm(FlaskForm):

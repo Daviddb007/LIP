@@ -8,7 +8,7 @@ from __future__ import annotations
 import csv
 import io
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timezone
 
 from werkzeug.security import check_password_hash
 
@@ -17,14 +17,15 @@ from flask import (
     url_for, flash, jsonify, Response, current_app,
 )
 
-from app import db, cache, limiter
+from app import db, limiter
 from app.decorators import login_required
 from app.models.participacion import Participacion, ClasificacionSRIE
-from app.models.plan import Plan, Pilar, LineaEstrategica, Componente, Objetivo
+from app.models.plan import Plan, Pilar, LineaEstrategica
 from app.models.catalog import (
     Sector, Subsector, ProblemaCatalogo, Actor, Beneficiario,
     participacion_problemas, participacion_actores, participacion_beneficiarios,
 )
+from app.models.secop import LeadSecop
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -97,6 +98,30 @@ def api_alertas():
     from app.services.alertas_service import obtener_alertas
 
     return jsonify(obtener_alertas())
+
+
+# ------------------------------------------------------------------
+# Leads SECOP (servicio de licitación pública)
+# ------------------------------------------------------------------
+@admin_bp.route("/secop-leads")
+@login_required
+def secop_leads():
+    leads = LeadSecop.query.order_by(LeadSecop.creado_at.desc()).all()
+    no_atendidos = LeadSecop.query.filter_by(atendido=False).count()
+    return render_template(
+        "admin/secop_leads.html",
+        leads=leads,
+        no_atendidos=no_atendidos,
+    )
+
+
+@admin_bp.route("/secop-leads/<int:lead_id>/toggle", methods=["POST"])
+@login_required
+def secop_lead_toggle(lead_id):
+    lead = LeadSecop.query.get_or_404(lead_id)
+    lead.atendido = not lead.atendido
+    db.session.commit()
+    return redirect(url_for("admin.secop_leads"))
 
 
 # ------------------------------------------------------------------

@@ -61,6 +61,20 @@ Estrategia de participación robusta **completada y verificada** (ver `AUDITORIA
 
 > **Desviación documentada**: el proyecto no usa Alembic; patrón `db.create_all()` en run.py/deploy. Aplica únicamente a `create_engine` de app/DB (ver AUDITORIA_HOLY.md).
 
+### Milestone M2 — Visor SECOP II + Servicio de Licitación (2026-09-26)
+
+Estrategia de **Inteligencia Pública** sobre datos vivos de contratación pública,
+implementada y verificada (spec `docs/SPEC_SECOP_VISOR.md`):
+
+- [x] Ingesta SECOP II a PostgreSQL (`flask secop-actualizar`) — 883 procesos vigentes (corte 26 sep 2026), validación estricta (no publica datos corruptos)
+- [x] Visor público `/secop` — métricas, filtros (departamento/modalidad/RUP/pilar PND), tabla paginada, Chart.js, FAQ GEO
+- [x] Cross-ref procesos SECOP ↔ pilares SRIE del PND (puerta a armonización futura)
+- [x] Servicio comercial `/secop/licitar` — "¿Tu empresa quiere empezar a licitar en lo público?" + formulario de lead → `/admin/secop-leads`
+- [x] SEO/GEO: sitemap.xml, robots.txt (crawlers IA), llms.txt, JSON-LD Dataset/ProfessionalService/FAQPage
+- [x] 18 tests nuevos — suite **305/305 verdes · ruff 0**
+
+> **Pendiente (fuera de alcance):** deploy a producción (P-TRI-03, requiere GO humano), alertas de oportunidades, detalle por proceso, armonización SECOP↔participación.
+
 ---
 
 ## Fase 1: Participación Inteligente

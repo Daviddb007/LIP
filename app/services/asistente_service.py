@@ -5,10 +5,8 @@ para responder preguntas sobre entidades, instrumentos y políticas públicas.
 """
 from __future__ import annotations
 
-import re
 import unicodedata
 
-from app.errors import NotFoundError
 
 CONOCIMIENTO: list[dict] = [
     {

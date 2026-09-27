@@ -3,7 +3,6 @@
 Escucha las colas de transcripción y análisis. Procesa audios con whisper
 local (reserva total) y construye grafos de conocimiento.
 """
-import os
 
 from dotenv import load_dotenv
 from redis import Redis
@@ -11,7 +10,7 @@ from rq import Queue, Worker
 
 load_dotenv()
 
-from app.services.worker_jobs import get_app
+from app.services.worker_jobs import get_app  # noqa: E402 — necesita load_dotenv() antes (config lee env)
 
 
 def main() -> None:

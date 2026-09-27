@@ -1,6 +1,5 @@
 """Tests de consentimiento de datos (Ley 1581 de 2012)."""
 import json
-import pytest
 from app.models.participacion import Participacion
 
 
@@ -97,7 +96,6 @@ class TestModeloConsentimiento:
 
     def test_consentimiento_defaults(self, app, db):
         """Crea una participacion sin consentimiento y verifica defaults."""
-        from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario
 
         p = Participacion(
             departamento="Bogotá D.C.",
@@ -117,7 +115,6 @@ class TestModeloConsentimiento:
 class TestAnonimizar:
 
     def test_to_admin_dict_includes_consent(self, app, db):
-        from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario
 
         p = Participacion(
             departamento="Antioquia",
@@ -135,7 +132,6 @@ class TestAnonimizar:
         assert "anonimizada" in ad
 
     def test_to_dict_public_excludes_consent(self, app, db):
-        from app.models.catalog import ProblemaCatalogo, Actor, Beneficiario
 
         p = Participacion(
             departamento="Cundinamarca",

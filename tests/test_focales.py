@@ -6,7 +6,6 @@ import uuid
 
 import pytest
 
-from app import db
 from app.models.focal import AudioFocal, OrgFocal, ParticipanteFocal, PreguntaFocal, SesionFocal
 from app.models.grafo import NodoGrafo, RelacionGrafo, SegmentoTranscript, TranscriptFocal
 from app.services import grafo_service, llm_client
@@ -230,7 +229,7 @@ def test_no_subir_formato_invalido(logged_in_client, db, org):
     sesion = SesionFocal(org_id=org.id, titulo="S", fecha=__import__("datetime").date(2026, 8, 13))
     db.session.add(sesion)
     db.session.commit()
-    r = logged_in_client.post(
+    logged_in_client.post(
         f"/admin/focales/sesiones/{sesion.id}/audios",
         data={"archivo": (io.BytesIO(b"x" * 10), "documento.exe")},
         content_type="multipart/form-data",

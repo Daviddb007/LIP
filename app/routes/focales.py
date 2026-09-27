@@ -22,7 +22,6 @@ from app.models.catalog import Sector
 from app.models.focal import (
     AudioFocal, OrgFocal, ParticipanteFocal, PreguntaFocal, SesionFocal,
 )
-from app.models.grafo import TranscriptFocal
 from app.services import grafo_service
 from app.services.worker_jobs import encolar_grafo, encolar_transcripcion
 
@@ -216,7 +215,7 @@ def sesion_eliminar(sesion_id: int):
     _limpiar_audios_sesion(sesion.id)
     db.session.delete(sesion)
     db.session.commit()
-    flash(f"Sesión eliminada", "success")
+    flash("Sesión eliminada", "success")
     return redirect(url_for("focales.organizacion_detalle", org_id=org_id))
 
 

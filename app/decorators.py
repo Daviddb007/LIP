@@ -10,7 +10,7 @@ import hashlib
 import hmac
 from functools import wraps
 
-from flask import Request, session, redirect, request
+from flask import session, redirect, request
 
 
 def login_required(f):

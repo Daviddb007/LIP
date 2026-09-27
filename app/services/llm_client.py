@@ -11,7 +11,6 @@ import hashlib
 import math
 import re
 import unicodedata
-from typing import Any
 
 from flask import current_app
 

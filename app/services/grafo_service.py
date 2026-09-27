@@ -6,11 +6,9 @@ Convierte el texto de una sesión en nodos (chunks + temas) y aristas
 from __future__ import annotations
 
 import json
-import re
 from datetime import datetime, timezone
 from typing import Any
 
-from flask import current_app
 
 from app import db
 from app.models.grafo import NodoGrafo, RelacionGrafo, TranscriptFocal

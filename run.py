@@ -8,11 +8,13 @@ Uso:
     flask db upgrade           # Aplicar migración
 """
 import os
+
+import click
 from dotenv import load_dotenv
 
 load_dotenv()
 
-from app import create_app, db
+from app import create_app, db  # noqa: E402 — necesita load_dotenv() antes (config lee env)
 
 
 app = create_app(os.environ.get("FLASK_CONFIG", "development"))
@@ -51,7 +53,6 @@ def init_db_command():
 @app.cli.command("migrate-consent")
 def migrate_consent_command():
     """Añade columnas de consentimiento a base de datos existente (idempotente)."""
-    from datetime import datetime, timezone
     from sqlalchemy import inspect, text as sa_text
 
     with app.app_context():
@@ -108,7 +109,7 @@ def anonimizar_datos_command():
         from app.models.participacion import Participacion
 
         expired = Participacion.query.filter(
-            Participacion.anonimizada == False,
+            Participacion.anonimizada.is_(False),
             Participacion.created_at < cutoff,
         ).all()
 
@@ -171,6 +172,31 @@ def construir_grafos_command():
                 print(f"Sesión #{sesion.id}: {resultado['nodos']} nodos, temas: {resultado['temas']}")
             else:
                 print(f"Sesión #{sesion.id}: ERROR {resultado.get('error')}")
+
+
+@app.cli.command("secop-actualizar")
+@click.option("--corte", default=None, help="Fecha de corte YYYY-MM-DD (default: hoy)")
+def secop_actualizar_command(corte: str | None):
+    """Descarga, valida y persiste los procesos SECOP II con oferta abierta."""
+    from datetime import date as _date
+
+    from app.services.secop_service import SecopError, actualizar_secop
+
+    try:
+        corte_dt = _date.fromisoformat(corte) if corte else None
+    except ValueError:
+        print("[ERROR] Fecha de corte inválida. Use formato YYYY-MM-DD.")
+        return
+
+    with app.app_context():
+        db.create_all()
+        try:
+            stats = actualizar_secop(corte_dt)
+        except SecopError as exc:
+            print(f"[ERROR] {exc}")
+            return
+        print(f"[OK] {stats['total']} procesos vigentes guardados (corte {stats['corte_legible']}).")
+        print(f"  Generado: {stats['generado']} - fuente datos.gov.co (SECOP II).")
 
 
 if __name__ == "__main__":
