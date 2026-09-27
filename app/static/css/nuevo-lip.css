@@ -267,3 +267,22 @@ svg .tubo-arrow{stroke:rgba(201,162,39,.5);stroke-width:1.5;fill:none;stroke-das
 /* ---------- Charts: contenedor de altura fija (evita crecimiento infinito) ---------- */
 .chart-wrap{position:relative;height:260px}
 .chart-wrap canvas{position:absolute;inset:0;width:100% !important;height:100% !important}
+
+/* ---------- HARDENING: ningun contenedor blanco con texto claro ---------- */
+.card-elevated,.card-premium,.card-glass,.stat-card,.form-card,.table-responsive{
+  background-color:rgba(12,31,58,.6) !important;
+}
+.stat-card{background-color:rgba(12,31,58,.75) !important}
+/* text-white/bootstrap no debe anular el tema oscuro */
+.stat-number.text-white,.stat-number.text-white-50,.stat-number.text-blue,.stat-number.text-green{
+  color:var(--cream) !important;
+}
+.stat-number.text-gold,.display-sm.text-gold,.heading-sm.text-gold{color:var(--gold-l) !important}
+.table-premium,.table-premium td{color:var(--cream) !important}
+.table-premium th{color:var(--gold-l) !important}
+.form-control,.form-select{color:var(--cream) !important;background-color:var(--navy-3) !important;border-color:var(--line) !important}
+.form-label{color:var(--dim) !important}
+.btn-outline{color:#fff !important}
+.hero-video p,.hero-band p{color:var(--dim) !important}
+.section .heading-sm,.section .heading-md{color:var(--cream) !important}
+.section .text-muted-2{color:var(--dim) !important}

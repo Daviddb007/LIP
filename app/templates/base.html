@@ -33,7 +33,7 @@
     <link href="{{ url_for('static', filename='css/style.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/map.css') }}" rel="stylesheet">
     <link href="{{ url_for('static', filename='css/premium.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/nuevo-lip.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/nuevo-lip.css') }}?v=nuevo1" rel="stylesheet">
     {% block styles %}{% endblock %}
 </head>
 <body>
@@ -185,7 +185,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/SplitText.min.js"></script>
-    <script src="{{ url_for('static', filename='js/nuevo-lip.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/nuevo-lip.js') }}?v=nuevo1"></script>
     <script>
         // Progressive enhancement: mark body as JS-ready for animations
         document.body.classList.add('js-ready');
