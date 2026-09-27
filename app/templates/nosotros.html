@@ -25,18 +25,17 @@
         <div class="row justify-content-center g-4">
             {% for m in miembros %}
             <div class="col-lg-4 col-md-6 animate-on-scroll">
-                <div class="card-premium text-center h-100" style="padding: var(--space-2xl);">
-                    <div style="width: 140px; height: 140px; border-radius: 50%; margin: 0 auto var(--space-lg);
-                        background: {% if m.foto_url %}url({{ m.foto_url }}) center/cover{% else %}var(--surface-2){% endif %};
-                        {% if not m.foto_url %}display: flex; align-items: center; justify-content: center;{% endif %}
-                        border: 4px solid var(--border); overflow: hidden;">
-                        {% if not m.foto_url %}
+                <div class="card-premium profile-card text-center h-100" style="padding: var(--space-2xl);">
+                    <div class="team-avatar">
+                        {% if m.foto_url %}
+                        <img src="{{ m.foto_url }}" alt="{{ m.nombre }}" loading="lazy">
+                        {% else %}
                         <i class="bi bi-person-fill" style="font-size: 3rem; color: var(--text-3);"></i>
                         {% endif %}
                     </div>
                     <h3 class="fw-bold mb-1" style="font-size: 1.3rem;">{{ m.nombre }}</h3>
                     {% if m.cargo %}
-                    <span class="badge badge-primary mb-3" style="font-size: .8rem;">{{ m.cargo }}</span>
+                    <span class="badge badge-gold mb-3">{{ m.cargo }}</span>
                     {% endif %}
                     {% if m.descripcion %}
                     <p class="text-muted-2 body-md mb-0">{{ m.descripcion }}</p>

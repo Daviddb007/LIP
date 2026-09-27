@@ -68,6 +68,7 @@ body {
 
 /* ---------- Tipografía display ---------- */
 .display-xl, .display-lg, .display-md, .display-sm,
+.heading-lg, .heading-md, .heading-sm,
 h1, h2, h3 {
     font-family: var(--font-display);
     font-variation-settings: "opsz" 48, "SOFT" 30, "WONK" 1;
@@ -301,4 +302,93 @@ body::after {
         transition-duration: 0.01ms !important;
         scroll-behavior: auto !important;
     }
+}
+
+/* ===================================================================
+   RONDA 2 — refinamientos compartidos de páginas públicas
+   =================================================================== */
+
+/* Badges: un solo acento (oro) — sobre navy transparente */
+.hero .badge,
+.hero .badge-primary,
+.section-dark .badge-primary {
+    background: rgba(212, 168, 67, 0.14);
+    color: var(--gold-light);
+    border: 1px solid rgba(212, 168, 67, 0.4);
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.5rem 0.9rem;
+    border-radius: var(--radius-sm);
+}
+
+/* Badge sólido oro para secciones claras */
+.badge-gold {
+    background: var(--gold);
+    color: var(--navy);
+    font-weight: 700;
+    border-radius: var(--radius-sm);
+}
+
+/* Stats: paleta navy/oro consistente */
+.card-elevated .text-blue,
+.card-elevated .text-green,
+.card-elevated .text-purple,
+.card-elevated .text-warning,
+.stat-card .text-blue,
+.stat-card .text-green,
+.stat-card .text-purple {
+    color: var(--navy) !important;
+}
+
+.card-elevated .text-gold,
+.stat-card .text-gold {
+    color: var(--gold-dark) !important;
+}
+
+/* Tarjetas de dashboard/charts */
+.card-elevated > h3,
+.card-elevated .heading-sm {
+    letter-spacing: -0.015em;
+}
+
+.card-elevated {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+}
+
+/* Avatar de equipo (nosotros) */
+.team-avatar {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    margin: 0 auto var(--space-lg);
+    border: 2px solid rgba(212, 168, 67, 0.5);
+    box-shadow: var(--shadow-md), 0 0 0 6px rgba(212, 168, 67, 0.08);
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface-2);
+}
+
+.team-avatar img { width: 100%; height: 100%; object-fit: cover; }
+
+/* Enlaces dentro de cards */
+.card-premium a, .card-elevated a {
+    text-decoration: none;
+}
+
+/* Página nosotros: tarjetas de perfil */
+.profile-card {
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow-sm);
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.profile-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
 }
