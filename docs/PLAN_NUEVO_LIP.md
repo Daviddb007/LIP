@@ -70,4 +70,18 @@
 3. Suite de tests en verde (305 actuales + nuevos) y ruff 0.
 4. Sin regresión funcional del backend; sin tocar producción.
 
+---
+
+## Estado del ensamblaje
+
+| Paso | Estado | Commit |
+|---|---|---|
+| P1 · Shell y design system (navy/dorado, base, motion) | ✅ | `155bbb2` |
+| P2 · Home híbrido + Participar | ✅ | `ad60597` |
+| P3 · Observatorio + SECOP + Licitación | ✅ | `c4058e8` |
+| P4 · Biblioteca + Conocer + Asistente + Iniciativa + Nosotros | ✅ | `c4058e8` |
+| Fix · Charts crecimiento infinito (`chart-wrap` altura fija) | ✅ | `65526a4` |
+| P5 · QA integral (en curso) | 🔄 | — |
+| P6 · GO humano → ensamblaje final → deploy | ⏳ | — |
+
 *TRINITY · LABORATORIO DE INTELIGENCIA PÚBLICA · 2026-09-27*

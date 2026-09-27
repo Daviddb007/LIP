@@ -7,7 +7,7 @@
 
 <!-- Hero bandera -->
 <section class="hero-video">
-  <video class="hvideo" id="heroVideo" muted autoplay loop playsinline preload="auto" poster="{{ url_for('static', filename='video/poster-exp-bandera.webp') }}">
+  <video class="hvideo" id="heroVideo" muted autoplay loop playsinline preload="auto" aria-hidden="true" tabindex="-1" poster="{{ url_for('static', filename='video/poster-exp-bandera.webp') }}">
     <source src="{{ url_for('static', filename='video/exp-bandera.webm') }}" type="video/webm">
     <source src="{{ url_for('static', filename='video/exp-bandera.mp4') }}" type="video/mp4">
   </video>
@@ -236,7 +236,15 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
       }
       raf = requestAnimationFrame(tick);
     }
-    if (reduce) { size(); return; }
+    if (reduce) {
+      size();
+      var w = cv.width / devicePixelRatio, h = 120, bw = w / bars.length;
+      bars.forEach(function (v, i) {
+        var bh = Math.max(6, v * h * 0.9), x = i * bw + bw * 0.15, wd = bw * 0.7;
+        ctx.fillStyle = 'rgba(201,162,39,.6)'; ctx.fillRect(x, h - bh, wd, bh);
+      });
+      return;
+    }
     size();
     new IntersectionObserver(function (en) {
       if (en[0].isIntersecting && !running) { running = true; t0 = performance.now(); raf = requestAnimationFrame(tick); }
