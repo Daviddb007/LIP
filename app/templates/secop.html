@@ -135,6 +135,14 @@
                         <option value="1" {% if filtros.rup == '1' %}selected{% endif %}>Sí</option>
                     </select>
                 </div>
+                <div class="col-md-3">
+                    <label class="form-label body-sm">Valor mínimo (COP)</label>
+                    <input type="number" name="valor_min" class="form-control" min="0" step="1000" value="{{ filtros.valor_min }}" placeholder="0">
+                </div>
+                <div class="col-md-3">
+                    <label class="form-label body-sm">Valor máximo (COP)</label>
+                    <input type="number" name="valor_max" class="form-control" min="0" step="1000" value="{{ filtros.valor_max }}" placeholder="Sin límite">
+                </div>
                 <div class="col-12">
                     <button type="submit" class="btn btn-gold"><i class="bi bi-funnel me-2"></i>Aplicar filtros</button>
                     <a href="{{ url_for('secop.pagina') }}" class="btn btn-outline ms-2">Limpiar</a>
@@ -237,19 +245,19 @@
         <nav class="mt-4">
             <ul class="pagination justify-content-center">
                 {% if pagination.has_prev %}
-                <li class="page-item"><a class="page-link" href="{{ url_for('secop.pagina', page=pagination.prev_num, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar) }}">←</a></li>
+                <li class="page-item"><a class="page-link" href="{{ url_for('secop.pagina', page=pagination.prev_num, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar, valor_min=filtros.valor_min, valor_max=filtros.valor_max) }}">←</a></li>
                 {% endif %}
                 {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
                     {% if p %}
                     <li class="page-item {% if p == pagination.page %}active{% endif %}">
-                        <a class="page-link" href="{{ url_for('secop.pagina', page=p, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar) }}">{{ p }}</a>
+                        <a class="page-link" href="{{ url_for('secop.pagina', page=p, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar, valor_min=filtros.valor_min, valor_max=filtros.valor_max) }}">{{ p }}</a>
                     </li>
                     {% else %}
                     <li class="page-item disabled"><span class="page-link">…</span></li>
                     {% endif %}
                 {% endfor %}
                 {% if pagination.has_next %}
-                <li class="page-item"><a class="page-link" href="{{ url_for('secop.pagina', page=pagination.next_num, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar) }}">→</a></li>
+                <li class="page-item"><a class="page-link" href="{{ url_for('secop.pagina', page=pagination.next_num, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar, valor_min=filtros.valor_min, valor_max=filtros.valor_max) }}">→</a></li>
                 {% endif %}
             </ul>
         </nav>

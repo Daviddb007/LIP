@@ -87,7 +87,7 @@ def _stats(corte) -> dict:
     }
 
 
-def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="", pilar=""):
+def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="", pilar="", valor_min=None, valor_max=None):
     query = SecopProceso.query.filter_by(corte=corte)
     if q:
         like = f"%{q}%"
@@ -102,6 +102,10 @@ def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="",
         query = query.filter(SecopProceso.requiere_rup.is_(False))
     if pilar:
         query = query.filter(db.cast(SecopProceso.pilares, db.String).ilike(f'%"{pilar}"%'))
+    if valor_min is not None:
+        query = query.filter(SecopProceso.valor >= valor_min)
+    if valor_max is not None:
+        query = query.filter(SecopProceso.valor <= valor_max)
     return query
 
 
@@ -118,9 +122,11 @@ def pagina():
     modalidad = request.args.get("modalidad", "").strip()
     requiere_rup = request.args.get("rup", "").strip()
     pilar = request.args.get("pilar", "").strip()
+    valor_min = request.args.get("valor_min", type=int)
+    valor_max = request.args.get("valor_max", type=int)
     page = request.args.get("page", 1, type=int)
 
-    query = _query_filtrada(corte, q, departamento, modalidad, requiere_rup, pilar)
+    query = _query_filtrada(corte, q, departamento, modalidad, requiere_rup, pilar, valor_min, valor_max)
     pagination = query.order_by(
         SecopProceso.fecha_limite.asc(), SecopProceso.valor.desc()
     ).paginate(page=page, per_page=25, error_out=False)
@@ -151,7 +157,8 @@ def pagina():
         "chart_pilares": _pilares_counts(corte),
         "departamentos": _departamentos(corte),
         "modalidades": _modalidades(corte),
-        "filtros": {"q": q, "departamento": departamento, "modalidad": modalidad, "rup": requiere_rup, "pilar": pilar},
+        "filtros": {"q": q, "departamento": departamento, "modalidad": modalidad, "rup": requiere_rup, "pilar": pilar,
+                    "valor_min": valor_min or "", "valor_max": valor_max or ""},
         "rows": rows,
         "pagination": pagination,
     }
