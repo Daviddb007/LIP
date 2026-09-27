@@ -167,7 +167,13 @@ h1,h2,h3,.display-xl,.display-lg,.display-md,.display-sm,.heading-lg,.heading-md
    P2 · Componentes del híbrido ganador (home/participar)
    =================================================================== */
 
-/* Hero con video bandera */
+/* ---------- Hero con video bandera */
+.hero-band{position:relative;padding:9rem 0 3.5rem;background:
+  radial-gradient(110% 80% at 12% 0%,rgba(201,162,39,.08),transparent 45%),
+  linear-gradient(180deg,var(--navy) 0%,var(--navy-2) 100%)}
+.hero-band .kicker{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.22em;color:var(--gold);margin-bottom:1.6rem;display:flex;align-items:center;gap:.6rem}
+.hero-band .kicker::before{content:"";width:40px;height:1px;background:var(--gold)}
+.hero-band p{max-width:52ch}
 .hero-video{position:relative;min-height:92vh;overflow:hidden;display:flex;align-items:center;padding:7rem 0 4rem}
 .hero-video>video,.hero-video .hvideo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:saturate(1.08) brightness(.6)}
 .hero-video .veil{position:absolute;inset:0;background:linear-gradient(180deg,rgba(12,31,58,.78) 0%,rgba(12,31,58,.3) 45%,rgba(8,19,37,.97) 100%)}

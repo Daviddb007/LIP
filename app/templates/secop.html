@@ -8,15 +8,11 @@
 {% block content %}
 
 {% if vacio %}
-<section class="hero" style="padding: var(--space-3xl) 0;">
+<section class="hero-band">
     <div class="container">
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-8">
-                <div class="badge badge-white mb-3">Visor SECOP</div>
-                <h1 class="display-lg text-white mb-3">Aún no hay datos de SECOP cargados</h1>
-                <p class="body-lg text-white-50">Ejecuta <code>flask secop-actualizar</code> para descargar los procesos vigentes desde datos.gov.co.</p>
-            </div>
-        </div>
+        <div class="kicker">Visor SECOP</div>
+        <h1 class="display-lg text-white mb-3">Aún no hay datos de SECOP cargados</h1>
+        <p class="body-lg" style="color: var(--dim);">Ejecuta <code>flask secop-actualizar</code> para descargar los procesos vigentes desde datos.gov.co.</p>
     </div>
 </section>
 {% else %}
@@ -40,18 +36,14 @@
 </script>
 
 <!-- Hero -->
-<section class="hero" style="padding: var(--space-3xl) 0;">
+<section class="hero-band">
     <div class="container">
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-9">
-                <div class="badge badge-white mb-3">SECOP II · Datos abiertos</div>
-                <h1 class="display-lg text-white mb-3">Oportunidades de contratación pública en Colombia</h1>
-                <p class="body-lg text-white-50" style="max-width: 640px; margin: 0 auto;">
-                    Procesos con oferta abierta en el SECOP II. Corte del {{ corte_legible }} ·
-                    <strong class="text-gold">{{ stats.total }} procesos vigentes</strong>. Fuente: datos.gov.co.
-                </p>
-            </div>
-        </div>
+        <div class="kicker">SECOP II · Datos abiertos</div>
+        <h1 class="display-lg text-white mb-3">Oportunidades de contratación pública</h1>
+        <p class="body-lg" style="color: var(--dim);">
+            Procesos con oferta abierta en el SECOP II. Corte del {{ corte_legible }} ·
+            <strong style="color: var(--gold);">{{ stats.total }} procesos vigentes</strong>. Fuente: datos.gov.co.
+        </p>
     </div>
 </section>
 
