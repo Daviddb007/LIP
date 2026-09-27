@@ -75,9 +75,12 @@ def _stats(corte) -> dict:
     hoy = date.today()
     limite_7d = hoy + timedelta(days=7)
     base = SecopProceso.query.filter_by(corte=corte)
+    total = base.count()
+    valor_total = base.with_entities(db.func.coalesce(db.func.sum(SecopProceso.valor), 0)).scalar()
     return {
-        "total": base.count(),
-        "valor_total": base.with_entities(db.func.coalesce(db.func.sum(SecopProceso.valor), 0)).scalar(),
+        "total": total,
+        "valor_total": valor_total,
+        "valor_promedio": round(valor_total / total) if total else 0,
         "entidades": base.with_entities(db.func.count(db.distinct(SecopProceso.entidad))).scalar(),
         "sin_rup": base.filter(SecopProceso.requiere_rup.is_(False)).count(),
         "vencen_7d": base.filter(SecopProceso.fecha_limite <= limite_7d).count(),
@@ -140,6 +143,7 @@ def pagina():
         "stats": stats,
         "stats_fmt": {
             "valor_total": _fmt_cop(stats["valor_total"]),
+            "valor_promedio": _fmt_cop(stats["valor_promedio"]),
         },
         "chart_departamentos": _count_by(SecopProceso.departamento, corte),
         "chart_modalidades": _count_by(SecopProceso.modalidad, corte),
