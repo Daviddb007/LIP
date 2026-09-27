@@ -280,6 +280,9 @@ svg .tubo-arrow{stroke:rgba(201,162,39,.5);stroke-width:1.5;fill:none;stroke-das
 .stat-number.text-gold,.display-sm.text-gold,.heading-sm.text-gold{color:var(--gold-l) !important}
 .table-premium,.table-premium td{color:var(--cream) !important}
 .table-premium th{color:var(--gold-l) !important}
+/* Bootstrap .table trae --bs-table-bg blanco -> forzar transparente (se ve la card oscura) */
+.table{--bs-table-bg:transparent !important;--bs-table-color:var(--cream) !important;background-color:transparent !important;color:var(--cream) !important}
+.table th,.table td{border-color:var(--line) !important;background-color:transparent !important}
 .form-control,.form-select{color:var(--cream) !important;background-color:var(--navy-3) !important;border-color:var(--line) !important}
 .form-label{color:var(--dim) !important}
 .btn-outline{color:#fff !important}
