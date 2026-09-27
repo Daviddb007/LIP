@@ -7,6 +7,7 @@ from app import db, cache
 from app.models.participacion import Participacion
 from app.models.catalog import ProblemaCatalogo
 from app.models.plan import Pilar
+from app.models.secop import SecopCorte
 
 home_bp = Blueprint("home", __name__)
 
@@ -21,10 +22,17 @@ def index():
     pilares = Pilar.query.filter_by(activo=True).count()
     problemas = ProblemaCatalogo.query.filter_by(activo=True).count()
 
+    # SECOP: último corte cargado
+    ultimo_corte = SecopCorte.query.order_by(SecopCorte.corte.desc()).first()
+    secop_total = ultimo_corte.total if ultimo_corte else 0
+    secop_corte = ultimo_corte.corte.strftime("%d/%m/%Y") if ultimo_corte else "sin datos"
+
     stats = {
         "total": total,
         "municipios": municipios,
         "pilares": pilares,
         "problemas": problemas,
+        "secop_total": secop_total,
+        "secop_corte": secop_corte,
     }
     return render_template("home.html", stats=stats)

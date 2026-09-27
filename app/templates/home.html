@@ -19,8 +19,8 @@
       <h1 id="heroTitle" class="display-xl text-white">El país se construye <span class="accent">escuchándolo</span></h1>
       <p class="body-lg" style="max-width:52ch; color: var(--dim);">Un sistema de <b style="color:#fff;">inteligencia participativa</b>. Propón, clasificamos con un motor estratégico y decidimos con evidencia para el Plan Nacional de Desarrollo 2027–2030.</p>
       <div class="readout">
-        <div class="r"><span>18</span>PILARES ESTRATÉGICOS</div>
-        <div class="r"><span>1.273 <em>abiertos</em></span>PROCESOS SECOP II</div>
+        <div class="r"><span>{{ stats.pilares }}</span>PILARES ESTRATÉGICOS</div>
+        <div class="r"><span>{{ '{:,}'.format(stats.secop_total).replace(',', '.') }} <em>abiertos</em></span>PROCESOS SECOP II</div>
         <div class="r"><span>&lt; 5 <em>min</em></span>TIEMPO DE PARTICIPACIÓN</div>
         <div class="r"><span>100<em>%</em></span>PUBLICO Y TRAZABLE</div>
       </div>
@@ -195,14 +195,24 @@
     <div class="t-head"><b>TELEMETRÍA //</b> <span>inteligencia participativa + contratación pública, en una sola lectura</span></div>
     <div class="tele-grid">
       <div class="tele-card">
-        <div class="tc-top"><div class="tc-label">Procesos SECOP II abiertos</div><div class="tc-val" data-count="1273">0</div></div>
+        <div class="tc-top"><div class="tc-label">Procesos SECOP II abiertos</div><div class="tc-val" data-count="{{ stats.secop_total }}">0</div></div>
         <div class="bar"><div class="fill" data-fill="92"></div></div>
-        <div class="tc-note">corte de hoy · datos.gov.co</div>
+        <div class="tc-note">corte {{ stats.secop_corte }} · datos.gov.co</div>
       </div>
       <div class="tele-card">
-        <div class="tc-top"><div class="tc-label">Pilares conectados</div><div class="tc-val">18<em>/18</em></div></div>
+        <div class="tc-top"><div class="tc-label">Propuestas ciudadanas</div><div class="tc-val" data-count="{{ stats.total }}">0</div></div>
+        <div class="bar"><div class="fill" data-fill="78"></div></div>
+        <div class="tc-note">registradas y clasificadas por SRIE</div>
+      </div>
+      <div class="tele-card">
+        <div class="tc-top"><div class="tc-label">Pilares conectados</div><div class="tc-val">{{ stats.pilares }}<em>/18</em></div></div>
         <div class="bar"><div class="fill" data-fill="100"></div></div>
-        <div class="tc-note">cobertura total del plan</div>
+        <div class="tc-note">cobertura del marco estratégico</div>
+      </div>
+      <div class="tele-card">
+        <div class="tc-top"><div class="tc-label">Municipios alcanzados</div><div class="tc-val" data-count="{{ stats.municipios }}">0</div></div>
+        <div class="bar"><div class="fill" data-fill="88"></div></div>
+        <div class="tc-note">con participación registrada</div>
       </div>
       <div class="tele-card">
         <div class="tc-top"><div class="tc-label">Tiempo de participación</div><div class="tc-val">&lt;5<em> min</em></div></div>
@@ -213,16 +223,6 @@
         <div class="tc-top"><div class="tc-label">Transparencia</div><div class="tc-val">100<em>%</em></div></div>
         <div class="bar"><div class="fill" data-fill="100"></div></div>
         <div class="tc-note">público, trazable, abierto</div>
-      </div>
-      <div class="tele-card">
-        <div class="tc-top"><div class="tc-label">Departamentos</div><div class="tc-val">32<em>/32</em></div></div>
-        <div class="bar"><div class="fill" data-fill="100"></div></div>
-        <div class="tc-note">cobertura territorial</div>
-      </div>
-      <div class="tele-card">
-        <div class="tc-top"><div class="tc-label">Municipios</div><div class="tc-val">1.100<em>+</em></div></div>
-        <div class="bar"><div class="fill" data-fill="88"></div></div>
-        <div class="tc-note">en conversación con el país</div>
       </div>
     </div>
   </div>
