@@ -54,13 +54,13 @@
             <div class="col-lg-6">
                 <div class="card-elevated p-4">
                     <h3 class="heading-sm text-dark mb-3">Participaciones por departamento</h3>
-                    <canvas id="chartDepartamentos" height="260"></canvas>
+                    <canvas id="chartDepartamentos" height="260" role="img" aria-label="Participaciones por departamento"></canvas>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="card-elevated p-4">
                     <h3 class="heading-sm text-dark mb-3">Problemas más mencionados</h3>
-                    <canvas id="chartProblemas" height="260"></canvas>
+                    <canvas id="chartProblemas" height="260" role="img" aria-label="Problemas más mencionados"></canvas>
                 </div>
             </div>
         </div>
@@ -76,7 +76,7 @@
             <div class="col-lg-6">
                 <div class="card-elevated p-4" style="min-height: 400px;">
                     <h3 class="heading-sm text-dark mb-3">Pilares más activos</h3>
-                    <canvas id="chartPilares" height="300"></canvas>
+                    <canvas id="chartPilares" height="300" role="img" aria-label="Pilares más activos"></canvas>
                 </div>
             </div>
         </div>
@@ -86,13 +86,13 @@
             <div class="col-lg-6">
                 <div class="card-elevated p-4">
                     <h3 class="heading-sm text-dark mb-3">Actores más mencionados</h3>
-                    <canvas id="chartActores" height="200"></canvas>
+                    <canvas id="chartActores" height="200" role="img" aria-label="Actores más mencionados"></canvas>
                 </div>
             </div>
             <div class="col-lg-6">
                 <div class="card-elevated p-4">
                     <h3 class="heading-sm text-dark mb-3">Beneficiarios más mencionados</h3>
-                    <canvas id="chartBeneficiarios" height="200"></canvas>
+                    <canvas id="chartBeneficiarios" height="200" role="img" aria-label="Beneficiarios más mencionados"></canvas>
                 </div>
             </div>
         </div>
@@ -102,20 +102,21 @@
             <h3 class="heading-sm text-dark mb-3">Participaciones recientes</h3>
             <div style="overflow-x: auto;">
                 <table class="table-premium w-100">
+                    <caption class="sr-only">Participaciones ciudadanas recientes con su clasificación</caption>
                     <thead>
                         <tr>
-                            <th>ID</th>
-                            <th>Departamento</th>
-                            <th>Problemas</th>
-                            <th>Pilar</th>
-                            <th>Propuesta</th>
-                            <th>Fecha</th>
+                            <th scope="col">ID</th>
+                            <th scope="col">Departamento</th>
+                            <th scope="col">Problemas</th>
+                            <th scope="col">Pilar</th>
+                            <th scope="col">Propuesta</th>
+                            <th scope="col">Fecha</th>
                         </tr>
                     </thead>
                     <tbody id="tablaParticipaciones">
-                        <tr>
-                            <td colspan="6" class="text-center text-muted-2 py-4">Cargando datos...</td>
-                        </tr>
+                        <tr><td colspan="6" class="py-3"><div class="skeleton skeleton-row"></div></td></tr>
+                        <tr><td colspan="6" class="py-3"><div class="skeleton skeleton-row"></div></td></tr>
+                        <tr><td colspan="6" class="py-3"><div class="skeleton skeleton-row"></div></td></tr>
                     </tbody>
                 </table>
             </div>

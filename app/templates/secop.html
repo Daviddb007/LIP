@@ -148,19 +148,19 @@
             <div class="col-lg-4">
                 <div class="card-elevated p-4 h-100">
                     <h3 class="heading-sm mb-3">Por departamento</h3>
-                    <canvas id="chartDepartamentos" height="220"></canvas>
+                    <canvas id="chartDepartamentos" height="220" role="img" aria-label="Procesos SECOP por departamento"></canvas>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="card-elevated p-4 h-100">
                     <h3 class="heading-sm mb-3">Por modalidad</h3>
-                    <canvas id="chartModalidades" height="220"></canvas>
+                    <canvas id="chartModalidades" height="220" role="img" aria-label="Procesos SECOP por modalidad de contratación"></canvas>
                 </div>
             </div>
             <div class="col-lg-4">
                 <div class="card-elevated p-4 h-100">
                     <h3 class="heading-sm mb-3">Por pilar PND</h3>
-                    <canvas id="chartPilares" height="220"></canvas>
+                    <canvas id="chartPilares" height="220" role="img" aria-label="Procesos SECOP por pilar del Plan Nacional de Desarrollo"></canvas>
                 </div>
             </div>
         </div>
@@ -174,14 +174,14 @@
             <table class="table table-premium">
                 <thead>
                     <tr>
-                        <th>Proceso</th>
-                        <th>Entidad</th>
-                        <th>Departamento</th>
-                        <th>Modalidad</th>
-                        <th>Valor</th>
-                        <th>Vence</th>
-                        <th>RUP</th>
-                        <th></th>
+                        <th scope="col">Proceso</th>
+                        <th scope="col">Entidad</th>
+                        <th scope="col">Departamento</th>
+                        <th scope="col">Modalidad</th>
+                        <th scope="col">Valor</th>
+                        <th scope="col">Vence</th>
+                        <th scope="col">RUP</th>
+                        <th scope="col"><span class="sr-only">Acción</span></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -206,7 +206,7 @@
                             {% endif %}
                         </td>
                         <td>{% if r.requiere_rup %}<span class="badge badge-white">RUP</span>{% else %}<span class="badge bg-success text-white">Sin RUP</span>{% endif %}</td>
-                        <td><a href="{{ r.url }}" target="_blank" rel="noopener nofollow" class="btn btn-outline btn-sm"><i class="bi bi-box-arrow-up-right"></i></a></td>
+                        <td><a href="{{ r.url }}" target="_blank" rel="noopener nofollow" class="btn btn-outline btn-sm" aria-label="Abrir proceso {{ r.nombre }} en SECOP II"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a></td>
                     </tr>
                     {% else %}
                     <tr><td colspan="8" class="text-center text-muted-2 py-4">No hay procesos que coincidan con los filtros.</td></tr>
