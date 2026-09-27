@@ -286,3 +286,14 @@ svg .tubo-arrow{stroke:rgba(201,162,39,.5);stroke-width:1.5;fill:none;stroke-das
 .hero-video p,.hero-band p{color:var(--dim) !important}
 .section .heading-sm,.section .heading-md{color:var(--cream) !important}
 .section .text-muted-2{color:var(--dim) !important}
+
+/* ---------- Narrativa: valor + audiencias ---------- */
+.value-strip{margin-top:1.8rem;display:flex;flex-wrap:wrap;gap:.5rem 1.9rem;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;color:var(--gold-l)}
+.value-strip span{display:flex;align-items:center;gap:.5rem}
+.value-strip span::before{content:"\25CF";color:var(--gold);font-size:.6rem}
+.aud-label{font-family:var(--font-mono);font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:.8rem;display:flex;align-items:center;gap:.5rem}
+.aud-label::before{content:"";width:22px;height:1px;background:var(--gold)}
+.aud-card .aud-link{margin-top:1.2rem;font-family:var(--font-mono);font-size:.72rem;letter-spacing:.12em;text-transform:uppercase;color:var(--gold-l)}
+.aud-card .aud-link:hover{color:#fff}
+.motor-core{font-family:var(--font-mono);font-size:.78rem;line-height:1.9;color:var(--dim)}
+.motor-core b{color:var(--gold-l)}

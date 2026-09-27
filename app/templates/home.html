@@ -1,7 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}El país se construye escuchándolo — Inteligencia Pública{% endblock %}
-{% block meta_description %}Sistema Nacional de Inteligencia Participativa para el PND 2027–2030. Propón, clasificamos con el motor SRIE y decidimos con evidencia.{% endblock %}
+{% block meta_description %}Inteligencia participativa para el PND 2027–2030 y contratación pública abierta (SECOP II). Tu voz clasificada contra el plan; los procesos del Estado, visibles para tu empresa.{% endblock %}
 
 {% block content %}
 
@@ -23,6 +23,11 @@
         <div class="r"><span>1.273 <em>abiertos</em></span>PROCESOS SECOP II</div>
         <div class="r"><span>&lt; 5 <em>min</em></span>TIEMPO DE PARTICIPACIÓN</div>
         <div class="r"><span>100<em>%</em></span>PUBLICO Y TRAZABLE</div>
+      </div>
+      <div class="value-strip" aria-label="Propuesta de valor">
+        <span>Evidencia para decidir</span>
+        <span>Contratación abierta para competir</span>
+        <span>Tu voz para construir</span>
       </div>
       <div class="cta-row mt-4">
         <a href="{{ url_for('participar.participar') }}" class="btn btn-gold btn-lg" data-mag>Participa ahora →</a>
@@ -65,6 +70,42 @@
       <div class="n">03</div>
       <h4>Queda como evidencia pública</h4>
       <p>Los resultados son abiertos y trazables: mapas, tendencias y prioridades que cada región sostiene.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Para quién es -->
+<section class="section section-alt" id="para-quien">
+  <div class="container">
+    <div class="section-header mb-4">
+      <span class="overline">Para quién es LIP</span>
+      <h2 class="display-md">Un sistema, tres formas de entrar</h2>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card-elevated aud-card p-4 h-100" data-reveal>
+          <div class="aud-label">Ciudadano</div>
+          <h3 class="heading-md mb-2">Tu voz, clasificada y pública</h3>
+          <p class="body-sm text-muted-2">Participas en menos de 5 minutos y sabes al instante dónde conecta tu propuesta dentro del plan. Sin cuentas, sin trámites.</p>
+          <a class="aud-link" href="{{ url_for('participar.participar') }}">Participar →</a>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card-elevated aud-card p-4 h-100" data-reveal>
+          <div class="aud-label">Estado · Entidad</div>
+          <h3 class="heading-md mb-2">Evidencia accionable</h3>
+          <p class="body-sm text-muted-2">Lo que el país pide, medido y trazable: observatorio, tendencias y prioridades por región para priorizar con datos.</p>
+          <a class="aud-link" href="{{ url_for('resultados.resultados') }}">Ver el observatorio →</a>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card-elevated aud-card p-4 h-100" data-reveal>
+          <div class="aud-label">Empresa</div>
+          <h3 class="heading-md mb-2">Contratación pública abierta</h3>
+          <p class="body-sm text-muted-2">Los procesos SECOP con oferta abierta, filtrados por pilar — y un equipo de licitación que entra por ti al Estado.</p>
+          <a class="aud-link" href="{{ url_for('secop.pagina') }}">Ver SECOP →</a>
+        </div>
+      </div>
     </div>
   </div>
 </section>
@@ -123,7 +164,7 @@
 <!-- Telemetría -->
 <section class="tele" id="datos">
   <div class="container">
-    <div class="t-head"><b>TELEMETRÍA //</b> <span>lo que el país está diciendo, medido</span></div>
+    <div class="t-head"><b>TELEMETRÍA //</b> <span>inteligencia participativa + contratación pública, en una sola lectura</span></div>
     <div class="tele-grid">
       <div class="tele-card">
         <div class="tc-top"><div class="tc-label">Procesos SECOP II abiertos</div><div class="tc-val" data-count="1273">0</div></div>
@@ -163,6 +204,30 @@
 <section class="quote">
   <blockquote>Una política pública que no escucha es un <em>documento</em>. La nuestra empieza siendo <em>conversación</em>.</blockquote>
   <div class="who">Construyamos Colombia · powered by StoneLytics</div>
+</section>
+
+<!-- El motor (SRIE Platform) -->
+<section class="section" id="motor">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6" data-reveal>
+        <div class="aud-label">El motor</div>
+        <h2 class="display-md mb-3">SRIE Platform, el sistema reutilizable detrás de LIP</h2>
+        <p class="body-md text-muted-2 mb-4">LIP es la implementación nacional del motor SRIE. La misma tecnología — clasificación estratégica, observatorio y participación — se despliega para cualquier gobierno, universidad u organización con su propio marco estratégico.</p>
+        <a href="{{ url_for('saas.landing') }}" class="btn btn-outline" data-mag>Conocer SRIE Platform →</a>
+      </div>
+      <div class="col-lg-6" data-reveal>
+        <div class="card-elevated p-4">
+          <div class="aud-label">SRIE CORE</div>
+          <div class="motor-core">
+            <b>plan → pilar → línea → componente → objetivo → indicador</b><br>
+            clasificación automática · explicación ciudadana · datos abiertos<br>
+            <span style="color:var(--gold-l);">multi-tenant · white-label · marco configurable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
 <!-- CTA final -->
