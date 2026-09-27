@@ -5,17 +5,11 @@
 
 {% block content %}
 <!-- Hero -->
-<section class="hero" style="padding: var(--space-3xl) 0;">
+<section class="hero-band">
     <div class="container">
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-8">
-                <div class="badge badge-white mb-3">Resultados Públicos</div>
-                <h1 class="display-lg text-white mb-3">Lo que Colombia está diciendo</h1>
-                <p class="body-lg text-white-50" style="max-width: 540px; margin: 0 auto;">
-                    Datos abiertos y transparentes. Cada voz cuenta.
-                </p>
-            </div>
-        </div>
+        <div class="kicker">Observatorio · Datos abiertos</div>
+        <h1 class="display-lg text-white mb-3">Lo que Colombia está diciendo</h1>
+        <p class="body-lg" style="color: var(--dim);">Datos abiertos y transparentes. Cada voz cuenta y cada cifra es trazable.</p>
     </div>
 </section>
 
@@ -145,7 +139,7 @@
     animateCount(document.getElementById('statPilares'), stats.pilares);
     animateCount(document.getElementById('statProblemas'), stats.problemas);
 
-    var colors = ['#16395C','#D4A843','#2F5FA8','#E8C96A','#0B1B2B','#A97F2B','#16324F','#DCE3EC'];
+    var colors = ['#E8C96A','#D4A843','#C9A227','#F2E3B3','#B8922E','#F6ECD2','#DECB8C','#A07D1E'];
     var API = '/api';
 
     fetch(API + '/estadisticas').then(function(r){ return r.json(); }).then(function(data) {
@@ -166,7 +160,7 @@
                         backgroundColor: colors[0], borderRadius: 6 }]
                 },
                 options: { responsive: true, plugins: { legend: { display: false } },
-                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                    scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' } } } }
             });
         }
 
@@ -191,7 +185,7 @@
                         backgroundColor: colors[2], borderRadius: 6 }]
                 },
                 options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } },
-                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' } } } }
             });
         }
 
@@ -204,7 +198,7 @@
                         backgroundColor: colors[1], borderRadius: 6 }]
                 },
                 options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } },
-                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' } } } }
             });
         }
 
@@ -217,7 +211,7 @@
                         backgroundColor: colors[3], borderRadius: 6 }]
                 },
                 options: { indexAxis: 'y', responsive: true, plugins: { legend: { display: false } },
-                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1 } } } }
+                    scales: { x: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' } } } }
             });
         }
     });

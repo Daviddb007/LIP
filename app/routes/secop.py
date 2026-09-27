@@ -75,16 +75,19 @@ def _stats(corte) -> dict:
     hoy = date.today()
     limite_7d = hoy + timedelta(days=7)
     base = SecopProceso.query.filter_by(corte=corte)
+    total = base.count()
+    valor_total = base.with_entities(db.func.coalesce(db.func.sum(SecopProceso.valor), 0)).scalar()
     return {
-        "total": base.count(),
-        "valor_total": base.with_entities(db.func.coalesce(db.func.sum(SecopProceso.valor), 0)).scalar(),
+        "total": total,
+        "valor_total": valor_total,
+        "valor_promedio": round(valor_total / total) if total else 0,
         "entidades": base.with_entities(db.func.count(db.distinct(SecopProceso.entidad))).scalar(),
         "sin_rup": base.filter(SecopProceso.requiere_rup.is_(False)).count(),
         "vencen_7d": base.filter(SecopProceso.fecha_limite <= limite_7d).count(),
     }
 
 
-def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="", pilar=""):
+def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="", pilar="", valor_min=None, valor_max=None, fecha_desde=None, fecha_hasta=None):
     query = SecopProceso.query.filter_by(corte=corte)
     if q:
         like = f"%{q}%"
@@ -99,6 +102,14 @@ def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="",
         query = query.filter(SecopProceso.requiere_rup.is_(False))
     if pilar:
         query = query.filter(db.cast(SecopProceso.pilares, db.String).ilike(f'%"{pilar}"%'))
+    if valor_min is not None:
+        query = query.filter(SecopProceso.valor >= valor_min)
+    if valor_max is not None:
+        query = query.filter(SecopProceso.valor <= valor_max)
+    if fecha_desde:
+        query = query.filter(SecopProceso.fecha_limite >= fecha_desde)
+    if fecha_hasta:
+        query = query.filter(SecopProceso.fecha_limite <= fecha_hasta)
     return query
 
 
@@ -115,9 +126,13 @@ def pagina():
     modalidad = request.args.get("modalidad", "").strip()
     requiere_rup = request.args.get("rup", "").strip()
     pilar = request.args.get("pilar", "").strip()
+    valor_min = request.args.get("valor_min", type=int)
+    valor_max = request.args.get("valor_max", type=int)
+    fecha_desde = request.args.get("fecha_desde", "").strip() or None
+    fecha_hasta = request.args.get("fecha_hasta", "").strip() or None
     page = request.args.get("page", 1, type=int)
 
-    query = _query_filtrada(corte, q, departamento, modalidad, requiere_rup, pilar)
+    query = _query_filtrada(corte, q, departamento, modalidad, requiere_rup, pilar, valor_min, valor_max, fecha_desde, fecha_hasta)
     pagination = query.order_by(
         SecopProceso.fecha_limite.asc(), SecopProceso.valor.desc()
     ).paginate(page=page, per_page=25, error_out=False)
@@ -140,6 +155,7 @@ def pagina():
         "stats": stats,
         "stats_fmt": {
             "valor_total": _fmt_cop(stats["valor_total"]),
+            "valor_promedio": _fmt_cop(stats["valor_promedio"]),
         },
         "chart_departamentos": _count_by(SecopProceso.departamento, corte),
         "chart_modalidades": _count_by(SecopProceso.modalidad, corte),
@@ -147,7 +163,9 @@ def pagina():
         "chart_pilares": _pilares_counts(corte),
         "departamentos": _departamentos(corte),
         "modalidades": _modalidades(corte),
-        "filtros": {"q": q, "departamento": departamento, "modalidad": modalidad, "rup": requiere_rup, "pilar": pilar},
+        "filtros": {"q": q, "departamento": departamento, "modalidad": modalidad, "rup": requiere_rup, "pilar": pilar,
+                    "valor_min": valor_min or "", "valor_max": valor_max or "",
+                    "fecha_desde": fecha_desde or "", "fecha_hasta": fecha_hasta or ""},
         "rows": rows,
         "pagination": pagination,
     }
@@ -172,6 +190,42 @@ def api_datos():
         "tipos": _count_by(SecopProceso.tipo_contrato, corte),
         "pilares": _pilares_counts(corte),
     })
+
+
+@secop_bp.route("/secop/api/procesos")
+@cache.cached(timeout=60)
+def api_procesos():
+    """Todos los procesos del corte en formato compacto (visor interactivo)."""
+    from flask import jsonify
+
+    corte_obj = _corte_vigente()
+    if not corte_obj:
+        return jsonify([])
+    corte = corte_obj.corte
+    rows = (
+        SecopProceso.query.filter_by(corte=corte)
+        .order_by(SecopProceso.fecha_limite.asc())
+        .all()
+    )
+    out = [
+        {
+            "e": p.entidad,
+            "d": p.departamento,
+            "c": p.ciudad,
+            "n": p.nombre,
+            "m": p.modalidad,
+            "t": p.tipo_contrato,
+            "v": p.valor,
+            "rup": p.requiere_rup,
+            "dl": (p.fecha_limite - date.today()).days,
+            "f": p.fecha_limite.isoformat(),
+            "u": p.url,
+            "tm": p.temas,
+            "pil": p.pilares,
+        }
+        for p in rows
+    ]
+    return jsonify(out)
 
 
 @secop_bp.route("/secop/licitar", methods=["GET", "POST"])

@@ -236,7 +236,7 @@
         document.getElementById('srieAnswer').style.display = 'none';
 
         try {
-            const response = await fetch('/api/v1/politicas/' + politicaId + '/preguntar', {
+            const response = await fetch('/api/politicas/' + politicaId + '/preguntar', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ pregunta: question })

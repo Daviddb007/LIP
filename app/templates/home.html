@@ -1,351 +1,410 @@
 {% extends "base.html" %}
 
-{% block title %}Laboratorio de Inteligencia Pública — Inteligencia Participativa{% endblock %}
+{% block title %}El país se construye escuchándolo — Inteligencia Pública{% endblock %}
+{% block meta_description %}Inteligencia participativa para el PND 2027–2030 y contratación pública abierta (SECOP II). Tu voz clasificada contra el plan; los procesos del Estado, visibles para tu empresa.{% endblock %}
 
 {% block content %}
-<!-- Hero -->
-<section class="hero">
-    <div class="container">
-        <div class="row align-items-center">
-            <div class="col-lg-7 hero-content">
-                <div class="badge badge-primary mb-3">Sistema Nacional de Inteligencia Participativa</div>
-                <h1 class="display-xl mb-4">
-                    Tu voz construye el <span class="text-gradient">futuro de Colombia</span>
-                </h1>
-                <p class="body-lg text-white-50 mb-4" style="max-width: 540px;">
-                    Participa en la co-construcción del Plan Nacional de Desarrollo 2027-2030.
-                    Tu propuesta será clasificada inteligentemente y conectada con las prioridades nacionales.
-                </p>
-                <div class="d-flex gap-3 flex-wrap">
-                    <a href="{{ url_for('participar.participar') }}" class="btn btn-gold btn-lg">
-                        <i class="bi bi-arrow-right-circle me-2"></i>Participar ahora
-                    </a>
-                    <a href="{{ url_for('resultados.resultados') }}" class="btn btn-outline btn-lg" style="border-color: rgba(255,255,255,0.3); color: white;">
-                        <i class="bi bi-bar-chart me-2"></i>Ver resultados
-                    </a>
-                </div>
-            </div>
-            <div class="col-lg-5 d-none d-lg-block text-center">
-                <div class="hero-card-data p-4" style="max-width: 400px; margin-left: auto;">
-                    <div class="d-flex align-items-center gap-2 mb-3">
-                        <span class="overline" style="color: var(--gold-light); font-family: var(--font-mono);">El flujo de participación</span>
-                    </div>
-                    <div class="text-start">
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <div class="step-number">1</div>
-                            <div>
-                                <div class="heading-sm" style="color: var(--gold-light);">Ubicación</div>
-                                <div class="fw-bold text-white">¿Dónde vives?</div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <div class="step-number">2</div>
-                            <div>
-                                <div class="heading-sm" style="color: var(--gold-light);">Problema</div>
-                                <div class="fw-bold text-white">¿Cuál es el desafío?</div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <div class="step-number">3</div>
-                            <div>
-                                <div class="heading-sm" style="color: var(--gold-light);">Justificación</div>
-                                <div class="fw-bold text-white">¿Por qué es prioritario?</div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3 mb-3">
-                            <div class="step-number">4</div>
-                            <div>
-                                <div class="heading-sm" style="color: var(--gold-light);">Propuesta</div>
-                                <div class="fw-bold text-white">¿Qué solución propones?</div>
-                            </div>
-                        </div>
-                        <div class="d-flex align-items-center gap-3">
-                            <div class="step-number">5</div>
-                            <div>
-                                <div class="heading-sm" style="color: var(--gold-light);">Gobernanza</div>
-                                <div class="fw-bold text-white">¿Quién debe liderarlo?</div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+
+<!-- Hero bandera -->
+<section class="hero-video">
+  <video class="hvideo" id="heroVideo" muted autoplay loop playsinline preload="auto" aria-hidden="true" tabindex="-1" poster="{{ url_for('static', filename='video/poster-exp-bandera.webp') }}">
+    <source src="{{ url_for('static', filename='video/exp-bandera.webm') }}" type="video/webm">
+    <source src="{{ url_for('static', filename='video/exp-bandera.mp4') }}" type="video/mp4">
+  </video>
+  <div class="veil"></div>
+  <div class="glowline"></div>
+  <div class="container">
+    <div class="content">
+      <div class="kicker">PND 2027–2030 · Sistema Nacional de Inteligencia Participativa</div>
+      <h1 id="heroTitle" class="display-xl text-white">El país se construye <span class="accent">escuchándolo</span></h1>
+      <p class="body-lg" style="max-width:52ch; color: var(--dim);">Un sistema de <b style="color:#fff;">inteligencia participativa</b>. Propón, clasificamos con un motor estratégico y decidimos con evidencia para el Plan Nacional de Desarrollo 2027–2030.</p>
+      <div class="readout">
+        <div class="r"><span>{{ stats.pilares }}</span>PILARES ESTRATÉGICOS</div>
+        <div class="r"><span>{{ '{:,}'.format(stats.secop_total).replace(',', '.') }} <em>abiertos</em></span>PROCESOS SECOP II</div>
+        <div class="r"><span>&lt; 5 <em>min</em></span>TIEMPO DE PARTICIPACIÓN</div>
+        <div class="r"><span>100<em>%</em></span>PUBLICO Y TRAZABLE</div>
+      </div>
+      <div class="value-strip" aria-label="Propuesta de valor">
+        <span>Evidencia para decidir</span>
+        <span>Contratación abierta para competir</span>
+        <span>Tu voz para construir</span>
+      </div>
+      <div class="cta-row mt-4">
+        <a href="{{ url_for('participar.participar') }}" class="btn btn-gold btn-lg" data-mag>Participa ahora →</a>
+        <a href="{{ url_for('home.presentacion') }}" class="btn btn-outline btn-lg" data-mag><i class="bi bi-play-circle me-1"></i>Ver presentación</a>
+        <a href="{{ url_for('secop.pagina') }}" class="btn btn-outline btn-lg" data-mag>Ver contratación pública</a>
+      </div>
     </div>
+  </div>
 </section>
 
-<!-- Stats -->
-<section class="section" style="padding: var(--space-2xl) 0;">
-    <div class="container">
-        <div class="row g-4 text-center">
-            <div class="col-md-3 col-6">
-                <div class="stat-card">
-                    <div class="stat-number text-blue" data-target="18">0</div>
-                    <div class="stat-label">Pilares estratégicos</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-card">
-                    <div class="stat-number text-gold" data-target="33">0</div>
-                    <div class="stat-label">Departamentos</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-card">
-                    <div class="stat-number text-navy" data-target="1100">0</div>
-                    <div class="stat-label">Municipios</div>
-                </div>
-            </div>
-            <div class="col-md-3 col-6">
-                <div class="stat-card">
-                    <div class="stat-number" style="color: var(--success);" data-target="5">0</div>
-                    <div class="stat-label">Minutos para participar</div>
-                </div>
-            </div>
-        </div>
+<!-- Onda de voz -->
+<section class="waveband" id="onda">
+  <div class="container">
+    <div class="w-head">
+      <div class="wl"><b>SEÑAL //</b> voz ciudadana entrando en vivo</div>
+      <div class="w-note" id="waveCount">0 voces / min</div>
     </div>
+    <canvas id="waveCanvas" aria-hidden="true"></canvas>
+  </div>
 </section>
 
-<!-- Qué hacemos -->
-<section class="section section-alt">
-    <div class="container">
-        <div class="section-header animate-on-scroll">
-            <div class="overline">Qué hacemos</div>
-            <h2 class="display-md">Inteligencia participativa</h2>
-            <p>No somos un simple formulario. Somos una plataforma que transforma tu opinión en evidencia accionable para Colombia.</p>
-        </div>
-        <div class="row g-4">
-            <div class="col-lg-4 animate-on-scroll">
-                <div class="card-premium h-100">
-                    <div class="step-number mb-3"><i class="bi bi-mic"></i></div>
-                    <h3 class="heading-lg mb-2">Recolectamos</h3>
-                    <p class="text-muted-2">
-                        Capturamos tu voz de forma clara y estructurada. Sin formularios complicados.
-                        En menos de 5 minutos tu propuesta queda registrada.
-                    </p>
-                </div>
-            </div>
-            <div class="col-lg-4 animate-on-scroll">
-                <div class="card-premium h-100">
-                    <div class="step-number mb-3"><i class="bi bi-cpu"></i></div>
-                    <h3 class="heading-lg mb-2">Clasificamos</h3>
-                    <p class="text-muted-2">
-                        El motor SRIE clasifica automáticamente tu propuesta contra el Plan Nacional de Desarrollo.
-                        Sabes exactamente a qué pilar se conecta tu idea.
-                    </p>
-                </div>
-            </div>
-            <div class="col-lg-4 animate-on-scroll">
-                <div class="card-premium h-100">
-                    <div class="step-number mb-3"><i class="bi bi-graph-up"></i></div>
-                    <h3 class="heading-lg mb-2">Visualizamos</h3>
-                    <p class="text-muted-2">
-                        Los resultados son públicos y transparentes. Mapas, tendencias, ranking de problemas.
-                        Toda Colombia puede ver qué le importa a cada región.
-                    </p>
-                </div>
-            </div>
-        </div>
+<!-- Pasos editoriales -->
+<section class="pasos">
+  <div class="container">
+    <div class="section-header mb-4">
+      <span class="overline">Cómo funciona</span>
+      <h2 class="display-md">No es una encuesta. Es una <em class="text-gold" style="font-style:italic; font-family:var(--font-serif);">conversación</em> con el país.</h2>
+      <p class="body-md">Menos de cinco minutos. Tu propuesta se clasifica automáticamente contra el plan y queda visible para quienes deciden.</p>
     </div>
+    <div class="paso" data-reveal>
+      <div class="n">01</div>
+      <h4>Cuentas tu contexto</h4>
+      <p>Ubicación, problema real y la razón por la que es prioritario. En lenguaje cotidiano, sin tecnicismos.</p>
+    </div>
+    <div class="paso" data-reveal>
+      <div class="n">02</div>
+      <h4>Se clasifica con inteligencia</h4>
+      <p>Tu propuesta se conecta a pilares, líneas, componentes y objetivos del marco estratégico nacional.</p>
+    </div>
+    <div class="paso" data-reveal>
+      <div class="n">03</div>
+      <h4>Queda como evidencia pública</h4>
+      <p>Los resultados son abiertos y trazables: mapas, tendencias y prioridades que cada región sostiene.</p>
+    </div>
+  </div>
 </section>
 
-<!-- Cómo funciona -->
-<section class="section">
-    <div class="container">
-        <div class="section-header animate-on-scroll">
-            <div class="overline">Cómo funciona</div>
-            <h2 class="display-md">5 pasos, una conversación</h2>
-            <p>Nunca debe sentirse como un formulario. Es una conversación guiada que respeta tu tiempo.</p>
-        </div>
-        <div class="row g-4">
-            <div class="col-lg-4 col-md-6 animate-on-scroll">
-                <div class="step-card">
-                    <div class="step-number">1</div>
-                    <h3>Ubicación</h3>
-                    <p>Selecciona tu departamento, municipio y zona. Tu ubicación ayuda a mapear las prioridades regionales.</p>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 animate-on-scroll">
-                <div class="step-card">
-                    <div class="step-number">2</div>
-                    <h3>Problema real</h3>
-                    <p>Elige el principal desafío de tu comunidad. Hablamos en lenguaje cotidiano, no en tecnicismos.</p>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 animate-on-scroll">
-                <div class="step-card">
-                    <div class="step-number">3</div>
-                    <h3>Justificación</h3>
-                    <p>Cuéntanos con tus palabras por qué es prioritario. Tu contexto es valioso para entender la problemática.</p>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 animate-on-scroll">
-                <div class="step-card">
-                    <div class="step-number">4</div>
-                    <h3>Propuesta</h3>
-                    <p>Presenta tu solución. Puede ser una idea concreta o una dirección general. Ambas son válidas.</p>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 animate-on-scroll">
-                <div class="step-card">
-                    <div class="step-number">5</div>
-                    <h3>Gobernanza</h3>
-                    <p>Indica quién debería liderar la solución y a quién beneficia. Esto ayuda a priorizar implementación.</p>
-                </div>
-            </div>
-            <div class="col-lg-4 col-md-6 animate-on-scroll">
-                <div class="step-card">
-                    <div class="step-number" style="background: var(--gold-light); color: var(--navy);"><i class="bi bi-stars"></i></div>
-                    <h3>Resultado SRIE</h3>
-                    <p>Recibe inmediatamente la clasificación de tu propuesta. Pilar, nivel de confianza y explicación.</p>
-                </div>
-            </div>
-        </div>
+<!-- Para quién es -->
+<section class="section section-alt" id="para-quien">
+  <div class="container">
+    <div class="section-header mb-4">
+      <span class="overline">Para quién es LIP</span>
+      <h2 class="display-md">Un sistema, tres formas de entrar</h2>
     </div>
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="card-elevated aud-card p-4 h-100" data-reveal>
+          <div class="aud-label">Ciudadano</div>
+          <h3 class="heading-md mb-2">Tu voz, clasificada y pública</h3>
+          <p class="body-sm text-muted-2">Participas en menos de 5 minutos y sabes al instante dónde conecta tu propuesta dentro del plan. Sin cuentas, sin trámites.</p>
+          <a class="aud-link" href="{{ url_for('participar.participar') }}">Participar →</a>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card-elevated aud-card p-4 h-100" data-reveal>
+          <div class="aud-label">Estado · Entidad</div>
+          <h3 class="heading-md mb-2">Evidencia accionable</h3>
+          <p class="body-sm text-muted-2">Lo que el país pide, medido y trazable: observatorio, tendencias y prioridades por región — y una línea de consultoría para tu entidad.</p>
+          <a class="aud-link" href="{{ url_for('consultoria.pagina') }}">Consultoría pública →</a>
+        </div>
+      </div>
+      <div class="col-lg-4">
+        <div class="card-elevated aud-card p-4 h-100" data-reveal>
+          <div class="aud-label">Empresa</div>
+          <h3 class="heading-md mb-2">Contratación pública abierta</h3>
+          <p class="body-sm text-muted-2">Los procesos SECOP con oferta abierta, filtrados por pilar — y un equipo de licitación que entra por ti al Estado.</p>
+          <a class="aud-link" href="{{ url_for('secop.pagina') }}">Ver SECOP →</a>
+        </div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- Beneficios -->
-<section class="section section-dark">
-    <div class="container">
-        <div class="section-header animate-on-scroll">
-            <div class="overline" style="color: var(--gold);">Beneficios</div>
-            <h2 class="display-md text-white">¿Por qué participar?</h2>
-            <p class="text-white-50">Tu participación tiene impacto real en las prioridades nacionales.</p>
-        </div>
-        <div class="row g-4">
-            <div class="col-lg-3 col-md-6 animate-on-scroll">
-                <div class="card-glass text-center p-4">
-                    <div class="step-number mb-3"><i class="bi bi-bullseye"></i></div>
-                    <h3 class="heading-md text-white mb-2">Impacto directo</h3>
-                    <p class="text-white-50 body-sm">Tu propuesta se conecta directamente con los pilares del Plan Nacional de Desarrollo.</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 animate-on-scroll">
-                <div class="card-glass text-center p-4">
-                    <div class="step-number mb-3"><i class="bi bi-shield-lock"></i></div>
-                    <h3 class="heading-md text-white mb-2">Anonimato</h3>
-                    <p class="text-white-50 body-sm">No necesitas crear cuenta. Tu IP se hashea y no se almacena identificablemente.</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 animate-on-scroll">
-                <div class="card-glass text-center p-4">
-                    <div class="step-number mb-3"><i class="bi bi-lightning-charge"></i></div>
-                    <h3 class="heading-md text-white mb-2">Instantáneo</h3>
-                    <p class="text-white-50 body-sm">Recibes la clasificación SRIE de tu propuesta en tiempo real al enviar.</p>
-                </div>
-            </div>
-            <div class="col-lg-3 col-md-6 animate-on-scroll">
-                <div class="card-glass text-center p-4">
-                    <div class="step-number mb-3"><i class="bi bi-bar-chart-line"></i></div>
-                    <h3 class="heading-md text-white mb-2">Transparente</h3>
-                    <p class="text-white-50 body-sm">Los resultados son públicos. Cualquiera puede ver las tendencias y prioridades regionales.</p>
-                </div>
-            </div>
-        </div>
+<!-- Por qué es distinto -->
+<section class="section" id="distinto">
+  <div class="container">
+    <div class="section-header mb-2">
+      <span class="overline">Por qué es distinto</span>
+      <h2 class="display-md">Lo que suele pasar, y lo que LIP hace</h2>
     </div>
+    <div class="diff">
+      <div class="diff-cell">
+        <div class="d-problem">Un formulario que parece trámite</div>
+        <div class="d-sol">Una conversación guiada de 5 pasos, en tu lenguaje</div>
+      </div>
+      <div class="diff-cell">
+        <div class="d-problem">Propuestas que se pierden sin clasificación</div>
+        <div class="d-sol">Cada propuesta se clasifica contra el plan al instante</div>
+      </div>
+      <div class="diff-cell">
+        <div class="d-problem">Participación sin datos ni seguimiento</div>
+        <div class="d-sol">Evidencia pública y trazable para quienes deciden</div>
+      </div>
+      <div class="diff-cell">
+        <div class="d-problem">Contratar con el Estado jugando a ciegas</div>
+        <div class="d-sol">SECOP abierto y un equipo de licitación que entra por ti</div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- FAQ -->
-<section class="section">
-    <div class="container">
-        <div class="section-header animate-on-scroll">
-            <div class="overline">Preguntas frecuentes</div>
-            <h2 class="display-md">¿Tienes dudas?</h2>
-        </div>
-        <div class="row justify-content-center">
-            <div class="col-lg-8">
-                <div class="faq-item animate-on-scroll">
-                    <button type="button" class="faq-question" aria-expanded="false" onclick="const faq=this.closest('.faq-item'); const open=faq.classList.toggle('open'); this.setAttribute('aria-expanded', open);">
-                        ¿Qué es el Plan Nacional de Desarrollo?
-                        <i class="bi bi-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            Es el plan que define las prioridades, objetivos y lineamientos del gobierno nacional para un periodo de cuatro años. La participación ciudadana es un componente esencial para que refleje las necesidades reales de Colombia.
-                        </div>
-                    </div>
-                </div>
-                <div class="faq-item animate-on-scroll">
-                    <button type="button" class="faq-question" aria-expanded="false" onclick="const faq=this.closest('.faq-item'); const open=faq.classList.toggle('open'); this.setAttribute('aria-expanded', open);">
-                        ¿Qué es el motor SRIE?
-                        <i class="bi bi-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            SRIE significa Sistema de Reconocimiento e Inteligencia Estratégica. Es un motor que clasifica automáticamente tu propuesta contra los 18 pilares del Plan Nacional de Desarrollo, mostrándote exactamente a qué área se conecta tu idea.
-                        </div>
-                    </div>
-                </div>
-                <div class="faq-item animate-on-scroll">
-                    <button type="button" class="faq-question" aria-expanded="false" onclick="const faq=this.closest('.faq-item'); const open=faq.classList.toggle('open'); this.setAttribute('aria-expanded', open);">
-                        ¿Mis datos están seguros?
-                        <i class="bi bi-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            Sí. No necesitas crear cuenta. Tu dirección IP se hashea con SHA-256 y no se almacena de forma identificable. Utilizamos cifrado HTTPS, headers de seguridad y rate limiting para proteger la plataforma.
-                        </div>
-                    </div>
-                </div>
-                <div class="faq-item animate-on-scroll">
-                    <button type="button" class="faq-question" aria-expanded="false" onclick="const faq=this.closest('.faq-item'); const open=faq.classList.toggle('open'); this.setAttribute('aria-expanded', open);">
-                        ¿Cuánto tiempo toma participar?
-                        <i class="bi bi-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            Menos de 5 minutos. El formulario es una conversación guiada de 5 pasos: ubicación, problema, justificación, propuesta y gobernanza. Al finalizar, recibes inmediatamente la clasificación de tu propuesta.
-                        </div>
-                    </div>
-                </div>
-                <div class="faq-item animate-on-scroll">
-                    <button type="button" class="faq-question" aria-expanded="false" onclick="const faq=this.closest('.faq-item'); const open=faq.classList.toggle('open'); this.setAttribute('aria-expanded', open);">
-                        ¿Quién puede participar?
-                        <i class="bi bi-chevron-down"></i>
-                    </button>
-                    <div class="faq-answer">
-                        <div class="faq-answer-inner">
-                            Cualquier ciudadano colombiano o residente en Colombia. No hay restricciones de edad para participar, aunque se recomienda ser mayor de 16 años para comprender el contexto del Plan Nacional de Desarrollo.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+<!-- Flujo animado -->
+<section class="flowsec" id="flujo">
+  <div class="container">
+    <div class="f-head">
+      <div class="label">El flujo de la participación</div>
+      <h3 class="display-md">De la voz ciudadana a la <em>decisión pública</em></h3>
     </div>
+    <div class="tubo-wrap">
+      <div class="tubo-top">
+        <div class="tt-label">SRIE · pipeline en vivo</div>
+        <div class="tt-counters">
+          <span>en flujo <b id="cntFlow">0</b></span>
+          <span>clasificadas <b id="cntSrie">0</b></span>
+          <span>publicadas <b id="cntPub">0</b><em> · </em>evidencias</span>
+        </div>
+        <div class="tubo-controls">
+          <button data-tubo-play>Pausar</button>
+          <button data-tubo-reset>Reiniciar</button>
+        </div>
+      </div>
+      <svg class="tubo-svg" id="tuboSvg" viewBox="0 0 1200 260" role="img" aria-label="Flujo animado de la participación ciudadana">
+        <rect class="stn" x="40" y="80" width="180" height="90" rx="10"/>
+        <text class="stn-lbl" x="130" y="110" text-anchor="middle">Voz ciudadana</text>
+        <text class="stn-lbl" x="130" y="142" text-anchor="middle" opacity=".5">propuesta</text>
+        <rect class="stn" x="360" y="80" width="180" height="90" rx="10"/>
+        <text class="stn-lbl" x="450" y="110" text-anchor="middle">Motor SRIE</text>
+        <text class="stn-lbl" x="450" y="142" text-anchor="middle" opacity=".5">clasificación</text>
+        <rect class="stn" x="680" y="80" width="180" height="90" rx="10"/>
+        <text class="stn-lbl" x="770" y="110" text-anchor="middle">Evidencia</text>
+        <text class="stn-lbl" x="770" y="142" text-anchor="middle" opacity=".5">pública</text>
+        <rect class="stn" x="1000" y="80" width="180" height="90" rx="10"/>
+        <text class="stn-lbl" x="1090" y="110" text-anchor="middle">Decisión</text>
+        <text class="stn-lbl" x="1090" y="142" text-anchor="middle" opacity=".5">con datos</text>
+        <path class="lane" d="M220 100 H360"/><path class="lane" d="M220 150 H360"/>
+        <path class="lane" d="M540 100 H680"/><path class="lane" d="M540 150 H680"/>
+        <path class="lane" d="M860 100 H1000"/><path class="lane" d="M860 150 H1000"/>
+        <path class="tubo-arrow" d="M290 125 L340 125"/>
+        <path class="tubo-arrow" d="M610 125 L660 125"/>
+        <path class="tubo-arrow" d="M930 125 L980 125"/>
+        <g data-dots></g>
+      </svg>
+      <div class="tubo-consola" id="tuboConsola">
+        <div class="tubo-consola-line" data-line="0"><b>$ propuesta</b> · entró al sistema desde <span>Antioquia</span></div>
+        <div class="tubo-consola-line" data-line="1"><b>$ srie.clasificar</b> · pilar <span>Democrático</span> · confianza <span class="ok">0.87</span></div>
+        <div class="tubo-consola-line" data-line="2"><b>$ evidencia</b> · agregada al observatorio · pública</div>
+        <div class="tubo-consola-line" data-line="3"><b>$ decision</b> · entidad consulta · prioriza con datos</div>
+      </div>
+    </div>
+  </div>
 </section>
 
-<!-- CTA Final -->
-<section class="section section-dark text-center">
-    <div class="container">
-        <div class="animate-on-scroll">
-            <h2 class="display-md text-white mb-3">El futuro de Colombia se construye contigo</h2>
-            <p class="text-white-50 body-lg mb-4" style="max-width: 600px; margin: 0 auto;">
-                Tu voz tiene peso. Tu propuesta tiene valor. Participar es el primer paso para transformar Colombia.
-            </p>
-            <a href="{{ url_for('participar.participar') }}" class="btn btn-gold btn-lg">
-                <i class="bi bi-arrow-right-circle me-2"></i>Participar ahora
-            </a>
-        </div>
+<!-- Telemetría -->
+<section class="tele" id="datos">
+  <div class="container">
+    <div class="t-head"><b>TELEMETRÍA //</b> <span>inteligencia participativa + contratación pública, en una sola lectura</span></div>
+    <div class="tele-grid">
+      <div class="tele-card">
+        <div class="tc-top"><div class="tc-label">Procesos SECOP II abiertos</div><div class="tc-val" data-count="{{ stats.secop_total }}">0</div></div>
+        <div class="bar"><div class="fill" data-fill="92"></div></div>
+        <div class="tc-note">corte {{ stats.secop_corte }} · datos.gov.co</div>
+      </div>
+      <div class="tele-card">
+        <div class="tc-top"><div class="tc-label">Propuestas ciudadanas</div><div class="tc-val" data-count="{{ stats.total }}">0</div></div>
+        <div class="bar"><div class="fill" data-fill="78"></div></div>
+        <div class="tc-note">registradas y clasificadas por SRIE</div>
+      </div>
+      <div class="tele-card">
+        <div class="tc-top"><div class="tc-label">Pilares conectados</div><div class="tc-val">{{ stats.pilares }}<em>/18</em></div></div>
+        <div class="bar"><div class="fill" data-fill="100"></div></div>
+        <div class="tc-note">cobertura del marco estratégico</div>
+      </div>
+      <div class="tele-card">
+        <div class="tc-top"><div class="tc-label">Municipios alcanzados</div><div class="tc-val" data-count="{{ stats.municipios }}">0</div></div>
+        <div class="bar"><div class="fill" data-fill="88"></div></div>
+        <div class="tc-note">con participación registrada</div>
+      </div>
+      <div class="tele-card">
+        <div class="tc-top"><div class="tc-label">Tiempo de participación</div><div class="tc-val">&lt;5<em> min</em></div></div>
+        <div class="bar"><div class="fill" data-fill="35"></div></div>
+        <div class="tc-note">de la idea a la clasificación</div>
+      </div>
+      <div class="tele-card">
+        <div class="tc-top"><div class="tc-label">Transparencia</div><div class="tc-val">100<em>%</em></div></div>
+        <div class="bar"><div class="fill" data-fill="100"></div></div>
+        <div class="tc-note">público, trazable, abierto</div>
+      </div>
     </div>
+  </div>
+</section>
+
+<!-- Quote -->
+<section class="quote">
+  <blockquote>Una política pública que no escucha es un <em>documento</em>. La nuestra empieza siendo <em>conversación</em>.</blockquote>
+  <div class="who">Construyamos Colombia · powered by StoneLytics</div>
+</section>
+
+<!-- El motor (SRIE Platform) -->
+<section class="section" id="motor">
+  <div class="container">
+    <div class="row align-items-center g-5">
+      <div class="col-lg-6" data-reveal>
+        <div class="aud-label">El motor</div>
+        <h2 class="display-md mb-3">SRIE Platform, el sistema reutilizable detrás de LIP</h2>
+        <p class="body-md text-muted-2 mb-4">LIP es la implementación nacional del motor SRIE. La misma tecnología — clasificación estratégica, observatorio y participación — se despliega para cualquier gobierno, universidad u organización con su propio marco estratégico.</p>
+        <a href="{{ url_for('consultoria.pagina') }}" class="btn btn-gold" data-mag>Solicitar diagnóstico →</a>
+      </div>
+      <div class="col-lg-6" data-reveal>
+        <div class="card-elevated p-4">
+          <div class="aud-label">SRIE CORE</div>
+          <div class="motor-core">
+            <b>plan → pilar → línea → componente → objetivo → indicador</b><br>
+            clasificación automática · explicación ciudadana · datos abiertos<br>
+            <span style="color:var(--gold-l);">multi-tenant · white-label · marco configurable</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA final -->
+<section class="section text-center" style="padding: 8rem 0;">
+  <div class="container">
+    <div class="tag mono" style="font-family:var(--font-mono);font-size:.7rem;letter-spacing:.26em;color:var(--gold);text-transform:uppercase;margin-bottom:1.4rem;">// tu turno</div>
+    <h2 class="display-lg text-white" style="max-width:20ch; margin:0 auto;">El futuro de Colombia se decide <span class="text-gold" style="font-style:italic; font-family:var(--font-serif);">hoy, contigo</span></h2>
+    <div class="cta-row mt-4" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
+      <a href="{{ url_for('participar.participar') }}" class="btn btn-gold btn-lg" data-mag>Participa ahora →</a>
+      <a href="{{ url_for('secop.licitar') }}" class="btn btn-outline btn-lg" data-mag>Licitamos por ti</a>
+    </div>
+  </div>
 </section>
 {% endblock %}
 
 {% block scripts %}
 <script>
-    // Animate counters on scroll
-    const statsSection = document.querySelector('.stat-number');
-    if (statsSection) {
-        const statsObserver = new IntersectionObserver(function(entries) {
-            entries.forEach(function(entry) {
-                if (entry.isIntersecting) {
-                    document.querySelectorAll('.stat-number[data-target]').forEach(function(el) {
-                        animateCounter(el, parseInt(el.getAttribute('data-target')));
-                    });
-                    statsObserver.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.5 });
+gsap.registerPlugin(ScrollTrigger, SplitText);
+(function () {
+  "use strict";
+  var reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-        statsObserver.observe(statsSection.closest('section'));
+  /* SplitText hero */
+  if (!reduce) {
+    var split = new SplitText('#heroTitle', { type: 'lines', linesClass: 'word' });
+    split.lines.forEach(function (l) { l.innerHTML = '<span>' + l.textContent + '</span>'; });
+    gsap.from(split.lines.map(function (l) { return l.firstChild; }),
+      { yPercent: 112, opacity: 0, duration: 1, stagger: 0.09, ease: 'power4.out', delay: .1 });
+  }
+
+  /* Video hero scrub */
+  var heroVideo = document.querySelector('#heroVideo');
+  if (!reduce && heroVideo) {
+    gsap.timeline({ scrollTrigger: { trigger: '.hero-video', start: 'top top', end: 'bottom top', scrub: .5 } })
+      .to(heroVideo, { currentTime: heroVideo.duration, ease: 'none' });
+  }
+
+  /* Onda de voz (canvas) */
+  (function () {
+    var cv = document.querySelector('#waveCanvas');
+    if (!cv) return;
+    var ctx = cv.getContext('2d');
+    var bars = [], running = false, raf = 0, voices = 0, t0 = 0;
+    function size() {
+      var r = cv.getBoundingClientRect();
+      cv.width = r.width * devicePixelRatio; cv.height = 120 * devicePixelRatio;
+      ctx.setTransform(devicePixelRatio, 0, 0, devicePixelRatio, 0, 0);
+      var n = Math.max(24, Math.floor(r.width / 12));
+      bars = Array.from({ length: n }, function () { return 0.08 + Math.random() * 0.15; });
     }
+    function tick(t) {
+      if (!running) return;
+      var w = cv.width / devicePixelRatio, h = 120, bw = w / bars.length;
+      ctx.clearRect(0, 0, w, h);
+      bars = bars.map(function (v, i) {
+        var target = 0.15 + Math.abs(Math.sin(t / 900 + i * 0.55)) * 0.75 + Math.random() * 0.15;
+        return v + (target - v) * 0.08;
+      });
+      bars.forEach(function (v, i) {
+        var bh = Math.max(6, v * h * 0.9), x = i * bw + bw * 0.15, wd = bw * 0.7;
+        var g = ctx.createLinearGradient(0, h, 0, h - bh);
+        g.addColorStop(0, '#a07d1e'); g.addColorStop(1, '#e8c96a');
+        ctx.globalAlpha = 0.85; ctx.fillStyle = g;
+        ctx.beginPath(); ctx.roundRect(x, h - bh, wd, bh, 2); ctx.fill();
+      });
+      voices++;
+      if (t - t0 > 1000) {
+        var v = Math.round(voices / Math.max(1, (t - t0) / 1000) * 60);
+        var wc = document.querySelector('#waveCount'); if (wc) wc.textContent = v + ' voces / min';
+        voices = 0; t0 = t;
+      }
+      raf = requestAnimationFrame(tick);
+    }
+    if (reduce) {
+      size();
+      var w = cv.width / devicePixelRatio, h = 120, bw = w / bars.length;
+      bars.forEach(function (v, i) {
+        var bh = Math.max(6, v * h * 0.9), x = i * bw + bw * 0.15, wd = bw * 0.7;
+        ctx.fillStyle = 'rgba(201,162,39,.6)'; ctx.fillRect(x, h - bh, wd, bh);
+      });
+      return;
+    }
+    size();
+    new IntersectionObserver(function (en) {
+      if (en[0].isIntersecting && !running) { running = true; t0 = performance.now(); raf = requestAnimationFrame(tick); }
+      else if (!en[0].isIntersecting && running) { running = false; cancelAnimationFrame(raf); }
+    }, { threshold: 0.1 }).observe(cv);
+  })();
+
+  /* Flujo animado (tubo) */
+  (function () {
+    var SVGNS = 'http://www.w3.org/2000/svg';
+    var svg = document.querySelector('#tuboSvg');
+    if (!svg) return;
+    var dotsG = svg.querySelector('[data-dots]');
+    var cFlow = document.querySelector('#cntFlow'), cSrie = document.querySelector('#cntSrie'), cPub = document.querySelector('#cntPub');
+    var consola = document.querySelectorAll('#tuboConsola [data-line]');
+    var spawned = 0, srie = 0, pub = 0, playing = !reduce;
+    var timers = [];
+    function el(name, attrs, parent) { var n = document.createElementNS(SVGNS, name); for (var k in attrs) n.setAttribute(k, attrs[k]); if (parent) parent.appendChild(n); return n; }
+    function setCnt(el, v) { if (el) el.textContent = v; }
+    function dot(cls) { return el('circle', { r: 7, class: 'tubo-dot ' + (cls || ''), cx: 250, cy: 125 }, dotsG); }
+    function spawn() {
+      spawned++; setCnt(cFlow, spawned - pub);
+      var d = dot();
+      gsap.to(d, { attr: { cx: 310, cy: 125 }, duration: .6, ease: 'power1.out', onComplete: function () { srieStep(d); } });
+      gsap.to(d, { attr: { cx: 260, cy: 125 }, duration: .4, ease: 'power1.in', delay: 0.02 });
+    }
+    function srieStep(d) { srie++; setCnt(cSrie, srie); consolaOn(1); gsap.to(d, { attr: { cx: 680, cy: 125 }, duration: 1.3, ease: 'power1.inOut', onComplete: function () { evidStep(d); } }); }
+    function evidStep(d) { pub++; setCnt(cPub, pub); setCnt(cFlow, Math.max(0, spawned - pub)); consolaOn(2); gsap.to(d, { attr: { cx: 1000, cy: 125 }, duration: 1.1, ease: 'power1.inOut', onComplete: function () { finish(d); } }); }
+    function finish(d) { consolaOn(3); gsap.to(d, { attr: { cx: 1120, cy: 125 }, duration: .5, ease: 'power1.in', onComplete: function () { d.remove(); } }); }
+    function consolaOn(i) { consola.forEach(function (l, idx) { l.classList.toggle('on', idx === i % consola.length); }); }
+    function play() { if (playing) return; playing = true; timers.push(setInterval(function () { spawn(); if (spawned % 2 === 0) consolaOn(0); }, 1200)); spawn(); }
+    function pause() { playing = false; timers.forEach(clearInterval); timers.length = 0; }
+    function reset() {
+      pause();
+      dotsG.querySelectorAll('*').forEach(function (n) { n.remove(); });
+      spawned = srie = pub = 0;
+      setCnt(cFlow, 0); setCnt(cSrie, 0); setCnt(cPub, 0);
+      consola.forEach(function (l) { l.classList.remove('on'); });
+      if (!reduce) play();
+    }
+    var playBtn = document.querySelector('[data-tubo-play]');
+    var resetBtn = document.querySelector('[data-tubo-reset]');
+    if (playBtn) playBtn.addEventListener('click', function () { if (playing) { pause(); playBtn.textContent = 'Reproducir'; } else { play(); playBtn.textContent = 'Pausar'; } });
+    if (resetBtn) resetBtn.addEventListener('click', reset);
+    if (reduce) {
+      [270, 360, 450, 540, 680, 770, 860, 1000].forEach(function (cx, i) { el('circle', { r: 6, class: 'tubo-dot ' + (i % 3 === 2 ? 'ok' : ''), cx: cx, cy: 125, opacity: .6 }, dotsG); });
+      consola.forEach(function (l) { l.classList.add('on'); });
+      if (playBtn) playBtn.style.display = 'none';
+      if (resetBtn) resetBtn.style.display = 'none';
+    } else { play(); }
+  })();
+
+  /* Contadores + barras */
+  gsap.utils.toArray('[data-count]').forEach(function (el) {
+    var target = +el.dataset.count;
+    gsap.fromTo(el, { innerText: 0 }, { innerText: target, duration: 1.8, ease: 'power2.out', snap: { innerText: 1 },
+      scrollTrigger: { trigger: el, start: 'top 85%', once: true } });
+  });
+  gsap.utils.toArray('[data-fill]').forEach(function (f) {
+    gsap.to(f, { width: f.dataset.fill + '%', duration: 1.4, ease: 'power3.out',
+      scrollTrigger: { trigger: f, start: 'top 88%', once: true } });
+  });
+
+  /* Reveals quote/pasos (nuevo-lip.js ya maneja [data-reveal]) */
+  gsap.from('.quote blockquote', { y: 60, opacity: 0, duration: 1.1, ease: 'power3.out',
+    scrollTrigger: { trigger: '.quote', start: 'top 85%', once: true } });
+})();
 </script>
 {% endblock %}

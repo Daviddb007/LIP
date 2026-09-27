@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+
+{% block title %}Leads de Consultoría — Centro de Inteligencia{% endblock %}
+
+{% block content %}
+<section class="section" style="padding: var(--space-2xl) 0 var(--space-xl);">
+    <div class="container">
+        <div class="mb-4 d-flex justify-content-between align-items-end flex-wrap gap-3">
+            <div>
+                <h1 class="heading-xl mb-1">Leads de Consultoría</h1>
+                <p class="body-sm text-muted-2">Solicitudes de diagnóstico para entidades públicas (/consultoria).</p>
+            </div>
+            <div class="d-flex gap-2">
+                <span class="badge badge-white">{{ leads|length }} total</span>
+                <span class="badge bg-success text-white">{{ no_atendidos }} sin atender</span>
+            </div>
+        </div>
+
+        <div class="card-elevated p-4">
+            <div style="overflow-x: auto;">
+                <table class="table-premium w-100">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Fecha</th>
+                            <th>Nombre</th>
+                            <th>Entidad</th>
+                            <th>Tipo</th>
+                            <th>Email</th>
+                            <th>Teléfono</th>
+                            <th>Necesidad</th>
+                            <th>Estado</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for lead in leads %}
+                        <tr>
+                            <td class="caption">{{ lead.id }}</td>
+                            <td class="caption font-monospace">{{ lead.creado_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                            <td class="caption">{{ lead.nombre }}<br><small>{{ lead.cargo or '' }}</small></td>
+                            <td class="caption">{{ lead.entidad }}</td>
+                            <td class="caption">{{ lead.tipo_entidad }}</td>
+                            <td class="caption"><a href="mailto:{{ lead.email }}">{{ lead.email }}</a></td>
+                            <td class="caption">{{ lead.telefono }}</td>
+                            <td class="caption">{{ lead.necesidad or '—' }}</td>
+                            <td>
+                                {% if lead.atendido %}
+                                <span class="badge bg-success text-white">Atendido</span>
+                                {% else %}
+                                <span class="badge bg-warning text-dark">Pendiente</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <form method="post" action="{{ url_for('admin.consultoria_lead_toggle', lead_id=lead.id) }}" class="d-inline">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                                    <button type="submit" class="btn btn-outline btn-sm">
+                                        {{ 'Reabrir' if lead.atendido else 'Marcar atendido' }}
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                        {% else %}
+                        <tr>
+                            <td colspan="10" class="text-center text-muted-2 py-4">Sin leads de consultoría aún.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

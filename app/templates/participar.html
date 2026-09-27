@@ -1,19 +1,17 @@
 {% extends "base.html" %}
 
-{% block title %}Participar — Laboratorio de Inteligencia Pública{% endblock %}
+{% block title %}Participa — Tu propuesta para el PND 2027–2030{% endblock %}
+{% block meta_description %}Participa en menos de 5 minutos. Tu propuesta se clasifica automáticamente contra el Plan Nacional de Desarrollo 2027–2030 y queda como evidencia pública.{% endblock %}
 
 {% block content %}
 <!-- Hero -->
-<section class="hero" style="padding: var(--space-3xl) 0;">
-    <div class="container">
-        <div class="row justify-content-center text-center">
-            <div class="col-lg-8">
-                <div class="badge badge-primary mb-3">Participación Ciudadana</div>
-                <h1 class="display-lg text-white mb-3">Tu voz construye el futuro</h1>
-                <p class="body-lg text-white-50" style="max-width: 540px; margin: 0 auto;">
-                    5 pasos, menos de 5 minutos. Una conversación guiada que transforma tu opinión en evidencia para Colombia.
-                </p>
-            </div>
+<section class="hero-video" style="min-height:auto; padding-top: 7rem;">
+    <div class="veil" style="position:absolute; inset:0; background:linear-gradient(180deg,rgba(12,31,58,.85),rgba(8,19,37,.97));"></div>
+    <div class="container" style="position:relative; z-index:3;">
+        <div class="content">
+            <div class="kicker">Participación ciudadana · PND 2027–2030</div>
+            <h1 id="heroTitle" class="display-lg text-white">Tu voz construye el futuro</h1>
+            <p class="body-lg" style="max-width:52ch; color: var(--dim);">5 pasos, menos de 5 minutos. Una conversación guiada que transforma tu opinión en evidencia para Colombia.</p>
         </div>
     </div>
 </section>
@@ -202,10 +200,10 @@
                     </div>
 
                     <div class="form-card-footer">
-                        <button type="button" class="btn btn-secondary" id="btnBack" style="visibility: hidden;">
+                        <button type="button" class="btn btn-outline" id="btnBack" style="visibility: hidden;">
                             <i class="bi bi-arrow-left me-2"></i>Atrás
                         </button>
-                        <button type="button" class="btn btn-primary" id="btnNext">
+                        <button type="button" class="btn btn-gold" id="btnNext">
                             Siguiente <i class="bi bi-arrow-right ms-2"></i>
                         </button>
                     </div>
@@ -488,14 +486,14 @@
         clasifs.forEach(function(c, i) {
             var pct = Math.round(c.confianza * 100);
             var card = document.createElement('div');
-            card.className = 'bg-surface-2 rounded-xl p-4 mb-3';
+            card.className = 'card-elevated p-4 mb-3';
             card.innerHTML =
                 '<div class="d-flex justify-content-between align-items-start mb-2">' +
                     '<div>' +
                         '<div class="caption text-muted-2 mb-1">' + (i === 0 ? 'Clasificación principal' : 'Clasificación #' + (i+1)) + '</div>' +
                         '<div class="heading-lg">' + (c.pilar ? c.pilar.nombre : 'Sin clasificar') + '</div>' +
                     '</div>' +
-                    '<span class="badge badge-blue">' + pct + '%</span>' +
+                    '<span class="badge badge-gold">' + pct + '%</span>' +
                 '</div>' +
                 '<div class="progress-premium mb-2"><div class="bar" style="width:' + pct + '%"></div></div>' +
                 '<div class="caption text-muted-2">' + (c.explicacion || '') + '</div>';

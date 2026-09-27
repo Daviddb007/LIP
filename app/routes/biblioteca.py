@@ -3,6 +3,7 @@ from __future__ import annotations
 
 from flask import Blueprint, jsonify, render_template, request
 
+from app import csrf
 from app.models.catalog import Sector
 from app.models.politica import Politica
 from app.services.srie.keywords import KEYWORDS_PILARES
@@ -61,6 +62,7 @@ def api_detalle(politica_id: int):
 
 
 @biblioteca_bp.route("/api/politicas/<int:politica_id>/preguntar", methods=["POST"])
+@csrf.exempt
 def api_preguntar(politica_id: int):
     politica = Politica.query.get(politica_id)
     if not politica or not politica.activo:

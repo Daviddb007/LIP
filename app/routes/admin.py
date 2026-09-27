@@ -26,6 +26,7 @@ from app.models.catalog import (
     participacion_problemas, participacion_actores, participacion_beneficiarios,
 )
 from app.models.secop import LeadSecop
+from app.models.consultoria import LeadConsultoria
 
 admin_bp = Blueprint("admin", __name__)
 
@@ -122,6 +123,30 @@ def secop_lead_toggle(lead_id):
     lead.atendido = not lead.atendido
     db.session.commit()
     return redirect(url_for("admin.secop_leads"))
+
+
+# ------------------------------------------------------------------
+# Leads Consultoría (línea de consultoría pública)
+# ------------------------------------------------------------------
+@admin_bp.route("/consultoria-leads")
+@login_required
+def consultoria_leads():
+    leads = LeadConsultoria.query.order_by(LeadConsultoria.creado_at.desc()).all()
+    no_atendidos = LeadConsultoria.query.filter_by(atendido=False).count()
+    return render_template(
+        "admin/consultoria_leads.html",
+        leads=leads,
+        no_atendidos=no_atendidos,
+    )
+
+
+@admin_bp.route("/consultoria-leads/<int:lead_id>/toggle", methods=["POST"])
+@login_required
+def consultoria_lead_toggle(lead_id):
+    lead = LeadConsultoria.query.get_or_404(lead_id)
+    lead.atendido = not lead.atendido
+    db.session.commit()
+    return redirect(url_for("admin.consultoria_leads"))
 
 
 # ------------------------------------------------------------------
