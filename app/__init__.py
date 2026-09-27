@@ -102,6 +102,7 @@ def _register_blueprints(app: Flask) -> None:
     from app.routes.focales import focales_bp
     from app.routes.secop import secop_bp
     from app.routes.seo import seo_bp
+    from app.routes.consultoria import consultoria_bp
 
     app.register_blueprint(home_bp)
     app.register_blueprint(participar_bp)
@@ -123,6 +124,7 @@ def _register_blueprints(app: Flask) -> None:
     app.register_blueprint(focales_bp)
     app.register_blueprint(secop_bp)
     app.register_blueprint(seo_bp)
+    app.register_blueprint(consultoria_bp)
 
     @app.route("/api/docs")
     def api_docs():

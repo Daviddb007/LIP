@@ -72,6 +72,9 @@
                         <a class="nav-link" href="{{ url_for('resultados.resultados') }}">Observatorio</a>
                     </li>
                     <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('consultoria.pagina') }}">Consultoría</a>
+                    </li>
+                    <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('secop.pagina') }}">SECOP</a>
                     </li>
                     <li class="nav-item">
@@ -82,6 +85,9 @@
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="{{ url_for('conocimiento.pagina') }}">Conocer</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('home.presentacion') }}" aria-label="Modo presentación"><i class="bi bi-play-circle me-1"></i>Presentación</a>
                     </li>
                     <li class="nav-item ms-lg-3 d-none d-lg-block">
                         <a class="btn btn-nav-outline btn-sm" href="{{ url_for('secop.licitar') }}" data-mag>
@@ -140,6 +146,8 @@
                         <li><a href="{{ url_for('analitica.pagina') }}"><i class="bi bi-chevron-right"></i> Analítica</a></li>
                         <li><a href="{{ url_for('secop.pagina') }}"><i class="bi bi-chevron-right"></i> Visor SECOP</a></li>
                         <li><a href="{{ url_for('secop.licitar') }}"><i class="bi bi-chevron-right"></i> Licitación pública</a></li>
+                        <li><a href="{{ url_for('consultoria.pagina') }}"><i class="bi bi-chevron-right"></i> Consultoría pública</a></li>
+                        <li><a href="{{ url_for('home.presentacion') }}"><i class="bi bi-chevron-right"></i> Modo presentación</a></li>
                         <li><a href="{{ url_for('asistente.pagina') }}"><i class="bi bi-chevron-right"></i> SRIE</a></li>
                         <li><a href="{{ url_for('participar.participar') }}"><i class="bi bi-chevron-right"></i> Participar</a></li>
                         <li><a href="{{ url_for('nosotros.pagina') }}"><i class="bi bi-chevron-right"></i> Nosotros</a></li>

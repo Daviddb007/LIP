@@ -31,6 +31,7 @@
       </div>
       <div class="cta-row mt-4">
         <a href="{{ url_for('participar.participar') }}" class="btn btn-gold btn-lg" data-mag>Participa ahora →</a>
+        <a href="{{ url_for('home.presentacion') }}" class="btn btn-outline btn-lg" data-mag><i class="bi bi-play-circle me-1"></i>Ver presentación</a>
         <a href="{{ url_for('secop.pagina') }}" class="btn btn-outline btn-lg" data-mag>Ver contratación pública</a>
       </div>
     </div>
@@ -94,8 +95,8 @@
         <div class="card-elevated aud-card p-4 h-100" data-reveal>
           <div class="aud-label">Estado · Entidad</div>
           <h3 class="heading-md mb-2">Evidencia accionable</h3>
-          <p class="body-sm text-muted-2">Lo que el país pide, medido y trazable: observatorio, tendencias y prioridades por región para priorizar con datos.</p>
-          <a class="aud-link" href="{{ url_for('resultados.resultados') }}">Ver el observatorio →</a>
+          <p class="body-sm text-muted-2">Lo que el país pide, medido y trazable: observatorio, tendencias y prioridades por región — y una línea de consultoría para tu entidad.</p>
+          <a class="aud-link" href="{{ url_for('consultoria.pagina') }}">Consultoría pública →</a>
         </div>
       </div>
       <div class="col-lg-4">
@@ -242,7 +243,7 @@
         <div class="aud-label">El motor</div>
         <h2 class="display-md mb-3">SRIE Platform, el sistema reutilizable detrás de LIP</h2>
         <p class="body-md text-muted-2 mb-4">LIP es la implementación nacional del motor SRIE. La misma tecnología — clasificación estratégica, observatorio y participación — se despliega para cualquier gobierno, universidad u organización con su propio marco estratégico.</p>
-        <a href="{{ url_for('saas.landing') }}" class="btn btn-outline" data-mag>Conocer SRIE Platform →</a>
+        <a href="{{ url_for('consultoria.pagina') }}" class="btn btn-gold" data-mag>Solicitar diagnóstico →</a>
       </div>
       <div class="col-lg-6" data-reveal>
         <div class="card-elevated p-4">
