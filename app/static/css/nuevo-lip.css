@@ -263,3 +263,7 @@ svg .tubo-arrow{stroke:rgba(201,162,39,.5);stroke-width:1.5;fill:none;stroke-das
 .selection-card.active .icon{background:var(--gold);color:var(--navy-2)}
 .form-card-footer{border-top:1px solid var(--line);padding:1.2rem 1.5rem;display:flex;justify-content:space-between}
 .bg-surface-2,.rounded-xl{border-radius:var(--radius-md)}
+
+/* ---------- Charts: contenedor de altura fija (evita crecimiento infinito) ---------- */
+.chart-wrap{position:relative;height:260px}
+.chart-wrap canvas{position:absolute;inset:0;width:100% !important;height:100% !important}
