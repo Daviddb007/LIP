@@ -297,3 +297,21 @@ svg .tubo-arrow{stroke:rgba(201,162,39,.5);stroke-width:1.5;fill:none;stroke-das
 .aud-card .aud-link:hover{color:#fff}
 .motor-core{font-family:var(--font-mono);font-size:.78rem;line-height:1.9;color:var(--dim)}
 .motor-core b{color:var(--gold-l)}
+
+/* ---------- Admin legible en tema oscuro (re-estilo ligero) ---------- */
+.text-dark{color:var(--cream) !important}
+.heading-xl,.heading-md,.heading-sm{color:var(--cream) !important}
+.btn-primary{background:var(--gold);border-color:var(--gold);color:var(--navy-2) !important}
+.btn-primary:hover{background:var(--gold-l);border-color:var(--gold-l);color:var(--navy-2) !important}
+.btn-secondary{background:var(--navy-3);border-color:var(--line);color:var(--cream) !important}
+/* badges sobre fondo claro mantienen texto oscuro para contraste */
+.badge.text-dark{color:#1a1714 !important}
+.text-primary{color:var(--gold-l) !important}
+
+/* ---------- Diferenciación ---------- */
+.diff{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--line);border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;margin-top:3rem}
+.diff-cell{padding:2.2rem;background:var(--navy-2)}
+.diff-cell .d-problem{color:var(--dim);font-size:.9rem;display:flex;gap:.6rem;align-items:baseline}
+.diff-cell .d-problem::before{content:"\2715";color:rgba(229,107,94,.85)}
+.diff-cell .d-sol{margin-top:1rem;color:var(--cream);font-size:1.05rem;font-weight:600;display:flex;gap:.6rem;align-items:baseline}
+.diff-cell .d-sol::before{content:"\2713";color:var(--gold)}
