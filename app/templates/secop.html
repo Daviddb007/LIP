@@ -53,37 +53,37 @@
         <div class="row g-3">
             <div class="col-6 col-md-4">
                 <div class="card-elevated stat-card">
-                    <div class="stat-number text-white">{{ stats.total }}</div>
+                    <div class="stat-number text-white" id="statTotal">{{ stats.total }}</div>
                     <div class="stat-label">Procesos vigentes</div>
                 </div>
             </div>
             <div class="col-6 col-md-4">
                 <div class="card-elevated stat-card">
-                    <div class="stat-number text-gold">{{ stats_fmt.valor_total }}</div>
+                    <div class="stat-number text-gold" id="statValor">{{ stats_fmt.valor_total }}</div>
                     <div class="stat-label">Valor total (COP)</div>
                 </div>
             </div>
             <div class="col-6 col-md-4">
                 <div class="card-elevated stat-card">
-                    <div class="stat-number text-white">{{ stats_fmt.valor_promedio }}</div>
+                    <div class="stat-number text-white" id="statProm">{{ stats_fmt.valor_promedio }}</div>
                     <div class="stat-label">Valor promedio (COP)</div>
                 </div>
             </div>
             <div class="col-6 col-md-4">
                 <div class="card-elevated stat-card">
-                    <div class="stat-number text-white">{{ stats.entidades }}</div>
+                    <div class="stat-number text-white" id="statEnt">{{ stats.entidades }}</div>
                     <div class="stat-label">Entidades que contratan</div>
                 </div>
             </div>
             <div class="col-6 col-md-4">
                 <div class="card-elevated stat-card">
-                    <div class="stat-number text-white">{{ stats.sin_rup }}</div>
+                    <div class="stat-number text-white" id="statSinRup">{{ stats.sin_rup }}</div>
                     <div class="stat-label">Sin exigir RUP</div>
                 </div>
             </div>
             <div class="col-6 col-md-4">
                 <div class="card-elevated stat-card">
-                    <div class="stat-number text-gold">{{ stats.vencen_7d }}</div>
+                    <div class="stat-number text-gold" id="statUrg">{{ stats.vencen_7d }}</div>
                     <div class="stat-label">Vencen en 7 días</div>
                 </div>
             </div>
@@ -104,7 +104,7 @@
                 <span class="overline">Explorar procesos</span>
                 <h2 class="heading-sm">Filtra las oportunidades</h2>
             </div>
-            <form method="get" action="{{ url_for('secop.pagina') }}" class="row g-3 align-items-end">
+            <form method="get" action="{{ url_for('secop.pagina') }}" class="row g-3 align-items-end" id="filterForm">
                 <div class="col-md-4">
                     <label class="form-label body-sm">Buscar por objeto o entidad</label>
                     <input type="text" name="q" class="form-control" value="{{ filtros.q }}" placeholder="Ej. consultoría, colegio, cámaras…">
@@ -144,9 +144,9 @@
                     <input type="number" name="valor_max" class="form-control" min="0" step="1000" value="{{ filtros.valor_max }}" placeholder="Sin límite">
                 </div>
                 <div class="col-12">
-                    <button type="submit" class="btn btn-gold"><i class="bi bi-funnel me-2"></i>Aplicar filtros</button>
+                    <button type="submit" class="btn btn-gold"><i class="bi bi-funnel me-2"></i>Filtrar</button>
                     <a href="{{ url_for('secop.pagina') }}" class="btn btn-outline ms-2">Limpiar</a>
-                    <span class="text-muted-2 body-sm ms-3">{{ pagination.total }} resultados</span>
+                    <span class="text-muted-2 body-sm ms-3" id="resultCount">{{ pagination.total }} resultados</span>
                 </div>
             </form>
         </div>
@@ -157,7 +157,7 @@
 <section class="section" style="padding-top: var(--space-lg);">
     <div class="container">
         <div class="row g-4">
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-4 col-md-6">
                 <div class="card-elevated p-4 h-100">
                     <h3 class="heading-sm mb-3">Por departamento</h3>
                     <div class="chart-wrap" style="height:220px;">
@@ -165,7 +165,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-4 col-md-6">
                 <div class="card-elevated p-4 h-100">
                     <h3 class="heading-sm mb-3">Por modalidad</h3>
                     <div class="chart-wrap" style="height:220px;">
@@ -173,7 +173,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-4 col-md-6">
                 <div class="card-elevated p-4 h-100">
                     <h3 class="heading-sm mb-3">Por tipo de contrato</h3>
                     <div class="chart-wrap" style="height:220px;">
@@ -181,7 +181,7 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-3 col-md-6">
+            <div class="col-lg-4 col-md-6">
                 <div class="card-elevated p-4 h-100">
                     <h3 class="heading-sm mb-3">Por pilar PND</h3>
                     <div class="chart-wrap" style="height:220px;">
@@ -189,28 +189,49 @@
                     </div>
                 </div>
             </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-3">Distribución de valor</h3>
+                    <div class="chart-wrap" style="height:220px;">
+                        <canvas id="chartValor" role="img" aria-label="Distribución de procesos por rango de valor"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-4 col-md-6">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-3">RUP requerido</h3>
+                    <div class="chart-wrap" style="height:220px;">
+                        <canvas id="chartRup" role="img" aria-label="Procesos que requieren RUP vs no requieren"></canvas>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
 
-<!-- Tabla -->
+<!-- Tabla interactiva -->
 <section class="section" style="padding-top: var(--space-lg);">
     <div class="container">
+        <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
+            <h3 class="heading-sm mb-0">Procesos</h3>
+            <span class="body-sm text-muted-2" id="tableCount">—</span>
+        </div>
         <div class="table-responsive">
             <table class="table table-premium">
+                <caption class="sr-only">Procesos SECOP II con oferta abierta. Haz clic en las columnas para ordenar.</caption>
                 <thead>
                     <tr>
-                        <th scope="col">Proceso</th>
-                        <th scope="col">Entidad</th>
-                        <th scope="col">Departamento</th>
-                        <th scope="col">Modalidad</th>
-                        <th scope="col">Valor</th>
-                        <th scope="col">Vence</th>
-                        <th scope="col">RUP</th>
+                        <th scope="col" data-key="n" class="sortable">Proceso <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="e" class="sortable">Entidad <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="d" class="sortable">Departamento <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="m" class="sortable">Modalidad <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="v" class="sortable">Valor <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="f" class="sortable">Vence <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="rup" class="sortable">RUP <i class="bi bi-arrow-down-up sort-ico"></i></th>
                         <th scope="col"><span class="sr-only">Acción</span></th>
                     </tr>
                 </thead>
-                <tbody>
+                <tbody id="tablaProcesos">
                     {% for r in rows %}
                     <tr>
                         <td>
@@ -224,11 +245,11 @@
                         <td>{{ r.entidad }}</td>
                         <td>{{ r.departamento }}</td>
                         <td class="body-sm">{{ r.modalidad }}</td>
-                        <td class="text-gold">{{ r.valor_fmt }}</td>
+                        <td class="text-gold" title="{{ r.valor_fmt }}">{{ r.valor_fmt }}</td>
                         <td>
                             <span class="body-sm">{{ r.fecha_fmt }}</span>
                             {% if r.dl < 0 %}<span class="badge bg-danger text-white ms-1">vencido</span>
-                            {% elif r.dl <= 7 %}<span class="badge bg-warning text-dark ms-1">{{ r.dl }} d</span>
+                            {% elif r.dl <= 5 %}<span class="badge bg-warning text-dark ms-1">{{ r.dl }} d</span>
                             {% endif %}
                         </td>
                         <td>{% if r.requiere_rup %}<span class="badge badge-white">RUP</span>{% else %}<span class="badge bg-success text-white">Sin RUP</span>{% endif %}</td>
@@ -240,28 +261,13 @@
                 </tbody>
             </table>
         </div>
-
-        {% if pagination.pages > 1 %}
-        <nav class="mt-4">
-            <ul class="pagination justify-content-center">
-                {% if pagination.has_prev %}
-                <li class="page-item"><a class="page-link" href="{{ url_for('secop.pagina', page=pagination.prev_num, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar, valor_min=filtros.valor_min, valor_max=filtros.valor_max) }}">←</a></li>
-                {% endif %}
-                {% for p in pagination.iter_pages(left_edge=1, right_edge=1, left_current=2, right_current=2) %}
-                    {% if p %}
-                    <li class="page-item {% if p == pagination.page %}active{% endif %}">
-                        <a class="page-link" href="{{ url_for('secop.pagina', page=p, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar, valor_min=filtros.valor_min, valor_max=filtros.valor_max) }}">{{ p }}</a>
-                    </li>
-                    {% else %}
-                    <li class="page-item disabled"><span class="page-link">…</span></li>
-                    {% endif %}
-                {% endfor %}
-                {% if pagination.has_next %}
-                <li class="page-item"><a class="page-link" href="{{ url_for('secop.pagina', page=pagination.next_num, q=filtros.q, departamento=filtros.departamento, modalidad=filtros.modalidad, rup=filtros.rup, pilar=filtros.pilar, valor_min=filtros.valor_min, valor_max=filtros.valor_max) }}">→</a></li>
-                {% endif %}
-            </ul>
+        <nav class="mt-3 d-flex justify-content-between align-items-center flex-wrap gap-2" id="tablePager">
+            <span class="body-sm text-muted-2" id="pageInfo">—</span>
+            <div class="d-flex gap-2">
+                <button class="btn btn-outline btn-sm" id="prevPage" type="button">← Anterior</button>
+                <button class="btn btn-outline btn-sm" id="nextPage" type="button">Siguiente →</button>
+            </div>
         </nav>
-        {% endif %}
     </div>
 </section>
 
@@ -325,47 +331,152 @@
 <script>
 document.addEventListener('DOMContentLoaded', function () {
     const colors = ['#E8C96A', '#D4A843', '#C9A227', '#F2E3B3', '#A07D1E', '#F6ECD2', '#B8922E', '#E8D9A8', '#8C6B1D', '#DECB8C'];
+    const PAGE = 25;
+    let ALL = [];
+    let charts = {};
+    const state = { q:'', depto:'', modalidad:'', rup:'', pilar:'', vmin:null, vmax:null, sortKey:'f', sortDir:'asc', page:0 };
 
-    function makeChart(id, labels, data, param) {
-        const el = document.getElementById(id);
-        if (!el || !labels.length) return;
-        const chart = new Chart(el, {
-            type: 'bar',
-            data: {
-                labels: labels,
-                datasets: [{
-                    data: data,
-                    backgroundColor: colors,
-                    hoverBackgroundColor: '#F6ECD2',
-                    borderRadius: 6,
-                }]
-            },
-            options: {
-                indexAxis: 'y',
-                plugins: { legend: { display: false } },
-                scales: {
-                    x: { ticks: { color: '#94a3b8' }, grid: { color: 'rgba(148,163,184,0.12)' } },
-                    y: { ticks: { color: '#e2e8f0', font: { size: 10 } }, grid: { display: false } }
-                },
-                maintainAspectRatio: false,
-                onClick: function (evt, els) {
-                    if (!param || !els.length) return;
-                    const idx = els[0].index;
-                    const label = labels[idx];
-                    const url = new URL(window.location.href);
-                    url.searchParams.set(param, label);
-                    window.location.href = url.toString();
-                }
-            }
+    function esc(s){ return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
+    function fmtCOP(n){
+        if(n >= 1e9) return '$' + (n/1e9).toFixed(1).replace(/\.0$/,'') + 'MM';
+        if(n >= 1e6) return '$' + Math.round(n/1e6) + 'M';
+        if(n >= 1e3) return '$' + Math.round(n/1e3) + 'K';
+        return '$' + (n||0);
+    }
+    function fmtCOPFull(n){ return '$' + Number(n||0).toLocaleString('es-CO'); }
+
+    function filtered(){
+        const q = state.q.toLowerCase();
+        return ALL.filter(r => {
+            if(q && !(r.e.toLowerCase().includes(q) || r.n.toLowerCase().includes(q))) return false;
+            if(state.depto && r.d !== state.depto) return false;
+            if(state.modalidad && r.m !== state.modalidad) return false;
+            if(state.rup === '1' && !r.rup) return false;
+            if(state.rup === '0' && r.rup) return false;
+            if(state.pilar && !(r.pil || []).includes(state.pilar)) return false;
+            if(state.vmin !== null && r.v < state.vmin) return false;
+            if(state.vmax !== null && r.v > state.vmax) return false;
+            return true;
         });
-        // cursor pointer sobre barras clicables
-        if (param) { el.style.cursor = 'pointer'; }
     }
 
-    makeChart('chartDepartamentos', {{ chart_departamentos|map(attribute='label')|list|tojson }}, {{ chart_departamentos|map(attribute='total')|list|tojson }}, 'departamento');
-    makeChart('chartModalidades', {{ chart_modalidades|map(attribute='label')|list|tojson }}, {{ chart_modalidades|map(attribute='total')|list|tojson }}, 'modalidad');
-    makeChart('chartTipos', {{ chart_tipos|map(attribute='label')|list|tojson }}, {{ chart_tipos|map(attribute='total')|list|tojson }}, null);
-    makeChart('chartPilares', {{ chart_pilares|map(attribute='label')|list|tojson }}, {{ chart_pilares|map(attribute='total')|list|tojson }}, 'pilar');
+    function destroyCharts(){ Object.values(charts).forEach(c => c && c.destroy()); charts = {}; }
+
+    function countBy(arr, key, top){
+        const m = {};
+        arr.forEach(r => { const k = r[key] || 'Sin dato'; m[k] = (m[k]||0)+1; });
+        return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0, top||12);
+    }
+
+    function renderStats(f){
+        const urg = f.filter(r => r.dl <= 5).length;
+        const sinRup = f.filter(r => !r.rup).length;
+        const valTotal = f.reduce((s,r)=>s+r.v,0);
+        const valAvg = f.length ? Math.round(valTotal/f.length) : 0;
+        const set = (id, v, gold) => { const el = document.getElementById(id); if(el){ el.textContent = v; el.className = 'stat-number ' + (gold ? 'text-gold' : 'text-white'); } };
+        set('statTotal', f.length.toLocaleString('es-CO'), false);
+        set('statValor', fmtCOP(valTotal), true);
+        set('statProm', fmtCOP(valAvg), false);
+        set('statEnt', new Set(f.map(r=>r.e)).size.toLocaleString('es-CO'), false);
+        set('statSinRup', sinRup.toLocaleString('es-CO'), false);
+        set('statUrg', urg.toLocaleString('es-CO'), true);
+        document.getElementById('resultCount').textContent = f.length.toLocaleString('es-CO') + ' resultados';
+    }
+
+    function renderCharts(f){
+        destroyCharts();
+        function bar(id, pairs, horiz){
+            const el = document.getElementById(id); if(!el || !pairs.length) return;
+            charts[id] = new Chart(el, {
+                type:'bar',
+                data:{ labels: pairs.map(p=>p[0]), datasets:[{ data: pairs.map(p=>p[1]), backgroundColor: colors, hoverBackgroundColor:'#F6ECD2', borderRadius:6 }]},
+                options:{ indexAxis: horiz ? 'y' : 'x', plugins:{ legend:{display:false} },
+                    scales:{ x: horiz ? { ticks:{ color:'#94a3b8', font:{size:10} }, grid:{ color:'rgba(148,163,184,0.12)' } } : { grid:{display:false}, ticks:{ color:'#94a3b8', font:{size:10}, autoSkip:false, maxRotation:32 } },
+                        y: horiz ? { grid:{display:false}, ticks:{ color:'#e2e8f0', font:{size:10} } } : { ticks:{ color:'#94a3b8' }, grid:{ color:'rgba(148,163,184,0.12)' } } },
+                    maintainAspectRatio:false }
+            });
+        }
+        bar('chartDepartamentos', countBy(f, 'd', 10), true);
+        bar('chartModalidades', countBy(f, 'm', 8), true);
+        bar('chartTipos', countBy(f, 't', 8), true);
+        bar('chartPilares', (function(){ const m={}; f.forEach(r => (r.pil||[]).forEach(p => m[p]=(m[p]||0)+1)); return Object.entries(m).sort((a,b)=>b[1]-a[1]).slice(0,8); })(), true);
+        // distribución de valor
+        const buckets = [['<10M',10e6],['10-50M',50e6],['50-100M',100e6],['100-300M',300e6],['300M-1MM',1e9],['1-5MM',5e9],['>5MM',Infinity]];
+        const bCounts = buckets.map(()=>0);
+        f.forEach(r => { for(let i=0;i<buckets.length;i++){ if(r.v <= buckets[i][1]){ bCounts[i]++; break; } } });
+        bar('chartValor', buckets.map((b,i)=>[b[0], bCounts[i]]), false);
+        // RUP donut
+        const sinRup = f.filter(r=>!r.rup).length, conRup = f.length - sinRup;
+        const rupEl = document.getElementById('chartRup');
+        if(rupEl){
+            charts.chartRup = new Chart(rupEl, {
+                type:'doughnut',
+                data:{ labels:['No requiere RUP','Requiere RUP'], datasets:[{ data:[sinRup, conRup], backgroundColor:['#5ee6a0','#c9a227'], borderColor:'#0c1f3a', borderWidth:2 }]},
+                options:{ cutout:'62%', plugins:{ legend:{ position:'bottom', labels:{ color:'#e2e8f0', boxWidth:10, padding:14 } } },
+                    maintainAspectRatio:false }
+            });
+        }
+    }
+
+    function renderTable(f){
+        const sorted = [...f].sort((a,b)=>{
+            let av=a[state.sortKey], bv=b[state.sortKey];
+            if(state.sortKey==='f'){ av=new Date(av).getTime(); bv=new Date(bv).getTime(); }
+            if(typeof av === 'string'){ av=av.toLowerCase(); bv=bv.toLowerCase(); return state.sortDir==='asc' ? av.localeCompare(bv) : bv.localeCompare(av); }
+            av = av===null?999999:av; bv = bv===null?999999:bv;
+            return state.sortDir==='asc' ? av-bv : bv-av;
+        });
+        const pages = Math.max(1, Math.ceil(sorted.length/PAGE));
+        state.page = Math.min(state.page, pages-1);
+        const rows = sorted.slice(state.page*PAGE, state.page*PAGE+PAGE);
+        document.getElementById('tableCount').textContent = sorted.length.toLocaleString('es-CO') + ' procesos';
+        document.getElementById('pageInfo').textContent = 'Página ' + (state.page+1) + ' de ' + pages;
+        document.getElementById('prevPage').disabled = state.page===0;
+        document.getElementById('nextPage').disabled = state.page>=pages-1;
+        const tbody = document.getElementById('tablaProcesos');
+        if(!rows.length){ tbody.innerHTML = '<tr><td colspan="8" class="text-center text-muted-2 py-4">No hay procesos que coincidan con los filtros.</td></tr>'; return; }
+        tbody.innerHTML = rows.map(r => {
+            const dl = r.dl;
+            const dlTxt = dl<=0 ? '<span class="badge bg-danger text-white">vencido</span>' : (dl<=5 ? '<span class="badge bg-warning text-dark">'+dl+' d</span>' : dl+' d');
+            const rupTxt = r.rup ? '<span class="badge badge-white">RUP</span>' : '<span class="badge bg-success text-white">Sin RUP</span>';
+            const pil = (r.pil||[]).map(p=>'<span class="badge badge-white me-1">'+esc(p)+'</span>').join('');
+            return '<tr><td><strong>'+esc(r.n)+'</strong>'+(pil?'<div class="body-sm text-muted-2 mt-1">'+pil+'</div>':'')+'</td>'
+                +'<td>'+esc(r.e)+'</td><td>'+esc(r.d)+'</td><td class="body-sm">'+esc(r.m)+'</td>'
+                +'<td class="text-gold" title="'+fmtCOPFull(r.v)+'">'+fmtCOP(r.v)+'</td>'
+                +'<td class="body-sm">'+r.f.slice(0,10)+' '+dlTxt+'</td>'
+                +'<td>'+rupTxt+'</td>'
+                +'<td><a href="'+r.u+'" target="_blank" rel="noopener nofollow" class="btn btn-outline btn-sm" aria-label="Abrir proceso en SECOP II"><i class="bi bi-box-arrow-up-right" aria-hidden="true"></i></a></td></tr>';
+        }).join('');
+    }
+
+    function update(){ const f = filtered(); renderStats(f); renderCharts(f); renderTable(f); }
+
+    // ---- init: fetch data ----
+    fetch('{{ url_for('secop.api_procesos') }}').then(r=>r.json()).then(data => {
+        ALL = data || [];
+        update();
+    }).catch(() => { document.getElementById('tablaProcesos').innerHTML = '<tr><td colspan="8" class="text-center text-muted-2 py-4">No se pudieron cargar los datos.</td></tr>'; });
+
+    // ---- filtros client-side ----
+    document.getElementById('filterForm').addEventListener('submit', function(e){ e.preventDefault(); state.page=0; update(); });
+    ['q','departamento','modalidad','rup','pilar','valor_min','valor_max'].forEach(id => {
+        const el = document.getElementById(id);
+        if(el){ el.addEventListener('change', function(){ state.page=0; update(); }); el.addEventListener('input', function(){ state.page=0; update(); }); }
+    });
+
+    // ---- sort ----
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.addEventListener('click', function(){
+            const key = th.dataset.key;
+            if(state.sortKey === key){ state.sortDir = state.sortDir==='asc' ? 'desc' : 'asc'; }
+            else { state.sortKey = key; state.sortDir = 'asc'; }
+            document.querySelectorAll('.sortable').forEach(x => x.classList.remove('sorted','asc'));
+            th.classList.add('sorted'); if(state.sortDir==='asc') th.classList.add('asc');
+            update();
+        });
+    });
+    document.getElementById('prevPage').addEventListener('click', ()=>{ if(state.page>0){ state.page--; update(); } });
+    document.getElementById('nextPage').addEventListener('click', ()=>{ state.page++; update(); });
 });
 </script>
 {% endif %}

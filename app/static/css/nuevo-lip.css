@@ -318,3 +318,10 @@ svg .tubo-arrow{stroke:rgba(201,162,39,.5);stroke-width:1.5;fill:none;stroke-das
 .diff-cell .d-problem::before{content:"\2715";color:rgba(229,107,94,.85)}
 .diff-cell .d-sol{margin-top:1rem;color:var(--cream);font-size:1.05rem;font-weight:600;display:flex;gap:.6rem;align-items:baseline}
 .diff-cell .d-sol::before{content:"\2713";color:var(--gold)}
+
+/* ---------- Tabla interactiva (visor) ---------- */
+.sortable{cursor:pointer;user-select:none;white-space:nowrap}
+.sortable:hover{color:#fff !important}
+.sortable.sorted .sort-ico{color:var(--gold);opacity:1}
+.sortable.sorted.asc .sort-ico{transform:rotate(180deg)}
+.sort-ico{opacity:.4;font-size:.72em;transition:transform .2s}

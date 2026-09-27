@@ -185,6 +185,42 @@ def api_datos():
     })
 
 
+@secop_bp.route("/secop/api/procesos")
+@cache.cached(timeout=60)
+def api_procesos():
+    """Todos los procesos del corte en formato compacto (visor interactivo)."""
+    from flask import jsonify
+
+    corte_obj = _corte_vigente()
+    if not corte_obj:
+        return jsonify([])
+    corte = corte_obj.corte
+    rows = (
+        SecopProceso.query.filter_by(corte=corte)
+        .order_by(SecopProceso.fecha_limite.asc())
+        .all()
+    )
+    out = [
+        {
+            "e": p.entidad,
+            "d": p.departamento,
+            "c": p.ciudad,
+            "n": p.nombre,
+            "m": p.modalidad,
+            "t": p.tipo_contrato,
+            "v": p.valor,
+            "rup": p.requiere_rup,
+            "dl": (p.fecha_limite - date.today()).days,
+            "f": p.fecha_limite.isoformat(),
+            "u": p.url,
+            "tm": p.temas,
+            "pil": p.pilares,
+        }
+        for p in rows
+    ]
+    return jsonify(out)
+
+
 @secop_bp.route("/secop/licitar", methods=["GET", "POST"])
 @limiter.limit("20 per minute;200 per hour")
 def licitar():
