@@ -1,0 +1,35 @@
+/* Fuentes autohospedadas (latin subset, variable) — R4 performance.
+   Inter 300-900 · Fraunces 400-700 (+italic) · JetBrains Mono 400-600.
+   Elimina la dependencia del CDN de Google Fonts (render-blocking externo).
+*/
+@font-face {
+    font-family: 'Inter';
+    font-style: normal;
+    font-weight: 300 900;
+    font-display: swap;
+    src: url('/static/fonts/inter.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Fraunces';
+    font-style: normal;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('/static/fonts/fraunces.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'Fraunces';
+    font-style: italic;
+    font-weight: 400 700;
+    font-display: swap;
+    src: url('/static/fonts/fraunces-italic.woff2') format('woff2');
+}
+
+@font-face {
+    font-family: 'JetBrains Mono';
+    font-style: normal;
+    font-weight: 400 600;
+    font-display: swap;
+    src: url('/static/fonts/jetbrains-mono.woff2') format('woff2');
+}

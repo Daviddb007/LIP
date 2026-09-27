@@ -485,3 +485,57 @@ body::after {
 @media (hover: none) {
     .btn, .nav-link, .chip, .faq-question { min-height: 44px; }
 }
+
+/* ===================================================================
+   RONDA 4 — motion premium (reveal + stagger + hero entrance)
+   =================================================================== */
+
+/* Reveal con blur→nítido y easing suave */
+.js-ready .animate-on-scroll {
+    opacity: 0;
+    transform: translateY(26px) scale(0.995);
+    filter: blur(4px);
+    transition: opacity 0.7s ease, transform 0.7s cubic-bezier(0.22, 1, 0.36, 1), filter 0.7s ease;
+    will-change: opacity, transform, filter;
+}
+
+.js-ready .animate-on-scroll.visible {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+}
+
+/* Stagger: cascada sutil dentro de filas de cards */
+.js-ready .row > .animate-on-scroll:nth-child(1) { transition-delay: 0.02s; }
+.js-ready .row > .animate-on-scroll:nth-child(2) { transition-delay: 0.08s; }
+.js-ready .row > .animate-on-scroll:nth-child(3) { transition-delay: 0.14s; }
+.js-ready .row > .animate-on-scroll:nth-child(4) { transition-delay: 0.2s; }
+.js-ready .row > .animate-on-scroll:nth-child(5) { transition-delay: 0.26s; }
+.js-ready .row > .animate-on-scroll:nth-child(6) { transition-delay: 0.32s; }
+
+/* Entrada del hero */
+.js-ready .hero-content > * {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: heroIn 0.7s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+}
+
+.js-ready .hero-content > *:nth-child(1) { animation-delay: 0.05s; }
+.js-ready .hero-content > *:nth-child(2) { animation-delay: 0.15s; }
+.js-ready .hero-content > *:nth-child(3) { animation-delay: 0.25s; }
+.js-ready .hero-content > *:nth-child(4) { animation-delay: 0.35s; }
+
+@keyframes heroIn {
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .js-ready .animate-on-scroll,
+    .js-ready .hero-content > * {
+        opacity: 1 !important;
+        transform: none !important;
+        filter: none !important;
+        animation: none !important;
+        transition: none !important;
+    }
+}
