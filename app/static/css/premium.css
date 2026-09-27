@@ -1,0 +1,304 @@
+/* ===================================================================
+   PREMIUM LAYER — Laboratorio de Inteligencia Pública
+   Ronda 1 (fundación): tipografía editorial, acento único oro,
+   textura, estados interactivos y jerarquía premium.
+   Capa sobre style.css: no rompe funcionalidad, mejora lo existente.
+   =================================================================== */
+
+/* ---------- Tipografía: serif display + sans body ---------- */
+:root {
+    --font-display: 'Fraunces', 'Georgia', serif;
+    --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+    --font-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, monospace;
+
+    /* Paleta refinada: un solo acento (oro), azul marino profundo tintado */
+    --navy: #0B1B2B;
+    --navy-light: #122C45;
+    --navy-mid: #16395C;
+    --gold: #D4A843;
+    --gold-light: #E8C96A;
+    --gold-dark: #A97F2B;
+    --blue: #2F5FA8;
+
+    /* Superficies tintadas (frío, coherente con navy) */
+    --surface: #FFFFFF;
+    --surface-2: #F5F7FA;
+    --surface-3: #EAEEF4;
+    --surface-4: #DCE3EC;
+    --bg-1: #F5F7FA;
+
+    /* Texto */
+    --text-1: #0B1B2B;
+    --text-2: #51667E;
+    --text-3: #8598AF;
+    --text-4: #9DB8DC;
+
+    /* Sombras tintadas con la base navy */
+    --shadow-sm: 0 1px 2px rgba(11, 27, 43, 0.05), 0 2px 8px rgba(11, 27, 43, 0.04);
+    --shadow-md: 0 6px 24px rgba(11, 27, 43, 0.08);
+    --shadow-lg: 0 16px 48px rgba(11, 27, 43, 0.12);
+    --shadow-xl: 0 28px 80px rgba(11, 27, 43, 0.18);
+    --shadow-glow: 0 0 44px rgba(212, 168, 67, 0.12);
+
+    --radius-md: 14px;
+    --radius-lg: 20px;
+    --radius-xl: 26px;
+    --radius-2xl: 32px;
+
+    --duration: 0.25s;
+}
+
+/* ---------- Base ---------- */
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    background-color: var(--surface);
+    font-feature-settings: "kern" 1, "liga" 1;
+    letter-spacing: -0.005em;
+}
+
+/* Foco visible accesible (requisito, no opcional) */
+:focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 3px;
+    border-radius: 4px;
+}
+
+/* ---------- Tipografía display ---------- */
+.display-xl, .display-lg, .display-md, .display-sm,
+h1, h2, h3 {
+    font-family: var(--font-display);
+    font-variation-settings: "opsz" 48, "SOFT" 30, "WONK" 1;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+}
+
+.display-xl {
+    font-size: clamp(2.75rem, 6vw, 4.75rem);
+    line-height: 0.98;
+    font-weight: 620;
+    letter-spacing: -0.035em;
+}
+
+.display-lg {
+    font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+    line-height: 1.04;
+    font-weight: 600;
+    letter-spacing: -0.03em;
+}
+
+.display-md {
+    font-size: clamp(1.75rem, 3vw, 2.5rem);
+    line-height: 1.1;
+    font-weight: 600;
+    letter-spacing: -0.025em;
+}
+
+h1, h2, h3 { text-wrap: pretty; }
+
+/* Números con tabular figures (datos, stats, precios) */
+.stat-number, .table-premium td, .font-mono,
+[class*="stat"], .metric, .counter {
+    font-variant-numeric: tabular-nums;
+}
+
+/* Texto de párrafos con ancho legible */
+.body-lg, p {
+    max-width: 65ch;
+}
+
+/* ---------- Textura: grano sutil + ambiente ---------- */
+body::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 9999;
+    opacity: 0.35;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.055'/%3E%3C/svg%3E");
+}
+
+.hero, .section-dark {
+    background-image:
+        radial-gradient(120% 90% at 15% 0%, rgba(212, 168, 67, 0.08) 0%, transparent 45%),
+        radial-gradient(100% 80% at 90% 100%, rgba(47, 95, 168, 0.12) 0%, transparent 50%),
+        var(--navy);
+}
+
+.hero { position: relative; overflow: hidden; }
+
+/* ---------- Navbar premium refinado ---------- */
+.navbar-premium {
+    backdrop-filter: blur(14px);
+    background: rgba(11, 27, 43, 0.82);
+    border-bottom: 1px solid rgba(212, 168, 67, 0.14);
+    transition: background 0.25s ease, box-shadow 0.25s ease;
+}
+
+.navbar-premium.scrolled {
+    background: rgba(11, 27, 43, 0.94);
+    box-shadow: 0 8px 32px rgba(11, 27, 43, 0.35);
+}
+
+.navbar-premium .nav-link {
+    position: relative;
+    font-size: 0.9rem;
+    letter-spacing: 0.01em;
+    padding: 0.5rem 0.9rem;
+    transition: color 0.2s ease;
+}
+
+.navbar-premium .nav-link::after {
+    content: "";
+    position: absolute;
+    left: 0.9rem;
+    right: 0.9rem;
+    bottom: 0.15rem;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.25s var(--ease);
+}
+
+.navbar-premium .nav-link:hover::after,
+.navbar-premium .nav-link.active::after {
+    transform: scaleX(1);
+}
+
+/* ---------- Botones: jerarquía + estados físicos ---------- */
+.btn {
+    transition: transform 0.2s var(--ease), box-shadow 0.2s var(--ease),
+                background-color 0.2s var(--ease), border-color 0.2s var(--ease),
+                color 0.2s var(--ease);
+}
+
+.btn-gold {
+    box-shadow: 0 10px 32px rgba(212, 168, 67, 0.28), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 16px 44px rgba(212, 168, 67, 0.36), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.btn-gold:active,
+.btn-outline:active {
+    transform: scale(0.97);
+}
+
+.btn-outline:hover {
+    transform: translateY(-1px);
+}
+
+/* ---------- Tarjetas: elevación tintada + lift ---------- */
+.card-premium, .card-glass, .card-elevated, .step-card, .faq-item {
+    transition: transform 0.25s var(--ease), box-shadow 0.25s var(--ease);
+}
+
+.card-premium:hover, .card-elevated:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.card-glass {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(12px);
+}
+
+/* ---------- Section headers ---------- */
+.section-header { text-align: left; }
+.section-header .overline {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--gold-dark);
+}
+
+.section-header p { margin-top: 0.25rem; }
+
+/* ---------- FAQ ---------- */
+.faq-item {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    margin-bottom: var(--space-sm);
+    background: var(--surface);
+}
+
+.faq-item.open {
+    box-shadow: var(--shadow-sm);
+    border-color: rgba(212, 168, 67, 0.4);
+}
+
+.faq-question {
+    font-weight: 600;
+    letter-spacing: -0.01em;
+}
+
+/* ---------- Formularios ---------- */
+.form-control, .form-select {
+    border-radius: var(--radius-sm);
+    border-color: var(--border);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(212, 168, 67, 0.18);
+}
+
+/* ---------- Tablas ---------- */
+.table-premium th { letter-spacing: 0.06em; }
+.table-premium td { font-variant-numeric: tabular-nums; }
+
+/* ---------- Accesibilidad / navegación ---------- */
+.skip-link {
+    position: fixed;
+    top: -100px;
+    left: 16px;
+    z-index: 10000;
+    background: var(--gold);
+    color: var(--navy);
+    font-weight: 700;
+    padding: 10px 18px;
+    border-radius: 8px;
+    transition: top 0.2s ease;
+}
+
+.skip-link:focus {
+    top: 16px;
+}
+
+/* ---------- Hero home: panel de datos premium ---------- */
+.hero-card-data {
+    border-radius: var(--radius-xl);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    background: linear-gradient(160deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02));
+    backdrop-filter: blur(16px);
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.15);
+}
+
+.hero-card-data .step-number {
+    background: rgba(212, 168, 67, 0.16);
+    color: var(--gold-light);
+    border: 1px solid rgba(212, 168, 67, 0.35);
+}
+
+/* ---------- Skip js-ready animación más suave ---------- */
+.js-ready .animate-on-scroll {
+    transition: opacity 0.6s ease, transform 0.6s var(--ease);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+        scroll-behavior: auto !important;
+    }
+}

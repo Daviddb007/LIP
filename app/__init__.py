@@ -174,9 +174,16 @@ def _register_request_hooks(app: Flask) -> None:
         if not app.debug:
             response.headers["Strict-Transport-Security"] = "max-age=31536000; includeSubDomains"
 
-        # Gzip compression for text responses
+        # Gzip compression for text responses.
+        # Skip direct-passthrough (static send_file) responses: reading their
+        # data raises RuntimeError en Werkzeug. Los estáticos ya se pueden
+        # comprimir en el proxy (nginx).
         accept_encoding = request.headers.get("Accept-Encoding", "")
-        if "gzip" in accept_encoding and response.content_type:
+        if (
+            "gzip" in accept_encoding
+            and response.content_type
+            and not response.direct_passthrough
+        ):
             text_types = ("text/", "application/json", "application/javascript")
             if any(response.content_type.startswith(t) for t in text_types):
                 original_data = response.get_data(as_text=True)
