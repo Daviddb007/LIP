@@ -1,0 +1,164 @@
+/* ===================================================================
+   NUEVO LIP — Design system (diseño ganador "La Escucha × VicTech")
+   Rama: feat/rediseno-nuevo-lip · sobre el stack existente (Flask+Jinja)
+   Paleta navy/dorado · Space Grotesk + Cormorant + JetBrains Mono
+   Capa final: se carga después de style.css/premium.css/fonts.css.
+   =================================================================== */
+
+:root{
+  --navy:#0c1f3a; --navy-2:#081325; --navy-3:#12294a; --navy-4:#162f52;
+  --gold:#c9a227; --gold-l:#e8c96a; --gold-d:#a07d1e;
+  --cream:#f2ead8; --dim:rgba(242,234,216,.62); --dim-2:rgba(242,234,216,.42);
+  --line:rgba(233,201,106,.14);
+  --font-display:'Space Grotesk',system-ui,sans-serif;
+  --font-serif:'Cormorant Garamond',Georgia,serif;
+  --font-sans:'Space Grotesk',system-ui,sans-serif;
+  --font-mono:'JetBrains Mono',ui-monospace,monospace;
+  --surface:#081325; --surface-2:#0c1f3a; --surface-3:#12294a;
+  --text-1:#f2ead8; --text-2:rgba(242,234,216,.62); --text-3:rgba(242,234,216,.42);
+  --border:rgba(233,201,106,.14);
+  --radius-sm:4px; --radius-md:14px; --radius-lg:22px;
+}
+
+/* ---------- Base ---------- */
+body{background:var(--navy-2);color:var(--cream);font-family:var(--font-sans);letter-spacing:-.005em}
+a{color:var(--gold-l)}
+::selection{background:var(--gold);color:var(--navy-2)}
+h1,h2,h3,.display-xl,.display-lg,.display-md,.display-sm,.heading-lg,.heading-md,.heading-sm{font-family:var(--font-sans);font-weight:700;letter-spacing:-.03em;text-wrap:balance}
+.display-xl,.display-lg,.display-md{line-height:.98}
+
+/* ---------- Navbar navy/dorado ---------- */
+.navbar-premium{background:rgba(8,19,37,.82);backdrop-filter:blur(14px);border-bottom:1px solid var(--line);padding:1rem 0}
+.navbar-premium.scrolled{background:rgba(8,19,37,.96);box-shadow:0 10px 40px rgba(0,0,0,.4)}
+.navbar-brand{font-family:var(--font-mono);font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);font-weight:500}
+.navbar-brand span{color:var(--gold);font-weight:700}
+.navbar-premium .nav-link{font-family:var(--font-mono);font-size:.72rem;letter-spacing:.1em;text-transform:uppercase;color:var(--dim);padding:.55rem .9rem;transition:color .2s}
+.navbar-premium .nav-link:hover,.navbar-premium .nav-link.active{color:var(--cream)}
+.navbar-premium .nav-link::after{left:.9rem;right:.9rem;bottom:.12rem;height:2px;background:var(--gold)}
+.btn-nav-cta,.btn-nav-outline{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;border-radius:4px}
+
+/* ---------- Botones ---------- */
+.btn{border-radius:4px;font-family:var(--font-sans);font-weight:600;transition:transform .2s cubic-bezier(.16,1,.3,1),box-shadow .2s,background .2s,border-color .2s}
+.btn-gold{background:var(--gold);color:var(--navy-2);box-shadow:0 10px 32px rgba(201,162,39,.28)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 16px 44px rgba(201,162,39,.4)}
+.btn-gold:active,.btn-outline:active{transform:scale(.97)}
+.btn-outline{border:1px solid rgba(255,255,255,.2);color:#fff;background:transparent}
+.btn-outline:hover{border-color:var(--gold);color:var(--gold);transform:translateY(-1px)}
+
+/* ---------- Héroes ---------- */
+.hero{background:var(--navy-2);background-image:
+  radial-gradient(110% 80% at 12% 0%,rgba(201,162,39,.08),transparent 45%),
+  radial-gradient(90% 70% at 92% 100%,rgba(18,41,74,.6),transparent 50%)}
+.hero h1,.hero .display-xl,.hero .display-lg{color:var(--cream)}
+.hero .body-lg,.hero p{color:var(--dim)}
+.text-gradient{background:linear-gradient(120deg,var(--gold) 0%,var(--gold-l) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}
+
+/* ---------- Badges ---------- */
+.badge,.badge-primary,.badge-white,.badge-blue,.badge-green{
+  font-family:var(--font-mono);font-size:.68rem;letter-spacing:.12em;text-transform:uppercase;border-radius:4px}
+.hero .badge,.hero .badge-primary,.section-dark .badge-primary{background:rgba(201,162,39,.12);color:var(--gold-l);border:1px solid rgba(201,162,39,.4)}
+.badge-gold{background:var(--gold);color:var(--navy-2);font-weight:700}
+.badge-white{background:rgba(242,234,216,.12);color:var(--cream);border:1px solid rgba(242,234,216,.2)}
+
+/* ---------- Secciones ---------- */
+.section{background:var(--navy-2)}
+.section-alt{background:var(--navy)}
+.section-dark{background:var(--navy-2)}
+.section-header .overline{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.22em;text-transform:uppercase;color:var(--gold)}
+.section-header p{color:var(--dim)}
+
+/* ---------- Tarjetas ---------- */
+.card-premium,.card-elevated,.card-glass,.step-card,.faq-item{
+  background:rgba(12,31,58,.55);border:1px solid var(--line);border-radius:var(--radius-md);
+  backdrop-filter:blur(8px);transition:transform .25s cubic-bezier(.16,1,.3,1),border-color .25s,box-shadow .25s}
+.card-premium:hover,.card-elevated:hover{transform:translateY(-3px);border-color:rgba(201,162,39,.4);box-shadow:0 18px 50px rgba(0,0,0,.35)}
+.card-premium h3,.card-elevated h3,.card-glass h3{color:var(--cream)}
+.card-premium p,.card-elevated p,.card-glass p{color:var(--dim)}
+.card-glass{background:rgba(242,234,216,.04);border-color:rgba(242,234,216,.1)}
+.step-number{background:rgba(201,162,39,.14);color:var(--gold-l);border:1px solid rgba(201,162,39,.35)}
+.step-card h3{color:var(--cream)}
+
+/* ---------- Stats / métricas ---------- */
+.stat-card{background:rgba(12,31,58,.55);border:1px solid var(--line);border-radius:var(--radius-md)}
+.stat-number{font-family:var(--font-sans);font-weight:700;letter-spacing:-.03em;color:var(--cream);font-variant-numeric:tabular-nums}
+.stat-label{color:var(--dim)}
+.stat-number.text-blue,.stat-number.text-green,.stat-number.text-purple,.stat-number.text-warning{color:var(--cream)!important}
+.stat-number.text-gold{color:var(--gold)!important}
+
+/* ---------- Pasos / wizard ---------- */
+.step-indicator{width:34px;height:34px;border-radius:50%;background:var(--navy-3);color:var(--dim);font-family:var(--font-mono);font-size:.78rem;display:flex;align-items:center;justify-content:center;border:1px solid var(--line);transition:all .3s}
+.step-indicator.active{background:var(--gold);color:var(--navy-2);border-color:var(--gold);box-shadow:0 0 0 4px rgba(201,162,39,.2)}
+.step-line{height:2px;background:var(--navy-3);flex:1}
+.progress-premium{background:var(--navy-3);height:4px;border-radius:2px}
+.progress-premium .bar{background:linear-gradient(90deg,var(--gold-d),var(--gold));border-radius:2px}
+.form-card{background:rgba(12,31,58,.55);border:1px solid var(--line);border-radius:var(--radius-lg)}
+.form-card-header{border-bottom:1px solid var(--line)}
+.chip{border:1px solid var(--line);background:var(--navy-3);color:var(--dim);border-radius:999px;padding:.55rem 1.1rem;font-family:var(--font-sans);font-size:.82rem;transition:all .2s}
+.chip.active,.zona-btn.active{background:var(--gold);color:var(--navy-2);border-color:var(--gold)}
+
+/* ---------- Formularios ---------- */
+.form-label{color:var(--dim);font-size:.8rem;letter-spacing:.04em}
+.form-control,.form-select{background:var(--navy-3);border:1px solid var(--line);color:var(--cream);border-radius:6px}
+.form-control:focus,.form-select:focus{background:var(--navy-3);border-color:var(--gold);color:var(--cream);box-shadow:0 0 0 3px rgba(201,162,39,.16)}
+.form-control::placeholder{color:var(--dim-2)}
+
+/* ---------- Tablas ---------- */
+.table-premium th{font-family:var(--font-mono);font-size:.68rem;letter-spacing:.14em;text-transform:uppercase;color:var(--gold-l);border-bottom:1px solid var(--gold)}
+.table-premium td{color:var(--cream);border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.table-premium tbody tr:hover{background:rgba(18,41,74,.6)}
+
+/* ---------- FAQ ---------- */
+.faq-item{background:rgba(12,31,58,.4)}
+.faq-question{color:var(--cream);font-weight:600;letter-spacing:-.01em}
+.faq-answer{color:var(--dim)}
+
+/* ---------- Texto ---------- */
+.text-white-50{color:var(--dim)}
+.text-muted-2{color:var(--dim)}
+.text-gold{color:var(--gold-l)!important}
+.text-navy{color:var(--cream)!important}
+.text-blue{color:var(--gold-l)!important}
+.caption{font-family:var(--font-mono);font-size:.7rem;color:var(--dim);letter-spacing:.04em}
+.body-lg{color:var(--cream)}
+
+/* ---------- Footer ---------- */
+.footer{background:var(--navy-2);border-top:1px solid var(--line)}
+.footer-brand{font-family:var(--font-mono);font-size:.9rem;letter-spacing:.14em;text-transform:uppercase;color:var(--cream)}
+.footer-brand span{color:var(--gold)}
+.footer-heading{font-family:var(--font-mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--gold-l)}
+.footer-links a{color:var(--dim);transition:color .2s}
+.footer-links a:hover{color:var(--gold-l)}
+.footer-contact a{color:var(--dim)}
+.footer-bottom p{color:var(--dim)}
+
+/* ---------- Glow follower ---------- */
+.glow{position:fixed;inset:0;pointer-events:none;z-index:1;background:radial-gradient(620px circle at var(--mx) var(--my),rgba(201,162,39,.05),transparent 60%)}
+
+/* ---------- Contenedor / bandas ---------- */
+.card-elevated{background:rgba(12,31,58,.5)}
+
+/* ---------- Responsive ---------- */
+@media(max-width:768px){
+  body{padding-top:64px}
+  .navbar-brand{font-size:.72rem}
+  .display-xl{font-size:2.2rem}
+}
+
+/* ---------- Reveal (nuevo-lip.js) ---------- */
+.reveal-hide{opacity:0;transform:translateY(26px)}
+.reveal-hide.visible{opacity:1;transform:translateY(0);transition:opacity .7s ease,transform .7s cubic-bezier(.16,1,.3,1)}
+@media(prefers-reduced-motion:reduce){.reveal-hide{opacity:1;transform:none;transition:none}}
+
+/* ---------- Flag accent sutil ---------- */
+.flag-accent{height:3px;background:linear-gradient(90deg,#fcd116 0 33%,#003893 33% 66%,#ce1126 66% 100%);opacity:.9}
+
+/* ---------- Ajustes de texto ---------- */
+.body-sm,.body-md{color:var(--dim)}
+.heading-lg,.heading-md,.heading-sm{color:var(--cream)}
+.heading-sm{letter-spacing:-.02em}
+.display-sm{color:var(--cream)}
+.text-success,.text-warning,.text-info,.text-danger{color:var(--gold-l)!important}
+.form-card .heading-lg,.form-card .heading-md{color:var(--cream)}
+
+/* ---------- Cards de datos / dashboard ---------- */
+.card-elevated .heading-sm{color:var(--cream)}
