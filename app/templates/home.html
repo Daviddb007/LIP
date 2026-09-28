@@ -38,12 +38,12 @@
   </div>
 </section>
 
-<!-- Onda de voz -->
+<!-- Onda de voz (representación visual) -->
 <section class="waveband" id="onda">
   <div class="container">
     <div class="w-head">
-      <div class="wl"><b>SEÑAL //</b> voz ciudadana entrando en vivo</div>
-      <div class="w-note" id="waveCount">0 voces / min</div>
+      <div class="wl"><b>SEÑAL //</b> representación visual de la voz ciudadana</div>
+      <div class="w-note" id="waveCount">{{ '{:,}'.format(stats.total).replace(',', '.') }} propuestas registradas</div>
     </div>
     <canvas id="waveCanvas" aria-hidden="true"></canvas>
   </div>
@@ -197,32 +197,32 @@
     <div class="tele-grid">
       <div class="tele-card">
         <div class="tc-top"><div class="tc-label">Procesos SECOP II abiertos</div><div class="tc-val" data-count="{{ stats.secop_total }}">0</div></div>
-        <div class="bar"><div class="fill" data-fill="92"></div></div>
+        <div class="bar"><div class="fill" data-fill="{{ stats.fills.secop }}"></div></div>
         <div class="tc-note">corte {{ stats.secop_corte }} · datos.gov.co</div>
       </div>
       <div class="tele-card">
         <div class="tc-top"><div class="tc-label">Propuestas ciudadanas</div><div class="tc-val" data-count="{{ stats.total }}">0</div></div>
-        <div class="bar"><div class="fill" data-fill="78"></div></div>
+        <div class="bar"><div class="fill" data-fill="{{ stats.fills.propuestas }}"></div></div>
         <div class="tc-note">registradas y clasificadas por SRIE</div>
       </div>
       <div class="tele-card">
         <div class="tc-top"><div class="tc-label">Pilares conectados</div><div class="tc-val">{{ stats.pilares }}<em>/18</em></div></div>
-        <div class="bar"><div class="fill" data-fill="100"></div></div>
+        <div class="bar"><div class="fill" data-fill="{{ stats.fills.pilares }}"></div></div>
         <div class="tc-note">cobertura del marco estratégico</div>
       </div>
       <div class="tele-card">
         <div class="tc-top"><div class="tc-label">Municipios alcanzados</div><div class="tc-val" data-count="{{ stats.municipios }}">0</div></div>
-        <div class="bar"><div class="fill" data-fill="88"></div></div>
+        <div class="bar"><div class="fill" data-fill="{{ stats.fills.municipios }}"></div></div>
         <div class="tc-note">con participación registrada</div>
       </div>
       <div class="tele-card">
         <div class="tc-top"><div class="tc-label">Tiempo de participación</div><div class="tc-val">&lt;5<em> min</em></div></div>
-        <div class="bar"><div class="fill" data-fill="35"></div></div>
+        <div class="bar"><div class="fill" data-fill="{{ stats.fills.tiempo }}"></div></div>
         <div class="tc-note">de la idea a la clasificación</div>
       </div>
       <div class="tele-card">
         <div class="tc-top"><div class="tc-label">Transparencia</div><div class="tc-val">100<em>%</em></div></div>
-        <div class="bar"><div class="fill" data-fill="100"></div></div>
+        <div class="bar"><div class="fill" data-fill="{{ stats.fills.transparencia }}"></div></div>
         <div class="tc-note">público, trazable, abierto</div>
       </div>
     </div>
@@ -322,12 +322,6 @@ gsap.registerPlugin(ScrollTrigger, SplitText);
         ctx.globalAlpha = 0.85; ctx.fillStyle = g;
         ctx.beginPath(); ctx.roundRect(x, h - bh, wd, bh, 2); ctx.fill();
       });
-      voices++;
-      if (t - t0 > 1000) {
-        var v = Math.round(voices / Math.max(1, (t - t0) / 1000) * 60);
-        var wc = document.querySelector('#waveCount'); if (wc) wc.textContent = v + ' voces / min';
-        voices = 0; t0 = t;
-      }
       raf = requestAnimationFrame(tick);
     }
     if (reduce) {

@@ -22,6 +22,15 @@ def _stats() -> dict:
     ultimo_corte = SecopCorte.query.order_by(SecopCorte.corte.desc()).first()
     secop_total = ultimo_corte.total if ultimo_corte else 0
     secop_corte = ultimo_corte.corte.strftime("%d/%m/%Y") if ultimo_corte else "sin datos"
+    # Barras de telemetría derivadas de datos reales (no hardcodeadas).
+    fills = {
+        "secop": min(100, round(secop_total / 1500 * 100)),
+        "propuestas": min(100, round(min(total, 5000) / 5000 * 100)),
+        "pilares": round(pilares / 18 * 100),
+        "municipios": min(100, round(municipios / 1102 * 100)),
+        "tiempo": 35,          # claim de producto: <5 min
+        "transparencia": 100,  # claim de producto: público
+    }
     return {
         "total": total,
         "municipios": municipios,
@@ -29,6 +38,7 @@ def _stats() -> dict:
         "problemas": problemas,
         "secop_total": secop_total,
         "secop_corte": secop_corte,
+        "fills": fills,
     }
 
 

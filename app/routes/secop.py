@@ -8,13 +8,14 @@
 """
 from __future__ import annotations
 
-from datetime import date, timedelta
+from datetime import timedelta
 
 from email_validator import EmailNotValidError, validate_email
 from flask import Blueprint, flash, redirect, render_template, request, url_for
 
 from app import cache, db, limiter
 from app.models.secop import LeadSecop, SecopCorte, SecopProceso
+from app.services.hora_local import hoy_bogota
 from app.services.validation import sanitize_text
 
 secop_bp = Blueprint("secop", __name__)
@@ -72,7 +73,7 @@ def _pilares_counts(corte, limit=10) -> list[dict]:
 
 
 def _stats(corte) -> dict:
-    hoy = date.today()
+    hoy = hoy_bogota()
     limite_7d = hoy + timedelta(days=7)
     base = SecopProceso.query.filter_by(corte=corte)
     total = base.count()
@@ -137,7 +138,7 @@ def pagina():
         SecopProceso.fecha_limite.asc(), SecopProceso.valor.desc()
     ).paginate(page=page, per_page=25, error_out=False)
 
-    hoy = date.today()
+    hoy = hoy_bogota()
     rows = []
     for p in pagination.items:
         d = p.to_dict()
@@ -217,7 +218,7 @@ def api_procesos():
             "t": p.tipo_contrato,
             "v": p.valor,
             "rup": p.requiere_rup,
-            "dl": (p.fecha_limite - date.today()).days,
+            "dl": (p.fecha_limite - hoy_bogota()).days,
             "f": p.fecha_limite.isoformat(),
             "u": p.url,
             "tm": p.temas,

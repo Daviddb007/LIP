@@ -18,6 +18,7 @@ from datetime import date, datetime, timezone
 
 from app import db
 from app.models.secop import SecopCorte, SecopProceso
+from app.services.hora_local import hoy_bogota
 
 API_BASE = "https://www.datos.gov.co/resource/p6dx-8zbt.json"
 PAGE_SIZE = 5000
@@ -217,7 +218,7 @@ def _guardar(records: list[dict], corte: date) -> int:
 
 def actualizar_secop(corte: date | None = None) -> dict:
     """Descarga, valida y persiste los procesos SECOP II vigentes para el corte."""
-    corte = corte or date.today()
+    corte = corte or hoy_bogota()
     corte_ini = f"{corte.isoformat()}T00:00:00.000"
 
     params = {
@@ -257,5 +258,5 @@ def actualizar_secop(corte: date | None = None) -> dict:
         "total": total,
         "corte": corte.isoformat(),
         "corte_legible": f"{corte.day} {['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'][corte.month - 1]} {corte.year}",
-        "generado": date.today().isoformat(),
+        "generado": hoy_bogota().isoformat(),
     }

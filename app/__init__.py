@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import gzip
 import logging
+import os
 import time
 from logging.handlers import RotatingFileHandler
 
@@ -19,6 +20,16 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_wtf.csrf import CSRFProtect
 
 from config import config
+
+# Zona horaria de Colombia (America/Bogota, UTC-5).
+# El servidor corre en UTC: sin esto, date.today()/datetime.now() adelantan
+# la fecha local (p.ej. el corte SECOP) un día. Se aplica al arrancar la app
+# y también vía TZ en el contenedor (docker-compose).
+os.environ.setdefault("TZ", "America/Bogota")
+try:
+    time.tzset()
+except AttributeError:
+    pass  # Windows: no usa tzset; la máquina local ya está en hora de Bogotá
 
 # Extensiones (singletons a nivel de módulo)
 db = SQLAlchemy()
