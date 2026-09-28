@@ -325,3 +325,26 @@ svg .tubo-arrow{stroke:rgba(201,162,39,.5);stroke-width:1.5;fill:none;stroke-das
 .sortable.sorted .sort-ico{color:var(--gold);opacity:1}
 .sortable.sorted.asc .sort-ico{transform:rotate(180deg)}
 .sort-ico{opacity:.4;font-size:.72em;transition:transform .2s}
+
+/* ---------- Print: contenido legible, sin nav/glow ---------- */
+@media print {
+  .nav, .glow, .navbar-premium, .footer, .skip-link, #deck, .waveband canvas,
+  .hero-video video, .glowline, .fade-hint { display:none !important; }
+  body { background:#fff; color:#111; }
+  .hero, .hero-band, .hero-video, .section, .section-alt, .section-dark,
+  .card-elevated, .card-premium, .table, .table-premium, .quote, .final {
+    background:#fff !important; color:#111 !important; border-color:#ccc !important;
+    backdrop-filter:none !important;
+  }
+  .hero h1, .hero h2, .hero .display-lg, h1, h2, h3, .heading-md, .heading-sm { color:#111 !important; }
+  .text-muted-2, .body-sm, .dim, .text-white-50 { color:#333 !important; }
+  a { color:#0c1f3a !important; text-decoration:underline; }
+}
+
+/* ---------- Reduced transparency: glass -> solid ---------- */
+@media (prefers-reduced-transparency: reduce) {
+  .card-elevated, .card-premium, .card-glass, .stat-card, .form-card, .navbar-premium, .hero-card-data {
+    backdrop-filter:none !important;
+    background-color: var(--navy-3) !important;
+  }
+}

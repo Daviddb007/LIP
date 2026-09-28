@@ -16,6 +16,7 @@ from flask import Blueprint, flash, redirect, render_template, request, url_for
 from app import cache, db, limiter
 from app.models.secop import LeadSecop, SecopCorte, SecopProceso
 from app.services.hora_local import hoy_bogota
+from app.services.secop_service import TEMAS
 from app.services.validation import sanitize_text
 
 secop_bp = Blueprint("secop", __name__)
@@ -88,7 +89,7 @@ def _stats(corte) -> dict:
     }
 
 
-def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="", pilar="", valor_min=None, valor_max=None, fecha_desde=None, fecha_hasta=None):
+def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="", pilar="", valor_min=None, valor_max=None, fecha_desde=None, fecha_hasta=None, tema=""):
     query = SecopProceso.query.filter_by(corte=corte)
     if q:
         like = f"%{q}%"
@@ -103,6 +104,8 @@ def _query_filtrada(corte, q="", departamento="", modalidad="", requiere_rup="",
         query = query.filter(SecopProceso.requiere_rup.is_(False))
     if pilar:
         query = query.filter(db.cast(SecopProceso.pilares, db.String).ilike(f'%"{pilar}"%'))
+    if tema:
+        query = query.filter(db.cast(SecopProceso.temas, db.String).ilike(f'%"{tema}"%'))
     if valor_min is not None:
         query = query.filter(SecopProceso.valor >= valor_min)
     if valor_max is not None:
@@ -127,13 +130,14 @@ def pagina():
     modalidad = request.args.get("modalidad", "").strip()
     requiere_rup = request.args.get("rup", "").strip()
     pilar = request.args.get("pilar", "").strip()
+    tema = request.args.get("tema", "").strip()
     valor_min = request.args.get("valor_min", type=int)
     valor_max = request.args.get("valor_max", type=int)
     fecha_desde = request.args.get("fecha_desde", "").strip() or None
     fecha_hasta = request.args.get("fecha_hasta", "").strip() or None
     page = request.args.get("page", 1, type=int)
 
-    query = _query_filtrada(corte, q, departamento, modalidad, requiere_rup, pilar, valor_min, valor_max, fecha_desde, fecha_hasta)
+    query = _query_filtrada(corte, q, departamento, modalidad, requiere_rup, pilar, valor_min, valor_max, fecha_desde, fecha_hasta, tema)
     pagination = query.order_by(
         SecopProceso.fecha_limite.asc(), SecopProceso.valor.desc()
     ).paginate(page=page, per_page=25, error_out=False)
@@ -164,9 +168,10 @@ def pagina():
         "chart_pilares": _pilares_counts(corte),
         "departamentos": _departamentos(corte),
         "modalidades": _modalidades(corte),
-        "filtros": {"q": q, "departamento": departamento, "modalidad": modalidad, "rup": requiere_rup, "pilar": pilar,
+        "filtros": {"q": q, "departamento": departamento, "modalidad": modalidad, "rup": requiere_rup, "pilar": pilar, "tema": tema,
                     "valor_min": valor_min or "", "valor_max": valor_max or "",
                     "fecha_desde": fecha_desde or "", "fecha_hasta": fecha_hasta or ""},
+        "temas": list(TEMAS.keys()),
         "rows": rows,
         "pagination": pagination,
     }

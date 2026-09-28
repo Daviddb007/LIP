@@ -5,7 +5,7 @@ Los handlers se registran con app.register_error_handler() en _register_error_ha
 """
 from __future__ import annotations
 
-from flask import Flask, jsonify
+from flask import Flask, jsonify, request, render_template
 
 
 class APIError(Exception):
@@ -76,7 +76,13 @@ def register_error_handlers(app: Flask) -> None:
 
     @app.errorhandler(404)
     def handle_not_found(error):
-        return jsonify({"error": "Recurso no encontrado"}), 404
+        # API -> JSON; navegador -> página 404 premium
+        if request.path.startswith("/api/") or (
+            request.accept_mimetypes
+            and request.accept_mimetypes.best == "application/json"
+        ):
+            return jsonify({"error": "Recurso no encontrado"}), 404
+        return render_template("404.html"), 404
 
     @app.errorhandler(405)
     def handle_method_not_allowed(error):

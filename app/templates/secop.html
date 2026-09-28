@@ -144,6 +144,15 @@
                         {% endfor %}
                     </select>
                 </div>
+                <div class="col-md-2">
+                    <label class="form-label body-sm">Tema</label>
+                    <select name="tema" id="tema" class="form-select">
+                        <option value="">Todos</option>
+                        {% for t in temas %}
+                        <option value="{{ t }}" {% if filtros.tema == t %}selected{% endif %}>{{ t }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <div class="col-md-3">
                     <label class="form-label body-sm">Valor mínimo (COP)</label>
                     <input type="number" name="valor_min" class="form-control" min="0" step="1000" value="{{ filtros.valor_min }}" placeholder="0">
@@ -238,13 +247,13 @@
                 <caption class="sr-only">Procesos SECOP II con oferta abierta. Haz clic en las columnas para ordenar.</caption>
                 <thead>
                     <tr>
-                        <th scope="col" data-key="n" class="sortable">Proceso <i class="bi bi-arrow-down-up sort-ico"></i></th>
-                        <th scope="col" data-key="e" class="sortable">Entidad <i class="bi bi-arrow-down-up sort-ico"></i></th>
-                        <th scope="col" data-key="d" class="sortable">Departamento <i class="bi bi-arrow-down-up sort-ico"></i></th>
-                        <th scope="col" data-key="m" class="sortable">Modalidad <i class="bi bi-arrow-down-up sort-ico"></i></th>
-                        <th scope="col" data-key="v" class="sortable">Valor <i class="bi bi-arrow-down-up sort-ico"></i></th>
-                        <th scope="col" data-key="f" class="sortable">Vence <i class="bi bi-arrow-down-up sort-ico"></i></th>
-                        <th scope="col" data-key="rup" class="sortable">RUP <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="n" class="sortable" aria-sort="none">Proceso <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="e" class="sortable" aria-sort="none">Entidad <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="d" class="sortable" aria-sort="none">Departamento <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="m" class="sortable" aria-sort="none">Modalidad <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="v" class="sortable" aria-sort="none">Valor <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="f" class="sortable" aria-sort="none">Vence <i class="bi bi-arrow-down-up sort-ico"></i></th>
+                        <th scope="col" data-key="rup" class="sortable" aria-sort="none">RUP <i class="bi bi-arrow-down-up sort-ico"></i></th>
                         <th scope="col"><span class="sr-only">Acción</span></th>
                     </tr>
                 </thead>
@@ -351,7 +360,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const PAGE = 25;
     let ALL = [];
     let charts = {};
-    const state = { q:'', depto:'', modalidad:'', rup:'', pilar:'', vmin:null, vmax:null, fdesde:'', fhasta:'', sortKey:'f', sortDir:'asc', page:0 };
+    const state = { q:'', depto:'', modalidad:'', rup:'', pilar:'', tema:'', vmin:null, vmax:null, fdesde:'', fhasta:'', sortKey:'f', sortDir:'asc', page:0 };
 
     function esc(s){ return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
     function fmtCOP(n){
@@ -371,6 +380,7 @@ document.addEventListener('DOMContentLoaded', function () {
             if(state.rup === '1' && !r.rup) return false;
             if(state.rup === '0' && r.rup) return false;
             if(state.pilar && !(r.pil || []).includes(state.pilar)) return false;
+            if(state.tema && !(r.tm || []).includes(state.tema)) return false;
             if(state.vmin !== null && r.v < state.vmin) return false;
             if(state.vmax !== null && r.v > state.vmax) return false;
             if(state.fdesde && r.f < state.fdesde) return false;
@@ -487,6 +497,7 @@ document.addEventListener('DOMContentLoaded', function () {
         state.modalidad = document.getElementById('modalidad').value || '';
         state.rup = document.getElementById('rup').value || '';
         state.pilar = document.getElementById('pilar').value || '';
+        state.tema = document.getElementById('tema').value || '';
         state.vmin = parseFloat(document.getElementById('valor_min').value) || null;
         state.vmax = parseFloat(document.getElementById('valor_max').value) || null;
         state.fdesde = document.getElementById('fecha_desde').value || '';
@@ -502,7 +513,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ---- filtros client-side ----
     document.getElementById('filterForm').addEventListener('submit', function(e){ e.preventDefault(); refresh(); });
-    ['q','departamento','modalidad','rup','pilar','valor_min','valor_max','fecha_desde','fecha_hasta'].forEach(id => {
+    ['q','departamento','modalidad','rup','pilar','tema','valor_min','valor_max','fecha_desde','fecha_hasta'].forEach(id => {
         const el = document.getElementById(id);
         if(el){ el.addEventListener('change', refresh); el.addEventListener('input', refresh); }
     });
@@ -513,8 +524,9 @@ document.addEventListener('DOMContentLoaded', function () {
             const key = th.dataset.key;
             if(state.sortKey === key){ state.sortDir = state.sortDir==='asc' ? 'desc' : 'asc'; }
             else { state.sortKey = key; state.sortDir = 'asc'; }
-            document.querySelectorAll('.sortable').forEach(x => x.classList.remove('sorted','asc'));
+            document.querySelectorAll('.sortable').forEach(x => { x.classList.remove('sorted','asc'); x.setAttribute('aria-sort','none'); });
             th.classList.add('sorted'); if(state.sortDir==='asc') th.classList.add('asc');
+            th.setAttribute('aria-sort', state.sortDir === 'asc' ? 'ascending' : 'descending');
             update();
         });
     });
