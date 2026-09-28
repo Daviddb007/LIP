@@ -13,6 +13,35 @@
     </div>
 </section>
 
+<!-- Filtro por departamento -->
+{% if stats.departamentos %}
+<section class="section" style="padding-bottom: 0;">
+    <div class="container">
+        <div class="card-elevated p-3">
+            <form method="get" action="{{ url_for('resultados.resultados') }}" class="row g-2 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label body-sm">Departamento</label>
+                    <select name="departamento" class="form-select" onchange="this.form.submit()">
+                        <option value="">Todos</option>
+                        {% for d in stats.departamentos %}
+                        <option value="{{ d }}" {% if stats.departamento == d %}selected{% endif %}>{{ d }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <a href="{{ url_for('resultados.resultados') }}" class="btn btn-outline">Limpiar</a>
+                </div>
+                <div class="col-auto">
+                    <span class="body-sm text-muted-2" id="filterNote">
+                        {% if stats.departamento %}Filtrando {{ stats.departamento }} · {{ stats.total }} participaciones{% endif %}
+                    </span>
+                </div>
+            </form>
+        </div>
+    </div>
+</section>
+{% endif %}
+
 <!-- Stats -->
 <section class="section" style="padding-top: 0;">
     <div class="container">
@@ -160,8 +189,16 @@
                         backgroundColor: colors[0], borderRadius: 6 }]
                 },
                 options: { responsive: true, plugins: { legend: { display: false } },
+                    onClick: function(evt, els){
+                        if(!els.length) return;
+                        var dept = data.departamentos[els[0].index].nombre;
+                        var url = new URL(window.location.href);
+                        url.searchParams.set('departamento', dept);
+                        window.location.href = url.toString();
+                    },
                     scales: { y: { beginAtZero: true, ticks: { stepSize: 1, color: '#94a3b8' } } } }
             });
+            document.getElementById('chartDepartamentos').style.cursor = 'pointer';
         }
 
         if (data.problemas && data.problemas.length) {
@@ -216,7 +253,8 @@
         }
     });
 
-    fetch(API + '/participaciones').then(function(r){ return r.json(); }).then(function(data) {
+    var deptFilter = '{{ stats.departamento }}';
+    fetch(API + '/participaciones' + (deptFilter ? '?departamento=' + encodeURIComponent(deptFilter) : '')).then(function(r){ return r.json(); }).then(function(data) {
         var tbody = document.getElementById('tablaParticipaciones');
         if (!data.participaciones || !data.participaciones.length) {
             tbody.innerHTML = '<tr><td colspan="6" class="text-center text-muted-2 py-4">Sin participaciones aún</td></tr>';

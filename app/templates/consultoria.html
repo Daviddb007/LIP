@@ -6,7 +6,7 @@
 
 {% block content %}
 
-<!-- JSON-LD: ProfessionalService -->
+<!-- JSON-LD: ProfessionalService + FAQ -->
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -17,6 +17,29 @@
   "areaServed": { "@type": "Country", "name": "Colombia" },
   "provider": { "@type": "Organization", "name": "StoneLytics", "url": "https://www.stonelytics.tech" },
   "makesOffer": { "@type": "Offer", "description": "Servicio de consultoría e inteligencia para entidades públicas.", "areaServed": "CO" }
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "¿Qué incluye un diagnóstico para mi entidad?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Medimos cómo participa tu ciudadanía, qué datos tienes, dónde se traban tus procesos y cómo contratas. Entregamos un diagnóstico con evidencia y una hoja de ruta." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿La plataforma se despliega con la identidad de mi entidad?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Sí. El motor SRIE se configura con tu marco estratégico, tu identidad visual y tu dominio, sin modificar tu operación actual." }
+    },
+    {
+      "@type": "Question",
+      "name": "¿Para qué sirve un observatorio territorial?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Concentra en una sola lectura la participación, los indicadores y la operación de tu territorio, para que el equipo decida con evidencia." }
+    }
+  ]
 }
 </script>
 
@@ -147,6 +170,36 @@
             <div class="n">04</div>
             <h4>Acompañamiento</h4>
             <p>Medimos resultados y seguimos mejorando con la evidencia que el sistema produce.</p>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ -->
+<section class="section" id="faq">
+    <div class="container">
+        <div class="section-header mb-4">
+            <span class="overline">Preguntas frecuentes</span>
+            <h2 class="display-md">Lo que suelen preguntar las entidades</h2>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-6">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-2">¿Qué incluye un diagnóstico para mi entidad?</h3>
+                    <p class="body-sm text-muted-2 mb-0">Medimos cómo participa tu ciudadanía, qué datos tienes, dónde se traban tus procesos y cómo contratas. Entregamos un diagnóstico con evidencia y una hoja de ruta.</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-2">¿La plataforma se despliega con la identidad de mi entidad?</h3>
+                    <p class="body-sm text-muted-2 mb-0">Sí. El motor SRIE se configura con tu marco estratégico, tu identidad visual y tu dominio, sin modificar tu operación actual.</p>
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="card-elevated p-4 h-100">
+                    <h3 class="heading-sm mb-2">¿Para qué sirve un observatorio territorial?</h3>
+                    <p class="body-sm text-muted-2 mb-0">Concentra en una sola lectura la participación, los indicadores y la operación de tu territorio, para que el equipo decida con evidencia.</p>
+                </div>
+            </div>
         </div>
     </div>
 </section>

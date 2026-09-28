@@ -15,18 +15,34 @@ resultados_bp = Blueprint("resultados", __name__)
 
 
 @resultados_bp.route("/resultados")
-@cache.cached(timeout=60)
+@cache.cached(timeout=60, query_string=True)
 def resultados():
-    total = Participacion.query.count()
-    municipios = db.session.query(db.func.count(db.distinct(Participacion.municipio))).scalar() or 0
+    departamento = request.args.get("departamento", "").strip()
+    base = Participacion.query
+    if departamento:
+        base = base.filter_by(departamento=departamento)
+
+    total = base.count()
+    municipios = db.session.query(
+        db.func.count(db.distinct(Participacion.municipio))
+    ).filter(Participacion.departamento == departamento).scalar() if departamento else (
+        db.session.query(db.func.count(db.distinct(Participacion.municipio))).scalar()
+    ) or 0
     pilares = db.session.query(db.func.count(db.distinct(ClasificacionSRIE.pilar_id))).scalar() or 0
     problemas = ProblemaCatalogo.query.filter_by(activo=True).count()
+
+    departamentos = [
+        d for d, in db.session.query(Participacion.departamento).distinct()
+        .order_by(Participacion.departamento).all()
+    ]
 
     stats = {
         "total": total,
         "municipios": municipios,
         "pilares": pilares,
         "problemas": problemas,
+        "departamento": departamento,
+        "departamentos": departamentos,
     }
     return render_template("resultados.html", stats=stats)
 
@@ -116,8 +132,12 @@ def api_estadisticas():
 def api_participaciones():
     page = request.args.get("page", 1, type=int)
     per_page = request.args.get("per_page", 20, type=int)
+    departamento = request.args.get("departamento", "").strip()
+    query = Participacion.query
+    if departamento:
+        query = query.filter_by(departamento=departamento)
     pagination = (
-        Participacion.query
+        query
         .order_by(Participacion.created_at.desc())
         .paginate(page=page, per_page=per_page, error_out=False)
     )
