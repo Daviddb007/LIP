@@ -1,16 +1,18 @@
 {% extends "base.html" %}
-{% block title %}Página no encontrada — Laboratorio de Inteligencia Pública{% endblock %}
+{% block title %}404 — Página no encontrada | Inteligencia Pública{% endblock %}
+{% block meta_description %}La página que buscas no existe. Vuelve al inicio del Laboratorio de Inteligencia Pública.{% endblock %}
 {% block content %}
-<section class="hero" style="padding: var(--space-3xl) 0;">
+<section class="hero-band" style="min-height:70vh; display:flex; align-items:center;">
     <div class="container text-center">
-        <div style="font-size: 6rem; margin-bottom: var(--space-lg); opacity: 0.3;">404</div>
-        <h1 class="display-lg text-white mb-3">Página no encontrada</h1>
-        <p class="body-lg text-white-50 mb-4" style="max-width: 500px; margin: 0 auto;">
-            La página que buscas no existe o fue movida.
+        <div class="kicker" style="justify-content:center; display:flex;">Error 404</div>
+        <h1 class="display-xl text-white mb-3">Esta página <span class="text-gold" style="font-style:italic; font-family:var(--font-serif);">no existe</span></h1>
+        <p class="body-lg" style="color: var(--dim); max-width: 44ch; margin: 0 auto;">
+            La dirección que buscas fue movida o nunca existió. La inteligencia pública sí está aquí.
         </p>
-        <a href="{{ url_for('home.index') }}" class="btn btn-gold btn-lg">
-            <i class="bi bi-house me-2"></i>Volver al inicio
-        </a>
+        <div class="cta-row mt-4" style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+            <a href="{{ url_for('home.index') }}" class="btn btn-gold btn-lg"><i class="bi bi-house me-2"></i>Volver al inicio</a>
+            <a href="{{ url_for('participar.participar') }}" class="btn btn-outline btn-lg">Participar</a>
+        </div>
     </div>
 </section>
 {% endblock %}

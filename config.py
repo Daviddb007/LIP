@@ -65,6 +65,9 @@ class Config:
     DATA_RETENTION_UNTIL: str = os.environ.get("DATA_RETENTION_UNTIL", "2030-12-31")
     CONSENT_VERSION: str = os.environ.get("CONSENT_VERSION", "2026-01")
 
+    # Analytics (GA4) — vacío desactiva el tag
+    GA4_ID: str = os.environ.get("GA4_ID", "")
+
     # ---------------------------------------------------------------
     # Fase "Estrategia de participación robusta" (grupos focales)
     # ---------------------------------------------------------------

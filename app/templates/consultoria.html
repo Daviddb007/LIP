@@ -1,10 +1,24 @@
 {% extends "base.html" %}
 
-{% block title %}Consultoría para entidades públicas — Diagnóstico e inteligencia | StoneLytics{% endblock %}
-{% block meta_description %}Diagnóstico e inteligencia para municipios, departamentos y entidades centralizadas: participación ciudadana, datos abiertos, observatorio, contratación y despliegue del motor SRIE.{% endblock %}
+{% block title %}Consultoría para entidades públicas | StoneLytics{% endblock %}
+{% block meta_description %}Diagnóstico e inteligencia para municipios, gobernaciones y entidades: participación, datos, observatorio, contratación y motor SRIE.{% endblock %}
 {% block og_title %}Consultoría para entidades públicas — StoneLytics{% endblock %}
 
 {% block content %}
+
+<!-- JSON-LD: ProfessionalService -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Consultoría para entidades públicas — StoneLytics",
+  "description": "Diagnóstico e inteligencia para municipios, gobernaciones y entidades centralizadas: participación ciudadana, observatorio de datos, contratación pública y despliegue del motor SRIE.",
+  "url": "{{ url_for('consultoria.pagina', _external=True) }}",
+  "areaServed": { "@type": "Country", "name": "Colombia" },
+  "provider": { "@type": "Organization", "name": "StoneLytics", "url": "https://www.stonelytics.tech" },
+  "makesOffer": { "@type": "Offer", "description": "Servicio de consultoría e inteligencia para entidades públicas.", "areaServed": "CO" }
+}
+</script>
 
 <!-- Hero -->
 <section class="hero-band">

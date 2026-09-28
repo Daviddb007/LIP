@@ -1,9 +1,26 @@
 {% extends "base.html" %}
 
 {% block title %}El país se construye escuchándolo — Inteligencia Pública{% endblock %}
-{% block meta_description %}Inteligencia participativa para el PND 2027–2030 y contratación pública abierta (SECOP II). Tu voz clasificada contra el plan; los procesos del Estado, visibles para tu empresa.{% endblock %}
+{% block meta_description %}Inteligencia participativa y contratación pública abierta (SECOP II): tu voz clasificada contra el plan, los procesos del Estado visibles para tu empresa.{% endblock %}
 
 {% block content %}
+
+<!-- JSON-LD: WebSite + Organization -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Laboratorio de Inteligencia Pública — Construyamos Colombia",
+  "url": "{{ url_for('home.index', _external=True) }}",
+  "description": "Sistema Nacional de Inteligencia Participativa para el PND 2027–2030: participación ciudadana clasificada con el motor SRIE y contratación pública abierta (SECOP II).",
+  "publisher": {
+    "@type": "Organization",
+    "name": "StoneLytics",
+    "url": "https://www.stonelytics.tech"
+  },
+  "inLanguage": "es-CO"
+}
+</script>
 
 <!-- Hero bandera -->
 <section class="hero-video">
@@ -31,7 +48,6 @@
       </div>
       <div class="cta-row mt-4">
         <a href="{{ url_for('participar.participar') }}" class="btn btn-gold btn-lg" data-mag>Participa ahora →</a>
-        <a href="{{ url_for('home.presentacion') }}" class="btn btn-outline btn-lg" data-mag><i class="bi bi-play-circle me-1"></i>Ver presentación</a>
         <a href="{{ url_for('secop.pagina') }}" class="btn btn-outline btn-lg" data-mag>Ver contratación pública</a>
       </div>
     </div>
@@ -265,8 +281,8 @@
     <div class="tag mono" style="font-family:var(--font-mono);font-size:.7rem;letter-spacing:.26em;color:var(--gold);text-transform:uppercase;margin-bottom:1.4rem;">// tu turno</div>
     <h2 class="display-lg text-white" style="max-width:20ch; margin:0 auto;">El futuro de Colombia se decide <span class="text-gold" style="font-style:italic; font-family:var(--font-serif);">hoy, contigo</span></h2>
     <div class="cta-row mt-4" style="display:flex;gap:1rem;justify-content:center;flex-wrap:wrap;">
-      <a href="{{ url_for('participar.participar') }}" class="btn btn-gold btn-lg" data-mag>Participa ahora →</a>
-      <a href="{{ url_for('secop.licitar') }}" class="btn btn-outline btn-lg" data-mag>Licitamos por ti</a>
+      <a href="{{ url_for('consultoria.pagina') }}" class="btn btn-gold btn-lg" data-mag>Solicitar diagnóstico →</a>
+      <a href="{{ url_for('home.presentacion') }}" class="btn btn-outline btn-lg" data-mag><i class="bi bi-play-circle me-1"></i>Ver presentación</a>
     </div>
   </div>
 </section>
