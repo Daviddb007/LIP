@@ -94,7 +94,13 @@ def register_error_handlers(app: Flask) -> None:
 
     @app.errorhandler(500)
     def handle_internal_error(error):
-        return jsonify({"error": "Error interno del servidor"}), 500
+        if request.path.startswith("/api/") or (
+            request.accept_mimetypes
+            and request.accept_mimetypes.best == "application/json"
+        ):
+            return jsonify({"error": "Error interno del servidor"}), 500
+        app.logger.exception("Error interno: %s", error)
+        return render_template("500.html"), 500
 
     @app.errorhandler(Exception)
     def handle_unexpected_error(error):
@@ -102,4 +108,9 @@ def register_error_handlers(app: Flask) -> None:
         if isinstance(error, RateLimitExceeded):
             return jsonify({"error": "Demasiadas solicitudes. Intenta de nuevo en un minuto."}), 429
         app.logger.exception("Error inesperado: %s", error)
-        return jsonify({"error": "Ocurrió un error inesperado"}), 500
+        if request.path.startswith("/api/") or (
+            request.accept_mimetypes
+            and request.accept_mimetypes.best == "application/json"
+        ):
+            return jsonify({"error": "Ocurrió un error inesperado"}), 500
+        return render_template("500.html"), 500

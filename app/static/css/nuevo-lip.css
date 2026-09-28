@@ -348,3 +348,9 @@ svg .tubo-arrow{stroke:rgba(201,162,39,.5);stroke-width:1.5;fill:none;stroke-das
     background-color: var(--navy-3) !important;
   }
 }
+
+/* ---------- Mapa Colombia (tema oscuro) ---------- */
+.dept-path { fill: var(--navy-3); stroke: var(--gold-l); }
+.dept-path:hover, .dept-path.active { fill: var(--gold); stroke: #fff; }
+.colombia-map-legend { color: var(--dim); }
+

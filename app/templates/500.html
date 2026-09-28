@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Error del servidor | Inteligencia Pública{% endblock %}
+{% block meta_description %}Ocurrió un error interno. Vuelve a intentarlo o vuelve al inicio.{% endblock %}
+{% block content %}
+<section class="hero-band" style="min-height:70vh; display:flex; align-items:center;">
+    <div class="container text-center">
+        <div class="kicker" style="justify-content:center; display:flex;">Error 500</div>
+        <h1 class="display-xl text-white mb-3">Algo salió <span class="text-gold" style="font-style:italic; font-family:var(--font-serif);">mal</span></h1>
+        <p class="body-lg" style="color: var(--dim); max-width: 44ch; margin: 0 auto;">
+            Hubo un error interno. Ya lo estamos revisando. Intenta de nuevo en unos minutos.
+        </p>
+        <div class="cta-row mt-4" style="display:flex; gap:1rem; justify-content:center; flex-wrap:wrap;">
+            <a href="{{ url_for('home.index') }}" class="btn btn-gold btn-lg"><i class="bi bi-house me-2"></i>Volver al inicio</a>
+        </div>
+    </div>
+</section>
+{% endblock %}

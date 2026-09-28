@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block title %}{{ politica.titulo }} — Biblioteca Inteligente{% endblock %}
+{% block meta_description %}{{ politica.resumen_ejecutivo[:150] }}{% endblock %}
 
 {% block content %}
 <section class="hero-band">
